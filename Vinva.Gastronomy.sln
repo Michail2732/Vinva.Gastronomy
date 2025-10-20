@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Recipes.Domain", "src\Recipes\Vinva.Gastronomy.Recipes.Domain\Vinva.Gastronomy.Recipes.Domain.csproj", "{A58DB1A0-659A-41B8-BB40-B05EADDC2D72}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Recipes", "Recipes", "{2445C71D-B6B2-4B63-854B-641F2E2E78CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{079DD670-38EE-44DD-9DDB-C99379CF1AF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Common", "src\Common\Vinva.Gastronomy.Common\Vinva.Gastronomy.Common.csproj", "{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A58DB1A0-659A-41B8-BB40-B05EADDC2D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A58DB1A0-659A-41B8-BB40-B05EADDC2D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A58DB1A0-659A-41B8-BB40-B05EADDC2D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A58DB1A0-659A-41B8-BB40-B05EADDC2D72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A58DB1A0-659A-41B8-BB40-B05EADDC2D72} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
+		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4D0A805C-E161-43EB-893E-A4C934EBBC51}
+	EndGlobalSection
+EndGlobal
