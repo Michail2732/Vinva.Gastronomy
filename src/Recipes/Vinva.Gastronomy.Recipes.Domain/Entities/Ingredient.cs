@@ -11,7 +11,7 @@ using Vinva.Gastronomy.Recipes.Domain.Models;
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
     [DisplayName("Ингредиент")]
-    public class Ingredient: EntityGuid
+    public class Ingredient: EntityGuid, IAggregateRoot
     {
         private readonly List<IngredientCategory> _categories = new();
 

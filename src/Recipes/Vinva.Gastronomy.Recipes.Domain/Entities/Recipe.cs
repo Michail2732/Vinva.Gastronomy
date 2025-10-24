@@ -7,16 +7,18 @@ using System.Xml.Linq;
 using Vinva.Gastronomy.Common;
 using Vinva.Gastronomy.Recipes.Domain.Constants;
 using Vinva.Gastronomy.Recipes.Domain.Exceptions;
+using Vinva.Gastronomy.Recipes.Domain.Models;
 using Vinva.Gastronomy.Recipes.Domain.ValueObjects;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
     [DisplayName("Рецепт")]
-    public class Recipe : EntityGuid
+    public class Recipe : EntityGuid, IAggregateRoot
     {
         private readonly List<RecipeCategory> _recipeCategories = new();
         private readonly List<RecipeStep> _recipeSteps = new();
         private readonly List<RecipeIngredient> _recipeIngredients = new();
+        private readonly List<Recipe> _variations = new();
         
 
         public string Name { get; private set; }
@@ -29,9 +31,11 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         public string? StorageComment { get; set; }
         public string? UsageComment { get; set; }
         public string? Comment { get; set; }
+
         public IReadOnlyList<RecipeCategory> Categories => _recipeCategories;
         public IReadOnlyList<RecipeStep> Steps => _recipeSteps;
         public IReadOnlyList<RecipeIngredient> Ingredients => _recipeIngredients;
+        public IReadOnlyList<Recipe> Variations => _variations;
 
 
         public Recipe(string name, string description)
@@ -71,13 +75,38 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
             return this; 
         }
 
-        public Recipe AddCategory(string name, string? comment = null)
+        public RecipeCategory AddCategory(string name, string? comment = null)
         {
             var newId = new RecipeCategoryId(Id, name);
             if (_recipeCategories.Any(a => a.Id == newId))
                 throw new RecipeDomainException(RecipeErrorMessages.RecipeCategoryAlreadyExists(Id, name));
-            _recipeCategories.Add(new RecipeCategory(newId, comment));
-            return this;
+            var newCategory = new RecipeCategory(newId, comment);
+            _recipeCategories.Add(newCategory);
+            return newCategory;
+        }
+
+        public RecipeIngredient AddRequiredIngredient(Guid ingredientId, string ingredientName, string measure, string? comment = null)
+        {         
+            return AddIngredientPrivate(ingredientId, ingredientName, measure, true, comment);
+        }
+
+        public RecipeIngredient AddIngredient(Guid ingredientId, string ingredientName, string measure, string? comment = null)
+        {
+            return AddIngredientPrivate(ingredientId, ingredientName, measure, false, comment);
+        }
+
+
+        private RecipeIngredient AddIngredientPrivate(Guid ingredientId, string ingredientName, string measure, bool isRequired, string? comment = null)
+        {
+            var newId = new RecipeIngredientId(Id, ingredientId);
+            if (_recipeIngredients.Any(a => a.Id == newId))
+                throw new RecipeDomainException(RecipeErrorMessages.RecipeIngredientAlreadyExists(Id, ingredientId));
+            var newIngredient = new RecipeIngredient(newId, ingredientName, measure, isRequired)
+            {
+                Comment = comment
+            };
+            _recipeIngredients.Add(newIngredient);
+            return newIngredient;
         }
     }
 }
