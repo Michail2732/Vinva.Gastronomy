@@ -6,13 +6,10 @@ using Vinva.Gastronomy.Common.Exceptions;
 namespace Vinva.Gastronomy.Recipes.Domain.Exceptions
 {
 	[Serializable]
-	public class RecipeDomainException : Exception
+	public class RecipeDomainException : EntityDomainException
 	{
-		public RecipeDomainException() { }
-		public RecipeDomainException(string message) : base(message) { }
-		public RecipeDomainException(string message, Exception inner) : base(message, inner) { }
-		protected RecipeDomainException(
-		  System.Runtime.Serialization.SerializationInfo info,
-		  System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+		public RecipeDomainException(Type type) : base(type) { }
+		public RecipeDomainException(Type type, string message) : base(type, message) { }
+		public RecipeDomainException(Type type, string message, Exception inner) : base(type, message, inner) { }		
 	}
 }

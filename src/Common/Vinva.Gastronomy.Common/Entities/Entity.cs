@@ -1,29 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Vinva.Gastronomy.Common.Entities;
 
 namespace Vinva.Gastronomy.Common
 {
-    public abstract class Entity<T> : IEntity<T>, IEquatable<Entity<T>?>
-        where T : struct
+    public abstract class Entity : IEntity
     {
-        public T Id { get; protected set; }
-
-
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as EntityGuid);
-        }
-
-        public virtual bool Equals(Entity<T>? other)
-        {
-            return other is not null &&
-                   Id.Equals(other.Id);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id);
-        }
+        public abstract override bool Equals(object? obj);
+        public abstract override int GetHashCode();
+        public abstract bool Equals(IEntity? other);
     }
 }

@@ -2,7 +2,7 @@
 using System;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 
-namespace Vinva.Gastronomy.Recipes.EntityFrameworkCore
+namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework
 {
     public class RecipeDbContext: DbContext
     {
@@ -16,6 +16,12 @@ namespace Vinva.Gastronomy.Recipes.EntityFrameworkCore
         public RecipeDbContext(DbContextOptions options) : base(options)
         {
 
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(RecipeDbContext).Assembly);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

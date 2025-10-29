@@ -1,25 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-using Vinva.Gastronomy.Common;
-using Vinva.Gastronomy.Recipes.Domain.ValueObjects;
+using Vinva.Gastronomy.Common.Entities;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
     [DisplayName("Шаг приготовления рецепта")]
-    public class RecipeStep : Entity<RecipeStepId>
+    public class RecipeStep : DescriptiveEntity
     {
+        public Guid RecipeId { get; private set; }
+        public int SeqNumber { get; private set; }
         public Guid? PhotoId { get; private set; }
-        public string Description { get; private set; }
-        public string Comment { get; private set; }
 
-        public RecipeStep(RecipeStepId id, string description, string comment, Guid? photoId = null)
+
+#pragma warning disable CS8618
+        private RecipeStep() { }
+#pragma warning restore CS8618 
+
+        public RecipeStep(Guid recipeId, int seqNumber, string name, string description, Guid? photoId = null) 
+            : base(name, description)
         {
-            Id = id;
-            PhotoId = photoId;
-            Description = description ?? throw new ArgumentNullException(nameof(description));
-            Comment = comment ?? throw new ArgumentNullException(nameof(comment));
+            RecipeId = recipeId;
+            SeqNumber = seqNumber;
+            PhotoId = photoId;            
+        }
+
+
+        public override bool Equals(IEntity? obj)
+        {
+            return obj is RecipeStep step &&                   
+                   RecipeId.Equals(step.RecipeId) &&
+                   SeqNumber == step.SeqNumber;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(RecipeId, SeqNumber);
         }
     }
 }

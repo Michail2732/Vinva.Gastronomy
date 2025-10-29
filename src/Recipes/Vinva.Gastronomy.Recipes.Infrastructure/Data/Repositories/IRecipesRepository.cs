@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vinva.Gastronomy.Common.Entities
+namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.Repositories
 {
-    public interface IEntity : IEquatable<IEntity>
+    internal class IRecipesRepository
     {
-        int GetHashCode();
     }
 }

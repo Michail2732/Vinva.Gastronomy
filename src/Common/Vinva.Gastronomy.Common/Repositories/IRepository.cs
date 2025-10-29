@@ -6,7 +6,7 @@ using System.Text;
 namespace Vinva.Gastronomy.Common.Repositories
 {
     public interface IRepository<TEntity>: IRepositoryBase<TEntity>
-        where TEntity: class, IEntity        
+        where TEntity: Entity
     {
     }
 }

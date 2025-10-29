@@ -1,4 +1,4 @@
-﻿namespace Vinva.Gastronomy.Common
+﻿namespace Vinva.Gastronomy.Common.Entities
 {
     public interface IAggregateRoot: IEntity
     {
