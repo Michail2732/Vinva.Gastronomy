@@ -13,8 +13,9 @@ namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework.Configura
 {
     public class RecipeDbConfiguration : DescriptiveEntityDbConfiguration<Recipe>
     {
-        protected override void ConfigureProtected(EntityTypeBuilder<Recipe> builder)
+        public override void Configure(EntityTypeBuilder<Recipe> builder)
         {
+            base.Configure(builder);
             builder.ToTable("Recipes");
 
             builder.HasKey(x => x.Id);
@@ -32,8 +33,7 @@ namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework.Configura
                    .HasMaxLength(CommonConstants.MaxLengthComment);
 
             builder.HasOne<Recipe>()
-                   .WithMany()
-                   .HasForeignKey(a => a.BaseRecipe)
+                   .WithOne()                   
                    .OnDelete(DeleteBehavior.NoAction);            
 
             builder.HasMany(a => a.Steps)
@@ -45,8 +45,8 @@ namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework.Configura
                    .HasForeignKey(a => a.RecipeId);
 
             builder.HasMany(a => a.Categories)
-                   .WithOne()
-                   .HasForeignKey(a => a.RecipeId);
+                   .WithMany()
+                   .UsingEntity(a => a.ToTable("RecipeCategories"));
         }
     }
 }

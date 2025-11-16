@@ -10,12 +10,12 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
     [DisplayName("Ингредиент")]
     public class Ingredient: DescriptiveEntityOfT<Guid>, IAggregateRoot
     {
-        private readonly List<IngredientCategory> _categories = new();
+        private readonly List<Category> _categories = new();
         
         public string? UsageComment { get; set; }        
         public Guid? PhotoId { get; set; }
         public Guid? RecipeId { get; set; }
-        public IReadOnlyList<IngredientCategory> Categories => _categories;
+        public IReadOnlyList<Category> Categories => _categories;
 
 
 #pragma warning disable CS8618
@@ -27,9 +27,9 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         public Ingredient(Guid id, string name, string description) : base(id, name, description) { }        
                             
 
-        public IngredientCategory AddCategory(string category, string description, string? comment  = null)
+        public Category AddCategory(string category, string description, string? comment  = null)
         {                        
-            var newCategory = new IngredientCategory(Id, category, description)
+            var newCategory = new Category(Id, category, description, CategoryType.Ingredient)
             {
                 Comment = comment
             };

@@ -33,7 +33,11 @@ namespace Vinva.Gastronomy.Common
             }
             return false;
         }
-        
+
+        public override bool Equals(IEntity? other)
+        {
+            return Equals(other as IEntityOfT<T>);
+        }
 
         public override bool Equals(object? obj)
         {

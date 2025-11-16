@@ -8,8 +8,9 @@ namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework.Configura
 {
     public class IngredientDbConfiguration : DescriptiveEntityDbConfiguration<Ingredient>
     {        
-        protected override void ConfigureProtected(EntityTypeBuilder<Ingredient> builder)
+        public override void Configure(EntityTypeBuilder<Ingredient> builder)
         {
+            base.Configure(builder);
             builder.ToTable("Ingredients");
 
             builder.HasKey(a => a.Id);
@@ -22,6 +23,10 @@ namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework.Configura
 
             builder.Property(a => a.UsageComment)
                    .HasMaxLength(CommonConstants.MaxLengthComment);
+
+            builder.HasMany(a => a.Categories)
+                   .WithMany()
+                   .UsingEntity(a => a.ToTable("IngredientCategories"));
         }
     }
 }

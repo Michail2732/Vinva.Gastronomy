@@ -7,8 +7,9 @@ namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework.Configura
 {
     public class RecipeStepDbConfiguration : DescriptiveEntityDbConfiguration<RecipeStep>
     {        
-        protected override void ConfigureProtected(EntityTypeBuilder<RecipeStep> builder)
-        {            
+        public override void Configure(EntityTypeBuilder<RecipeStep> builder)
+        {
+            base.Configure(builder);
             builder.ToTable("RecipeSteps");            
 
             builder.HasKey(a => new { a.RecipeId, a.SeqNumber });
@@ -17,7 +18,7 @@ namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework.Configura
                    .IsRequired();
 
             builder.HasOne<Recipe>()
-                   .WithMany()
+                   .WithMany(a => a.Steps)
                    .HasForeignKey(a => a.RecipeId)
                    .IsRequired()
                    .OnDelete(DeleteBehavior.Cascade);

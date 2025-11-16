@@ -15,9 +15,8 @@ namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework.Configura
     public abstract class DescriptiveEntityDbConfiguration<TEntity> : IEntityTypeConfiguration<TEntity>
         where TEntity : DescriptiveEntity        
     {
-        public void Configure(EntityTypeBuilder<TEntity> builder)
-        {
-            ConfigureProtected(builder);
+        public virtual void Configure(EntityTypeBuilder<TEntity> builder)
+        {            
             builder.Property(a => a.Name)
                    .HasMaxLength(CommonConstants.MaxLengthName)
                    .IsRequired();
@@ -28,8 +27,6 @@ namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework.Configura
 
             builder.Property(a => a.Comment)
                    .HasMaxLength(CommonConstants.MaxLengthComment);            
-        }        
-
-        protected abstract void ConfigureProtected(EntityTypeBuilder<TEntity> builder);
+        }
     }
 }

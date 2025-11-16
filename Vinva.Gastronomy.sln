@@ -17,6 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Common.Inf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Recipes.Infrastructure", "src\Recipes\Vinva.Gastronomy.Recipes.Infrastructure\Vinva.Gastronomy.Recipes.Infrastructure.csproj", "{8A99A16A-6B15-4972-9466-88F83F2C679F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Recipes.Tests", "src\Recipes\Vinva.Gastronomy.Recipes.Tests\Vinva.Gastronomy.Recipes.Tests.csproj", "{83C000C0-A390-4568-A0BC-ED4A167C97B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Recipes.Application", "src\Recipes\Vinva.Gastronomy.Recipes.Application\Vinva.Gastronomy.Recipes.Application.csproj", "{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.Domain", "src\Identity\Vinva.Gastronomy.Identity.Domain\Vinva.Gastronomy.Identity.Domain.csproj", "{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +45,18 @@ Global
 		{8A99A16A-6B15-4972-9466-88F83F2C679F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A99A16A-6B15-4972-9466-88F83F2C679F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A99A16A-6B15-4972-9466-88F83F2C679F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83C000C0-A390-4568-A0BC-ED4A167C97B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83C000C0-A390-4568-A0BC-ED4A167C97B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83C000C0-A390-4568-A0BC-ED4A167C97B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83C000C0-A390-4568-A0BC-ED4A167C97B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +66,9 @@ Global
 		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 		{913C75A2-4C55-45D0-A5D6-D9776ED68C05} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 		{8A99A16A-6B15-4972-9466-88F83F2C679F} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
+		{83C000C0-A390-4568-A0BC-ED4A167C97B2} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
+		{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
+		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34} = {079DD670-38EE-44DD-9DDB-C99379CF1AF7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D0A805C-E161-43EB-893E-A4C934EBBC51}

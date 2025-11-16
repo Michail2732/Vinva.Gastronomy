@@ -8,10 +8,10 @@ using Vinva.Gastronomy.Recipes.Domain.Exceptions;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
-    [DisplayName("Рецепт")]
+    [DisplayName("Полная информация о рецепте")]
     public class Recipe : DescriptiveEntityOfT<Guid>, IAggregateRoot
     {
-        private readonly List<RecipeCategory> _recipeCategories = new();
+        private readonly List<Category> _recipeCategories = new();
         private readonly List<RecipeStep> _recipeSteps = new();
         private readonly List<RecipeIngredient> _recipeIngredients = new();
         private string? cookingComment;
@@ -19,33 +19,43 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         private string? storageComment;
         private string? usageComment;
 
-        public Guid? BaseRecipe { get; private set; }        
+
+        public Guid? BaseRecipe { get; private set; }
+
         public Guid? PhotoId { get; set; }
-        public Guid? VideoId { get; set; }        
+
+        public Guid? VideoId { get; set; }
+
         public TimeSpan? CookingTime { get; set; }
-        public string? CookingComment 
-        { 
-            get => cookingComment; 
-            set => SetComment(value, ref cookingComment); 
-        }
-        public string? IngredientComment 
-        { 
-            get => ingredientComment; 
-            set => SetComment(value, ref ingredientComment); 
-        }
-        public string? StorageComment 
-        { 
-            get => storageComment; 
-            set => SetComment(value, ref storageComment); 
-        }
-        public string? UsageComment 
-        { 
-            get => usageComment; 
-            set => SetComment(value, ref usageComment); 
+
+        public string? CookingComment
+        {
+            get => cookingComment;
+            set => SetComment(value, ref cookingComment);
         }
 
-        public IReadOnlyList<RecipeCategory> Categories => _recipeCategories;
+        public string? IngredientComment
+        {
+            get => ingredientComment;
+            set => SetComment(value, ref ingredientComment);
+        }
+
+        public string? StorageComment
+        {
+            get => storageComment;
+            set => SetComment(value, ref storageComment);
+        }
+
+        public string? UsageComment
+        {
+            get => usageComment;
+            set => SetComment(value, ref usageComment);
+        }
+
+        public IReadOnlyList<Category> Categories => _recipeCategories;
+
         public IReadOnlyList<RecipeStep> Steps => _recipeSteps;
+
         public IReadOnlyList<RecipeIngredient> Ingredients => _recipeIngredients;
 
 
@@ -54,11 +64,14 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
 #pragma warning restore CS8618 
 
         public Recipe(string name, string description, Guid? baseRecipe = null) : base(name, description) 
-        {            
+        {
             BaseRecipe = baseRecipe;
         }
 
-        public Recipe(Guid id, string name, string description, Guid? baseRecipe = null) : base(id, name, description) { }            
+        public Recipe(Guid id, string name, string description, Guid? baseRecipe = null) : base(id, name, description)
+        {
+            BaseRecipe = baseRecipe;
+        }                
         
         
         public Recipe AddStep(string name, string description, string comment, Guid? photoId = null)
@@ -72,9 +85,9 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
             return this; 
         }       
 
-        public RecipeCategory AddCategory(string name, string description, string? comment = null)
+        public Category AddCategory(string name, string description, string? comment = null)
         {                        
-            var newCategory = new RecipeCategory(Id, name, description)
+            var newCategory = new Category(Id, name, description, CategoryType.Recipe)
             {
                 Comment = comment
             };

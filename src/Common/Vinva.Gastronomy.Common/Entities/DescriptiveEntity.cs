@@ -46,6 +46,7 @@ namespace Vinva.Gastronomy.Common.Entities
             SetDescription(description, ref _description);            
         }
 
+        public abstract override int GetHashCode();
 
         public override bool Equals(object? obj)
         {

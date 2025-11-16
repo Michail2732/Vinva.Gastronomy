@@ -8,7 +8,7 @@ using Vinva.Gastronomy.Recipes.Domain.Entities;
 
 namespace Vinva.Gastronomy.Recipes.Infrastructure.Data.Repositories
 {
-    public interface IRecipeCategoriesRepository : IRepository<RecipeCategory>
+    public interface ICategoriesRepository : IRepository<Category>
     {
     }
 }
