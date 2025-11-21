@@ -13,15 +13,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{07
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Common", "src\Common\Vinva.Gastronomy.Common\Vinva.Gastronomy.Common.csproj", "{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Common.Infrastructure", "src\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj", "{913C75A2-4C55-45D0-A5D6-D9776ED68C05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Common.Infrastructure", "src\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj", "{913C75A2-4C55-45D0-A5D6-D9776ED68C05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Recipes.Infrastructure", "src\Recipes\Vinva.Gastronomy.Recipes.Infrastructure\Vinva.Gastronomy.Recipes.Infrastructure.csproj", "{8A99A16A-6B15-4972-9466-88F83F2C679F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Infrastructure", "src\Recipes\Vinva.Gastronomy.Recipes.Infrastructure\Vinva.Gastronomy.Recipes.Infrastructure.csproj", "{8A99A16A-6B15-4972-9466-88F83F2C679F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Recipes.Tests", "src\Recipes\Vinva.Gastronomy.Recipes.Tests\Vinva.Gastronomy.Recipes.Tests.csproj", "{83C000C0-A390-4568-A0BC-ED4A167C97B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Tests", "src\Recipes\Vinva.Gastronomy.Recipes.Tests\Vinva.Gastronomy.Recipes.Tests.csproj", "{83C000C0-A390-4568-A0BC-ED4A167C97B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Recipes.Application", "src\Recipes\Vinva.Gastronomy.Recipes.Application\Vinva.Gastronomy.Recipes.Application.csproj", "{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Application", "src\Recipes\Vinva.Gastronomy.Recipes.Application\Vinva.Gastronomy.Recipes.Application.csproj", "{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.Domain", "src\Identity\Vinva.Gastronomy.Identity.Domain\Vinva.Gastronomy.Identity.Domain.csproj", "{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Identity.Domain", "src\Identity\Vinva.Gastronomy.Identity.Domain\Vinva.Gastronomy.Identity.Domain.csproj", "{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.Application", "src\Identity\Vinva.Gastronomy.Identity.Application\Vinva.Gastronomy.Identity.Application.csproj", "{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.Infrastructure", "src\Identity\Vinva.Gastronomy.Identity.Infrastructure\Vinva.Gastronomy.Identity.Infrastructure.csproj", "{7FE43EC5-AF29-4305-A735-2C26C1A48833}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FE43EC5-AF29-4305-A735-2C26C1A48833}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FE43EC5-AF29-4305-A735-2C26C1A48833}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FE43EC5-AF29-4305-A735-2C26C1A48833}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FE43EC5-AF29-4305-A735-2C26C1A48833}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,6 +81,8 @@ Global
 		{83C000C0-A390-4568-A0BC-ED4A167C97B2} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
 		{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
 		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34} = {079DD670-38EE-44DD-9DDB-C99379CF1AF7}
+		{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A} = {079DD670-38EE-44DD-9DDB-C99379CF1AF7}
+		{7FE43EC5-AF29-4305-A735-2C26C1A48833} = {079DD670-38EE-44DD-9DDB-C99379CF1AF7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D0A805C-E161-43EB-893E-A4C934EBBC51}
