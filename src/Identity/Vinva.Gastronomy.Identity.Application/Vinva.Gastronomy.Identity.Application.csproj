@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="13.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\Vinva.Gastronomy.Identity.Domain\Vinva.Gastronomy.Identity.Domain.csproj" />
+    <ProjectReference Include="..\Vinva.Gastronomy.Identity.Persistence\Vinva.Gastronomy.Identity.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

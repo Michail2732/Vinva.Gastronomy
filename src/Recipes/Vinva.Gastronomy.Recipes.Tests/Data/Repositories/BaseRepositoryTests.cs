@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework;
-using Vinva.Gastronomy.Recipes.Infrastructure.Data.Repositories.Impl;
+using Vinva.Gastronomy.Recipes.Persistence;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Data.Repositories
 {

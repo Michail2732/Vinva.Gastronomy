@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Common", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Common.Infrastructure", "src\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj", "{913C75A2-4C55-45D0-A5D6-D9776ED68C05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Infrastructure", "src\Recipes\Vinva.Gastronomy.Recipes.Infrastructure\Vinva.Gastronomy.Recipes.Infrastructure.csproj", "{8A99A16A-6B15-4972-9466-88F83F2C679F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Persistence", "src\Recipes\Vinva.Gastronomy.Recipes.Persistence\Vinva.Gastronomy.Recipes.Persistence.csproj", "{8A99A16A-6B15-4972-9466-88F83F2C679F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Tests", "src\Recipes\Vinva.Gastronomy.Recipes.Tests\Vinva.Gastronomy.Recipes.Tests.csproj", "{83C000C0-A390-4568-A0BC-ED4A167C97B2}"
 EndProject
@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Identity.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.Application", "src\Identity\Vinva.Gastronomy.Identity.Application\Vinva.Gastronomy.Identity.Application.csproj", "{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.Infrastructure", "src\Identity\Vinva.Gastronomy.Identity.Infrastructure\Vinva.Gastronomy.Identity.Infrastructure.csproj", "{7FE43EC5-AF29-4305-A735-2C26C1A48833}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.Persistence", "src\Identity\Vinva.Gastronomy.Identity.Persistence\Vinva.Gastronomy.Identity.Persistence.csproj", "{7FE43EC5-AF29-4305-A735-2C26C1A48833}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

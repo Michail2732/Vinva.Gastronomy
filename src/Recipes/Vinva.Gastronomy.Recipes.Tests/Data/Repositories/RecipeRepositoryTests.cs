@@ -1,8 +1,8 @@
 using Ardalis.Specification;
 using Vinva.Gastronomy.Common.Infrastructure.EntityFramework;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
-using Vinva.Gastronomy.Recipes.Infrastructure.Data.EntityFramework;
-using Vinva.Gastronomy.Recipes.Infrastructure.Data.Specifications;
+using Vinva.Gastronomy.Recipes.Persistence;
+using Vinva.Gastronomy.Recipes.Persistence.Specifications;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Data.Repositories
 {

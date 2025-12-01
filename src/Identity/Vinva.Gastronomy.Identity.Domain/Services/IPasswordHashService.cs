@@ -9,7 +9,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
     /// <summary>
     /// Сервис для работы с хешированием паролей
     /// </summary>
-    internal interface IPasswordHashService
+    public interface IPasswordHashService
     {
         /// <summary>
         /// Хеширование пароля
