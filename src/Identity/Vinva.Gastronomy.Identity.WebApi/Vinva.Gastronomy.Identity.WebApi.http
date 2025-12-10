@@ -1,0 +1,6 @@
+@Vinva.Gastronomy.Identity.WebApi_HostAddress = http://localhost:5172
+
+GET {{Vinva.Gastronomy.Identity.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
