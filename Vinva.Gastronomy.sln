@@ -23,9 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Identity.Domain", "src\Identity\Vinva.Gastronomy.Identity.Domain\Vinva.Gastronomy.Identity.Domain.csproj", "{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.Application", "src\Identity\Vinva.Gastronomy.Identity.Application\Vinva.Gastronomy.Identity.Application.csproj", "{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Identity.Application", "src\Identity\Vinva.Gastronomy.Identity.Application\Vinva.Gastronomy.Identity.Application.csproj", "{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.Persistence", "src\Identity\Vinva.Gastronomy.Identity.Persistence\Vinva.Gastronomy.Identity.Persistence.csproj", "{7FE43EC5-AF29-4305-A735-2C26C1A48833}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Identity.Persistence", "src\Identity\Vinva.Gastronomy.Identity.Persistence\Vinva.Gastronomy.Identity.Persistence.csproj", "{7FE43EC5-AF29-4305-A735-2C26C1A48833}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Identity.WebApi", "src\Identity\Vinva.Gastronomy.Identity.WebApi\Vinva.Gastronomy.Identity.WebApi.csproj", "{C7FE8F0A-0FBB-42B6-BA2B-4F7F6026B429}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{7FE43EC5-AF29-4305-A735-2C26C1A48833}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FE43EC5-AF29-4305-A735-2C26C1A48833}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FE43EC5-AF29-4305-A735-2C26C1A48833}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7FE8F0A-0FBB-42B6-BA2B-4F7F6026B429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7FE8F0A-0FBB-42B6-BA2B-4F7F6026B429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7FE8F0A-0FBB-42B6-BA2B-4F7F6026B429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7FE8F0A-0FBB-42B6-BA2B-4F7F6026B429}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +89,7 @@ Global
 		{BF543DF7-D38B-4AAC-A07C-190BE9EE9C34} = {079DD670-38EE-44DD-9DDB-C99379CF1AF7}
 		{7263C855-BEDE-4C62-BF8D-5E2D6A407F7A} = {079DD670-38EE-44DD-9DDB-C99379CF1AF7}
 		{7FE43EC5-AF29-4305-A735-2C26C1A48833} = {079DD670-38EE-44DD-9DDB-C99379CF1AF7}
+		{C7FE8F0A-0FBB-42B6-BA2B-4F7F6026B429} = {079DD670-38EE-44DD-9DDB-C99379CF1AF7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D0A805C-E161-43EB-893E-A4C934EBBC51}
