@@ -5,11 +5,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  
+
+	<ItemGroup>
+		<PackageReference Include="MediatR" Version="13.1.0" />
+	</ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CreateIngredient\" />
-    <Folder Include="CreateCategory\" />
-    <Folder Include="CreateRecipe\" />
+    <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Domain\Vinva.Gastronomy.Recipes.Domain.csproj" />
+    <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Persistence\Vinva.Gastronomy.Recipes.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

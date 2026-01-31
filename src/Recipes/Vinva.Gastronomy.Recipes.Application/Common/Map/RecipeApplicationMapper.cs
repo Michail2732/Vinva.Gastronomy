@@ -1,0 +1,59 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Vinva.Gastronomy.Recipes.Domain.Entities;
+
+namespace Vinva.Gastronomy.Recipes.Application.Common.Map
+{
+    public class RecipeApplicationMapper
+    {
+        public List<RecipeDto> Map(IEnumerable<Recipe> recipes)
+        {
+            List<RecipeDto> result = new List<RecipeDto>();
+            foreach (var recipe in recipes)
+            {
+                result.Add(Map(recipe));
+            }
+            return result;
+        }
+
+        public RecipeDto Map(Recipe recipe)
+        {
+            return new RecipeDto
+            {
+                Id = recipe.Id,
+                Name = recipe.Name,
+                Description = recipe.Description,
+                BaseRecipe = recipe.BaseRecipe,
+                CookingComment = recipe.CookingComment,
+                CookingTime = recipe.CookingTime,
+                IngredientComment = recipe.IngredientComment,
+                PhotoId = recipe.PhotoId,
+                StorageComment = recipe.StorageComment,
+                UsageComment = recipe.UsageComment,
+                VideoId = recipe.VideoId,
+                Categories = recipe.Categories.Select(a => new RecipeCategoryDto
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                }).ToArray(),
+                Ingredients = recipe.Ingredients.Select(a => new RecipeIngredientDto
+                {
+                    IngredientId = a.IngredientId,
+                    IngredientName = a.Name,
+                    IsRequired = a.IsRequired,
+                    Measure = a.Measure
+                }).ToArray(),
+                Steps = recipe.Steps.Select(a => new RecipeStepDto
+                {
+                    Description = a.Description,
+                    Name = a.Name,
+                    SeqNumber = a.SeqNumber,
+                    PhotoId = a.PhotoId
+                }).ToArray(),
+            };
+        }
+    }
+}

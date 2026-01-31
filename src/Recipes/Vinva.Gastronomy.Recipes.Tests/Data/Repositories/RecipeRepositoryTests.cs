@@ -1,12 +1,12 @@
 using Ardalis.Specification;
+using NUnit.Framework.Constraints;
 using Vinva.Gastronomy.Common.Infrastructure.EntityFramework;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 using Vinva.Gastronomy.Recipes.Persistence;
-using Vinva.Gastronomy.Recipes.Persistence.Specifications;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Data.Repositories
 {
-    [TestFixture(TestName="Тест репозитория Recipes")]
+    [TestFixture(TestName="Repositories Tests")]
     public class RecipeRepositoryTests : BaseRepositoryTests
     {                
         [Test]
@@ -18,9 +18,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Data.Repositories
             Assert.IsNotEmpty(recipeIdStr);
 
             var recipeId = Guid.Parse(recipeIdStr!);
-            var spec = new Specification<Recipe>();
+            var spec = CreateDefaultSpec();
             spec.Query.Where(a => a.Id == recipeId);
-            var recipe = await repository.FirstOrDefaultAsync(spec.IncludeAllDependencies());
+            var recipe = await repository.FirstOrDefaultAsync(spec);
             
             Assert.IsNotNull(recipe);
             Assert.That(recipe?.Ingredients.Count, Is.EqualTo(5));
@@ -37,7 +37,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Data.Repositories
             Assert.IsNotEmpty(recipeIdStr);
 
             var recipeId = Guid.Parse(recipeIdStr!);
-            var spec = new Specification<Recipe>();
+            var spec = CreateDefaultSpec();
             spec.Query.Where(a => a.Id == recipeId);
             var recipe = await repository.FirstOrDefaultAsync(spec);
 
@@ -72,9 +72,10 @@ namespace Vinva.Gastronomy.Recipes.Tests.Data.Repositories
             };
                         
             var result = await repository.AddAsync(recipe);
-            var spec = new Specification<Recipe>();
+            var spec = CreateDefaultSpec();
+            
             spec.Query.Where(a => a.Id == recipe.Id);
-            recipe = await repository.FirstOrDefaultAsync(spec.IncludeAllDependencies());
+            recipe = await repository.FirstOrDefaultAsync(spec);
 
             Assert.IsNotNull(recipe);
             Assert.That(recipe.Name, Is.EqualTo(name));
@@ -92,5 +93,14 @@ namespace Vinva.Gastronomy.Recipes.Tests.Data.Repositories
 
 
         private Repository<RecipeDbContext, Recipe> BuildRepository() => new Repository<RecipeDbContext, Recipe>(_recipeDbContext);
+
+        private Specification<Recipe> CreateDefaultSpec()
+        {
+            var spec = new Specification<Recipe>();
+            spec.Query.Include(a => a.Categories)
+                .Include(a => a.Steps)
+                .Include(a => a.Ingredients);
+            return spec;
+        }
     }
 }
