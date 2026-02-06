@@ -34,7 +34,7 @@ namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory
                 .MakeGenericMethod(typeof(Category));
         }
 
-        public Expression<Func<Recipe, bool>> CreateExpression(GetRecipeByIngredientsRequest request)
+        public Expression<Func<Recipe, bool>> CreateExpression(GetRecipeByCategoryRequest request)
         {
             var exprRecipeParam = Expression.Parameter(typeof(Recipe), "re");
 

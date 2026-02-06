@@ -12,7 +12,7 @@ using Vinva.Gastronomy.Recipes.Persistence;
 
 namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory
 {
-    public class GetRecipeByCategoryHandler : IRequestHandler<GetRecipeByIngredientsRequest, Result<GetRecipeByCategoryResponce>>
+    public class GetRecipeByCategoryHandler : IRequestHandler<GetRecipeByCategoryRequest, Result<GetRecipeByCategoryResponce>>
     {
         private readonly RecipeDbContext _dbContext;
         private readonly CategoryFilterExpressionBuilder _filterBuilder;
@@ -25,7 +25,7 @@ namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory
             _mapper = new RecipeApplicationMapper();
         }
 
-        public async Task<Result<GetRecipeByCategoryResponce>> Handle(GetRecipeByIngredientsRequest request, CancellationToken cancellationToken)
+        public async Task<Result<GetRecipeByCategoryResponce>> Handle(GetRecipeByCategoryRequest request, CancellationToken cancellationToken)
         {
             var exprFilter = _filterBuilder.CreateExpression(request);
 

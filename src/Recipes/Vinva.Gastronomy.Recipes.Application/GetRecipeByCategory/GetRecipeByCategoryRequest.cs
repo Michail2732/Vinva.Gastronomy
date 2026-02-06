@@ -9,7 +9,7 @@ using Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory;
 
 namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory
 {
-    public readonly record struct GetRecipeByIngredientsRequest : IRequest<Result<GetRecipeByCategoryResponce>>
+    public readonly record struct GetRecipeByCategoryRequest : IRequest<Result<GetRecipeByCategoryResponce>>
     {
         public List<Guid>? Include { get; init; }
         public List<Guid>? Exclude { get; init; }
