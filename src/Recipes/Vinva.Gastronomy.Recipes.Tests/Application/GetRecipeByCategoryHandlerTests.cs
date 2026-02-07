@@ -34,7 +34,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             Assert.That(result.Value.Recipes.Count, Is.GreaterThan(0));
             
@@ -62,7 +62,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             Assert.That(result.Value.Recipes.Count, Is.GreaterThan(0));
             
@@ -90,7 +90,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Verify all returned recipes have both categories
@@ -118,7 +118,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Verify no returned recipes have the excluded category
@@ -145,7 +145,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Verify all returned recipes have breakfast category but not desserts
@@ -173,7 +173,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Should return all recipes from test data (4 recipes)
@@ -199,7 +199,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             Assert.That(result.Value.Recipes.Count, Is.EqualTo(0));
         }
@@ -222,7 +222,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.True);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Verify recipes have all required data populated
