@@ -35,7 +35,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             Assert.That(result.Value.Recipes.Count, Is.GreaterThan(0));
             
@@ -63,7 +63,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             Assert.That(result.Value.Recipes.Count, Is.GreaterThan(0));
             
@@ -91,7 +91,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Verify all returned recipes have all three ingredients
@@ -120,7 +120,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Verify no returned recipes have the excluded ingredient
@@ -147,7 +147,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Verify all returned recipes have eggs but not flour
@@ -175,7 +175,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Should return all recipes from test data (4 recipes)
@@ -201,7 +201,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             Assert.That(result.Value.Recipes.Count, Is.EqualTo(0));
         }
@@ -224,7 +224,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Verify recipes have all required data populated
@@ -256,7 +256,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.Not.Empty);
+            Assert.That(result.Value == default, Is.False);
             Assert.That(result.Value.Recipes, Is.Not.Null);
             
             // Should work correctly with duplicate IDs (treated as single ingredient)

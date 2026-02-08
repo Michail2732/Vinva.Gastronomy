@@ -20,18 +20,18 @@ namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients
         {            
             _anyMethod = typeof(Enumerable).GetMethods()
                 .First(a => a.Name == "Any" && a.GetParameters().Length == 2)
-                .MakeGenericMethod(typeof(Category));
+                .MakeGenericMethod(typeof(RecipeIngredient));
 
             _containsMethod = typeof(List<Guid>).GetMethod("Contains", new[] { typeof(Guid) })
                 ?? throw new Exception("Not found Contains method info in List<Guid>");
 
             _whereMethod = typeof(Enumerable).GetMethods()
                 .First(a => a.Name == "Where" && a.GetParameters().Length == 2)
-                .MakeGenericMethod(typeof(Category));
+                .MakeGenericMethod(typeof(RecipeIngredient));
 
             _countMethod = typeof(Enumerable).GetMethods()
-                .First(a => a.Name == "Count" && a.GetParameters().Length == 2)
-                .MakeGenericMethod(typeof(Category));
+                .First(a => a.Name == "Count" && a.GetParameters().Length == 1)
+                .MakeGenericMethod(typeof(RecipeIngredient));
         }
 
         public Expression<Func<Recipe, bool>> CreateExpression(GetRecipeByIngredientsRequest request)
@@ -55,6 +55,8 @@ namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients
                 };
             }
 
+            if (resultExpr == null)
+                return a => true;
             return Expression.Lambda<Func<Recipe, bool>>(resultExpr, exprRecipeParam);
         }
 

@@ -30,7 +30,7 @@ namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory
                 .MakeGenericMethod(typeof(Category));
 
             _countMethod = typeof(Enumerable).GetMethods()
-                .First(a => a.Name == "Count" && a.GetParameters().Length == 2)
+                .First(a => a.Name == "Count" && a.GetParameters().Length == 1)
                 .MakeGenericMethod(typeof(Category));
         }
 
@@ -57,6 +57,8 @@ namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory
                 };
             }
 
+            if (resultExpr == null)
+                return a => true;
             return Expression.Lambda<Func<Recipe, bool>>(resultExpr, exprRecipeParam);
         }
 
