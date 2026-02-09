@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Recipes.Application.Common.Map;
+using Vinva.Gastronomy.Recipes.Application.Constants;
 using Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory;
 using Vinva.Gastronomy.Recipes.Persistence;
 
@@ -24,7 +25,14 @@ namespace Vinva.Gastronomy.Recipes.Application.GetIngredientById
                                     .FirstOrDefaultAsync(a => a.Id == request.IngredientId);
 
             if (ingredient == null)
-                return Result.Failure<GetIngredientByIdResponce>(Errors.);
+                return Result.Failure<GetIngredientByIdResponce>(RecipesApplicationErrors.IngredientNotFound);
+
+            var result = _mapper.Map(ingredient);
+
+            return Result.Success(new GetIngredientByIdResponce
+            {
+                Ingredient = result
+            });
         }
     }
 }

@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Persistence\Vinva.Gastronomy.Recipes.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="RemoveCategory\" />
+    <Folder Include="UpdateIngredient\" />
+    <Folder Include="UpdateRecipe\" />
+  </ItemGroup>
+
 </Project>

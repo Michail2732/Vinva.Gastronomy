@@ -6,5 +6,9 @@ using System.Threading.Tasks;
 
 namespace Vinva.Gastronomy.Recipes.Application.Common
 {
-    public record CategoryDto(Guid Id, string Name, string Description, string? Comment, CategoryDtoType type = CategoryDtoType.Recipe);
+    public enum CategoryDtoType
+    {
+        Recipe,
+        Ingredient,        
+    }
 }

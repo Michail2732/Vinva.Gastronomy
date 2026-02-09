@@ -23,5 +23,10 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
             Type = type;
         }
 
+        public Category(string name, string description, CategoryType type) : base(name, description)
+        {
+            Type = type;
+        }
+
     }
 }
