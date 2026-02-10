@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Recipes.Application.Common.Map;
 using Vinva.Gastronomy.Recipes.Application.Constants;
-using Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory;
 using Vinva.Gastronomy.Recipes.Persistence;
 
 namespace Vinva.Gastronomy.Recipes.Application.GetIngredientById

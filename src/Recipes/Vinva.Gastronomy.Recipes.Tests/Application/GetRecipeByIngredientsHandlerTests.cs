@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
-using Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients;
+using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByIngredients;
 
 namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
 {
@@ -21,7 +21,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenIncludeSingleIngredient_ShouldReturnRecipesWithThatIngredient()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients.GetRecipeByIngredientsHandler(DbContext);
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
             var request = new GetRecipeByIngredientsRequest
             {
                 Include = new List<Guid> { FlourIngredientId },
@@ -49,7 +49,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenIncludeMultipleIngredientsWithOrLogic_ShouldReturnRecipesWithAnyIngredient()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients.GetRecipeByIngredientsHandler(DbContext);
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
             var request = new GetRecipeByIngredientsRequest
             {
                 Include = new List<Guid> { FlourIngredientId, CheeseIngredientId },
@@ -77,7 +77,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenIncludeMultipleIngredientsWithAndLogic_ShouldReturnRecipesWithAllIngredients()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients.GetRecipeByIngredientsHandler(DbContext);
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
             var request = new GetRecipeByIngredientsRequest
             {
                 Include = new List<Guid> { FlourIngredientId, EggsIngredientId, MilkIngredientId },
@@ -161,7 +161,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenNoFilters_ShouldReturnAllRecipes()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients.GetRecipeByIngredientsHandler(DbContext);
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
             var request = new GetRecipeByIngredientsRequest
             {
                 Include = null,
@@ -186,7 +186,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenIncludeNonExistentIngredient_ShouldReturnEmptyList()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients.GetRecipeByIngredientsHandler(DbContext);
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
             var nonExistentIngredientId = Guid.NewGuid();
             var request = new GetRecipeByIngredientsRequest
             {
@@ -210,7 +210,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_ShouldReturnRecipesWithAllRelatedData()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients.GetRecipeByIngredientsHandler(DbContext);
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
             var request = new GetRecipeByIngredientsRequest
             {
                 Include = new List<Guid> { CottageCheeseIngredientId },
@@ -242,7 +242,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenIncludeDuplicateIngredientIds_ShouldHandleCorrectly()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients.GetRecipeByIngredientsHandler(DbContext);
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
             var request = new GetRecipeByIngredientsRequest
             {
                 Include = new List<Guid> { FlourIngredientId, FlourIngredientId, FlourIngredientId },

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
-using Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory;
-using Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients;
+using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByCategory;
+using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByIngredients;
 
 namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
 {
@@ -48,7 +48,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenIncludeMultipleCategoriesWithOrLogic_ShouldReturnRecipesWithAnyCategory()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory.GetRecipeByCategoryHandler(DbContext);
+            var handler = new GetRecipeByCategoryHandler(DbContext);
             var request = new GetRecipeByCategoryRequest
             {
                 Include = new List<Guid> { DessertsCategoryId, BreakfastsCategoryId },
@@ -76,7 +76,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenIncludeMultipleCategoriesWithAndLogic_ShouldReturnRecipesWithAllCategories()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory.GetRecipeByCategoryHandler(DbContext);
+            var handler = new GetRecipeByCategoryHandler(DbContext);
             var request = new GetRecipeByCategoryRequest
             {
                 Include = new List<Guid> { DessertsCategoryId, BreakfastsCategoryId },
@@ -104,7 +104,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenExcludeCategory_ShouldNotReturnRecipesWithThatCategory()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory.GetRecipeByCategoryHandler(DbContext);
+            var handler = new GetRecipeByCategoryHandler(DbContext);
             var request = new GetRecipeByCategoryRequest
             {
                 Include = null,
@@ -131,7 +131,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenIncludeAndExclude_ShouldReturnRecipesMatchingBothConditions()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory.GetRecipeByCategoryHandler(DbContext);
+            var handler = new GetRecipeByCategoryHandler(DbContext);
             var request = new GetRecipeByCategoryRequest
             {
                 Include = new List<Guid> { BreakfastsCategoryId },
@@ -159,7 +159,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenNoFilters_ShouldReturnAllRecipes()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory.GetRecipeByCategoryHandler(DbContext);
+            var handler = new GetRecipeByCategoryHandler(DbContext);
             var request = new GetRecipeByCategoryRequest
             {
                 Include = null,
@@ -184,7 +184,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_WhenIncludeNonExistentCategory_ShouldReturnEmptyList()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory.GetRecipeByCategoryHandler(DbContext);
+            var handler = new GetRecipeByCategoryHandler(DbContext);
             var nonExistentCategoryId = Guid.NewGuid();
             var request = new GetRecipeByCategoryRequest
             {
@@ -208,7 +208,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
         public async Task Handle_ShouldReturnRecipesWithAllRelatedData()
         {
             // Arrange
-            var handler = new Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory.GetRecipeByCategoryHandler(DbContext);
+            var handler = new GetRecipeByCategoryHandler(DbContext);
             var request = new GetRecipeByCategoryRequest
             {
                 Include = new List<Guid> { DessertsCategoryId },

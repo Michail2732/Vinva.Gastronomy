@@ -10,7 +10,7 @@ using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Recipes.Application.Common.Map;
 using Vinva.Gastronomy.Recipes.Persistence;
 
-namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByCategory
+namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByCategory
 {
     public class GetRecipeByCategoryHandler : IRequestHandler<GetRecipeByCategoryRequest, Result<GetRecipeByCategoryResponce>>
     {

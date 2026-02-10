@@ -18,7 +18,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
             base.Configure(builder);
             builder.ToTable("Recipes");
 
-            builder.HasKey(x => x.Id);
+            builder.HasKey(x => x.Id);            
 
             builder.Property(a => a.CookingComment)
                    .HasMaxLength(CommonConstants.MaxLengthComment);

@@ -7,34 +7,34 @@ using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 
-namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients
+namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByCategory
 {
-    internal sealed class IngredientsFilterExpressionBuilder
+    internal sealed class CategoryFilterExpressionBuilder
     {
         private readonly MethodInfo _anyMethod;
         private readonly MethodInfo _whereMethod;
         private readonly MethodInfo _countMethod;
         private readonly MethodInfo _containsMethod;
 
-        public IngredientsFilterExpressionBuilder()
+        public CategoryFilterExpressionBuilder()
         {            
             _anyMethod = typeof(Enumerable).GetMethods()
                 .First(a => a.Name == "Any" && a.GetParameters().Length == 2)
-                .MakeGenericMethod(typeof(RecipeIngredient));
+                .MakeGenericMethod(typeof(Category));
 
             _containsMethod = typeof(List<Guid>).GetMethod("Contains", new[] { typeof(Guid) })
                 ?? throw new Exception("Not found Contains method info in List<Guid>");
 
             _whereMethod = typeof(Enumerable).GetMethods()
                 .First(a => a.Name == "Where" && a.GetParameters().Length == 2)
-                .MakeGenericMethod(typeof(RecipeIngredient));
+                .MakeGenericMethod(typeof(Category));
 
             _countMethod = typeof(Enumerable).GetMethods()
                 .First(a => a.Name == "Count" && a.GetParameters().Length == 1)
-                .MakeGenericMethod(typeof(RecipeIngredient));
+                .MakeGenericMethod(typeof(Category));
         }
 
-        public Expression<Func<Recipe, bool>> CreateExpression(GetRecipeByIngredientsRequest request)
+        public Expression<Func<Recipe, bool>> CreateExpression(GetRecipeByCategoryRequest request)
         {
             var exprRecipeParam = Expression.Parameter(typeof(Recipe), "re");
 
@@ -42,12 +42,14 @@ namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients
 
             if (request.Include?.Any() == true)
             {
-                resultExpr = BuildCondition(exprRecipeParam, request.Include.Distinct().ToList(), false, request.IncludeLogicAnd);
+                var listOfUniqueIncludeIds = request.Include.Distinct().ToList();
+                resultExpr = BuildCondition(exprRecipeParam, listOfUniqueIncludeIds, false, request.IncludeLogicAnd);
             }       
             
             if (request.Exclude?.Any() == true)
             {
-                var excludeExpr = BuildCondition(exprRecipeParam, request.Exclude.Distinct().ToList(), true, false);
+                var listOfUniqueExcludeIds = request.Exclude.Distinct().ToList();
+                var excludeExpr = BuildCondition(exprRecipeParam, listOfUniqueExcludeIds, true, false);
                 resultExpr = resultExpr switch
                 {                    
                     not null => Expression.AndAlso(resultExpr, excludeExpr),
@@ -60,33 +62,33 @@ namespace Vinva.Gastronomy.Recipes.Application.GetRecipeByIngredients
             return Expression.Lambda<Func<Recipe, bool>>(resultExpr, exprRecipeParam);
         }
 
-        private Expression BuildCondition(ParameterExpression exprRecipeParam, List<Guid> ingredientIds, bool isExclude, bool isAndLogic)
+        private Expression BuildCondition(ParameterExpression exprRecipeParam, List<Guid> categoryIds, bool isExclude, bool isAndLogic)
         {            
-            var exprIngredientsProp = Expression.Property(exprRecipeParam, nameof(Recipe.Ingredients));
+            var exprCategoryProp = Expression.Property(exprRecipeParam, nameof(Recipe.Categories));
 
-            var exprRecipeIngredientParam = Expression.Parameter(typeof(RecipeIngredient), "b");
+            var exprCategoryParam = Expression.Parameter(typeof(Category), "b");
 
-            var exprIngredientIdProp = Expression.Property(exprRecipeIngredientParam, nameof(RecipeIngredient.IngredientId));
+            var exprCategoryIdProp = Expression.Property(exprCategoryParam, nameof(Category.Id));
 
             var exprContainsCall = Expression.Call(
-                            Expression.Constant(ingredientIds),
+                            Expression.Constant(categoryIds),
                             _containsMethod,
-                            exprIngredientIdProp);
+                            exprCategoryIdProp);
 
-            var exprInnerLambda = Expression.Lambda(exprContainsCall, exprRecipeIngredientParam);
+            var exprInnerLambda = Expression.Lambda(exprContainsCall, exprCategoryParam);
             if (isExclude)
             {
-                return Expression.Not(Expression.Call(null, _anyMethod, exprIngredientsProp, exprInnerLambda));
+                return Expression.Not(Expression.Call(null, _anyMethod, exprCategoryProp, exprInnerLambda));
             }
             else if (isAndLogic)
             {
-                var exprWhereCall = Expression.Call(null, _whereMethod, exprIngredientsProp, exprInnerLambda);
+                var exprWhereCall = Expression.Call(null, _whereMethod, exprCategoryProp, exprInnerLambda);
                 var exprCountCall = Expression.Call(null, _countMethod, exprWhereCall);
-                return Expression.Equal(exprCountCall, Expression.Constant(ingredientIds.Count));
+                return Expression.Equal(exprCountCall, Expression.Constant(categoryIds.Count));
             }
             else
             {                                
-                return Expression.Call(null, _anyMethod, exprIngredientsProp, exprInnerLambda);
+                return Expression.Call(null, _anyMethod, exprCategoryProp, exprInnerLambda);
             }                
         }        
 
