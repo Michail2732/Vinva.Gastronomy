@@ -1,4 +1,4 @@
-﻿namespace Vinva.Gastronomy.Recipes.Application.CreateIngredient
+﻿namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.CreateIngredient
 {
     public readonly record struct CreateIngredientResponse 
     {

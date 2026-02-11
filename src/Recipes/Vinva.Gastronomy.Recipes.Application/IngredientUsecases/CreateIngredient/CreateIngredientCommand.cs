@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
 
-namespace Vinva.Gastronomy.Recipes.Application.CreateIngredient
+namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.CreateIngredient
 {    
     public readonly record struct CreateIngredientCommand : IRequest<Result<CreateIngredientResponse>>
     {

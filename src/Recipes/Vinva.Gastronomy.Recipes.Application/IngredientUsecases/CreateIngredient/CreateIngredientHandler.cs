@@ -5,7 +5,7 @@ using Vinva.Gastronomy.Recipes.Application.Common.Map;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 using Vinva.Gastronomy.Recipes.Persistence;
 
-namespace Vinva.Gastronomy.Recipes.Application.CreateIngredient
+namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.CreateIngredient
 {
     public sealed class CreateIngredientHandler : IRequestHandler<CreateIngredientCommand, Result<CreateIngredientResponse>>
     {        

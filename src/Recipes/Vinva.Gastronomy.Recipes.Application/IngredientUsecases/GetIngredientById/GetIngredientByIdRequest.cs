@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
 
-namespace Vinva.Gastronomy.Recipes.Application.GetIngredientById
+namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.GetIngredientById
 {
     public readonly record struct GetIngredientByIdRequest : IRequest<Result<GetIngredientByIdResponce>>
     {

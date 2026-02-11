@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 
-namespace Vinva.Gastronomy.Recipes.Application.CreateIngredient
+namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.CreateIngredient
 {
     public class CreateIngredientCommandValidator : AbstractValidator<CreateIngredientCommand>
     {

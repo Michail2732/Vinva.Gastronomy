@@ -85,18 +85,28 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
             return this; 
         }       
 
-        public Category AddCategory(string name, string description, string? comment = null)
+        public void AddCategory(Category category)
         {                        
-            var newCategory = new Category(Id, name, description, CategoryType.Recipe)
-            {
-                Comment = comment
-            };
+            if (category.Type != CategoryType.Recipe)
+                throw new RecipeDomainException(GetType(), RecipeErrorMessages.IncorrectTypeOfRecipeCategory(Id, category.Id));
 
-            if (_recipeCategories.Contains(newCategory))
-                throw new RecipeDomainException(GetType(), RecipeErrorMessages.RecipeCategoryAlreadyExists(Id, name));
+            if (_recipeCategories.Contains(category))
+                throw new RecipeDomainException(GetType(), RecipeErrorMessages.RecipeCategoryAlreadyExists(Id, category.Name));
 
-            _recipeCategories.Add(newCategory);
-            return newCategory;
+            _recipeCategories.Add(category);            
+        }
+
+        public void RemoveCategory(Guid categoryId)
+        {
+            var category = _recipeCategories.Find(a => a.Id == categoryId)
+                ?? throw new RecipeDomainException(GetType(), RecipeErrorMessages.RecipeDoesNotContainsCategory(Id, categoryId));
+            RemoveCategory(category);
+        }
+
+        public void RemoveCategory(Category category)
+        {            
+            if (!_recipeCategories.Remove(category))
+                throw new RecipeDomainException(GetType(), RecipeErrorMessages.FailedRemoveCategoryFromRecipe(Id, category.Id));
         }
 
         public RecipeIngredient AddRequiredIngredient(Guid ingredientId, string ingredientName, string description, string measure, string? comment = null)

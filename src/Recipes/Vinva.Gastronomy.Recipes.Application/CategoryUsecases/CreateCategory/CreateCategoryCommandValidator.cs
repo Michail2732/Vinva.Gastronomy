@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 
-namespace Vinva.Gastronomy.Recipes.Application.CreateCategory
+namespace Vinva.Gastronomy.Recipes.Application.CategoryUsecases.CreateCategory
 {
     public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
     {

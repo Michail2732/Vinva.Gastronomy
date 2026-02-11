@@ -5,7 +5,7 @@ using Vinva.Gastronomy.Recipes.Application.Common.Map;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 using Vinva.Gastronomy.Recipes.Persistence;
 
-namespace Vinva.Gastronomy.Recipes.Application.CreateCategory
+namespace Vinva.Gastronomy.Recipes.Application.CategoryUsecases.CreateCategory
 {
     public sealed class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<CreateCategoryResponse>>
     {

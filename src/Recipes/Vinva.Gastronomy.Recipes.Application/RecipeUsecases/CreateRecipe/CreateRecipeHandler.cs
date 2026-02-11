@@ -30,8 +30,15 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.CreateRecipe
                 StorageComment = request.StorageComment
             };
 
-            var recipeWithSameName = _dbContext.Recipes.FirstOrDefault(a => a.Name == request.Name);
-            throw new Exception();
+
+            var result = await _dbContext.Recipes.AddAsync(newRecipe, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return Result.Success(new CreateRecipeResponce
+            {
+                RecipeId = result.Entity.Id,
+                Name = result.Entity.Name
+            });
         }
     }
 }

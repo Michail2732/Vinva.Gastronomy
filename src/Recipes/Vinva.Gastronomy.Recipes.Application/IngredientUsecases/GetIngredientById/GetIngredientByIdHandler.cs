@@ -5,7 +5,7 @@ using Vinva.Gastronomy.Recipes.Application.Common.Map;
 using Vinva.Gastronomy.Recipes.Application.Constants;
 using Vinva.Gastronomy.Recipes.Persistence;
 
-namespace Vinva.Gastronomy.Recipes.Application.GetIngredientById
+namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.GetIngredientById
 {
     public class GetIngredientByIdHandler : IRequestHandler<GetIngredientByIdRequest, Result<GetIngredientByIdResponce>>
     {

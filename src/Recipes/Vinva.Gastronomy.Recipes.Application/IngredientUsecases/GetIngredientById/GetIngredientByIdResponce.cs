@@ -1,6 +1,6 @@
 ﻿using Vinva.Gastronomy.Recipes.Application.Common;
 
-namespace Vinva.Gastronomy.Recipes.Application.GetIngredientById
+namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.GetIngredientById
 {
     public readonly record struct GetIngredientByIdResponce
     {
