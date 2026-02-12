@@ -11,7 +11,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence
 {    
     public class RecipeDbContextFactory : IDesignTimeDbContextFactory<RecipeDbContext>
     {
-        private const string _debugConnectionString = "Host=localhost;Port=5432;Username=postgres;Password=postgres;Include Error Detail=true";
+        private const string _debugConnectionString = "Host=localhost;Database=Gastronomy;Port=5432;Username=postgres;Password=postgres;Include Error Detail=true";
 
         public RecipeDbContext CreateDbContext(string[] args)
         {

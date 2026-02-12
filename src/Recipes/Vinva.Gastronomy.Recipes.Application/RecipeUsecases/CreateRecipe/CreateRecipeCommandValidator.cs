@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Vinva.Gastronomy.Recipes.Domain.Validations;
 
 namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.CreateRecipe
 {
@@ -8,19 +9,18 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.CreateRecipe
         {
             RuleFor(a => a.Name)
                 .NotEmpty()
-                .WithMessage("Название рецепта не заполнено");
+                .Must(RecipeDomainValidator.ValidateName)
+                .WithMessage(RecipeDomainErrors.IncorrectName);
 
             RuleFor(a => a.Description)
-                .NotEmpty()
-                .WithMessage("Описание рецепта не заполнено");
+                .NotEmpty()                                
+                .Must(RecipeDomainValidator.ValidateDescription)
+                .WithMessage(RecipeDomainErrors.IncorrectDescription);
 
             RuleFor(a => a.CookingTime)
                 .NotEmpty()
-                .Must(a =>
-                {
-                    return a.TotalSeconds > TimeSpan.FromSeconds(60).TotalSeconds;
-                })
-                .WithMessage("Время приготовления рецепта должно быть больше 60 секунд");
+                .Must(RecipeDomainValidator.ValidateCookingTime)
+                .WithMessage(RecipeDomainErrors.IncorrectCookingTime);
         }
     }
 }

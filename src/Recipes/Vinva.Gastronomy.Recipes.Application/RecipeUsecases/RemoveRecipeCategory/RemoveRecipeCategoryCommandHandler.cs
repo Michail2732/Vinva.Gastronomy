@@ -20,6 +20,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveRecipeCatego
 
         public async Task<Result> Handle(RemoveRecipeCategoryCommand request, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var validator = new RemoveRecipeCategoryCommandValidator();
             var validationResult = validator.Validate(request);
 

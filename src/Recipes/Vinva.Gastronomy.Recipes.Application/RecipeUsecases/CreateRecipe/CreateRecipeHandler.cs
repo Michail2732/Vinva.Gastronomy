@@ -17,6 +17,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.CreateRecipe
 
         public async Task<Result<CreateRecipeResponce>> Handle(CreateRecipeCommand request, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var validator = new CreateRecipeCommandValidator();
             var validationResult = validator.Validate(request);
             if (!validationResult.IsValid)

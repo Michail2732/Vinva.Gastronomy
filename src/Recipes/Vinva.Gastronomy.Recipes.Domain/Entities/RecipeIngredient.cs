@@ -1,5 +1,6 @@
 ﻿using System;
 using Vinva.Gastronomy.Common.Entities;
+using Vinva.Gastronomy.Recipes.Domain.Models;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
@@ -7,7 +8,7 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
     {
         public Guid RecipeId { get; private set; }
         public Guid IngredientId { get; private set; }
-        public string Measure { get; private set; }
+        public IngredientQuantities Quantities { get; private set; }
         public bool IsRequired { get; private set; }
 
 
@@ -15,12 +16,12 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         private RecipeIngredient() { }
 #pragma warning restore CS8618 
 
-        public RecipeIngredient(Guid recipeId, Guid ingredientId, string ingredientName, string description, string measure, bool isRequired) 
+        public RecipeIngredient(Guid recipeId, Guid ingredientId, string ingredientName, string description, string quantities, bool isRequired) 
             : base(ingredientName, description)
         {
             RecipeId = recipeId;
             IngredientId = ingredientId;
-            Measure = measure ?? throw new ArgumentNullException(nameof(measure));
+            Quantities = quantities ?? throw new ArgumentNullException(nameof(quantities));
             IsRequired = isRequired;
         }
 

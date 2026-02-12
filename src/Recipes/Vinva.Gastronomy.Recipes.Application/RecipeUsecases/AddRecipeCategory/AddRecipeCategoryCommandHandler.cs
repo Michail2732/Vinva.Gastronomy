@@ -20,6 +20,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddRecipeCategory
 
         public async Task<Result> Handle(AddRecipeCategoryCommand request, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var validator = new AddRecipeCategoryCommandValidator();
             var validationResult = validator.Validate(request);
 

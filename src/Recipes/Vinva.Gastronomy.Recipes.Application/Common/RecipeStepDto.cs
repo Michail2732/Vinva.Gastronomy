@@ -9,8 +9,8 @@ namespace Vinva.Gastronomy.Recipes.Application.Common
     public readonly record struct RecipeStepDto
     {
         public string Name { get; init; }
-        public string Description { get; init; }
-        public int SeqNumber { get; init; }
+        public required string Description { get; init; }
+        public required int SeqNumber { get; init; }
         public Guid? PhotoId { get; init; }
     }
 }

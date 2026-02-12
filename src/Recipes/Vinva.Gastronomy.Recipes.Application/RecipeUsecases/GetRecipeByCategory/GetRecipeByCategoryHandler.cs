@@ -27,6 +27,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByCategor
 
         public async Task<Result<GetRecipeByCategoryResponce>> Handle(GetRecipeByCategoryRequest request, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var exprFilter = _filterBuilder.CreateExpression(request);
 
             var recipes = await _dbContext.Recipes.Include(a => a.Ingredients)

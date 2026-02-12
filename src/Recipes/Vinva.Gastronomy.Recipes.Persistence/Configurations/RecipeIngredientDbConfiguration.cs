@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
+using Vinva.Gastronomy.Recipes.Persistence.Converters;
 
 namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 {
@@ -22,6 +23,12 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .WithMany()
                    .HasForeignKey(a => a.IngredientId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(a => a.Quantities)
+                   .HasConversion<IngredientQuantitiesConverter>()
+                   .HasMaxLength(128)
+                   .IsRequired(true)
+                   .HasComment("Format: quantity1:unit1;quantity2:unit2;...");
 
             builder.Property(a => a.IsRequired).IsRequired();
         }

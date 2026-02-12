@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Vinva.Gastronomy.Common.Entities;
-using Vinva.Gastronomy.Recipes.Domain.Constants;
 using Vinva.Gastronomy.Recipes.Domain.Exceptions;
+using Vinva.Gastronomy.Recipes.Domain.Validations;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
@@ -35,7 +35,7 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
             };
 
             if (_categories.Contains(newCategory))
-                throw new RecipeDomainException(GetType(), RecipeErrorMessages.IngredientCategoryAlreadyExists(Id, category));
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.IngredientCategoryAlreadyExists(Id, category));
 
             _categories.Add(newCategory);
             return newCategory;

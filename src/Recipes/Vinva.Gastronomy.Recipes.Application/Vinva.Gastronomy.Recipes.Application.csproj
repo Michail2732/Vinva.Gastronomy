@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="RecipeUsecases\AddStep\" />
+    <Folder Include="RecipeUsecases\RemoveStep\" />
+    <Folder Include="RecipeUsecases\RemoveIngredient\" />
     <Folder Include="RemoveCategory\" />
     <Folder Include="UpdateIngredient\" />
     <Folder Include="UpdateRecipe\" />

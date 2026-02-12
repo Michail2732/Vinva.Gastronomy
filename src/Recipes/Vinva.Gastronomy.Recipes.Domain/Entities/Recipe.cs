@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Vinva.Gastronomy.Common.Entities;
-using Vinva.Gastronomy.Recipes.Domain.Constants;
 using Vinva.Gastronomy.Recipes.Domain.Exceptions;
+using Vinva.Gastronomy.Recipes.Domain.Validations;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
@@ -88,10 +88,10 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         public void AddCategory(Category category)
         {                        
             if (category.Type != CategoryType.Recipe)
-                throw new RecipeDomainException(GetType(), RecipeErrorMessages.IncorrectTypeOfRecipeCategory(Id, category.Id));
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.IncorrectTypeOfRecipeCategory(Id, category.Id));
 
             if (_recipeCategories.Contains(category))
-                throw new RecipeDomainException(GetType(), RecipeErrorMessages.RecipeCategoryAlreadyExists(Id, category.Name));
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeCategoryAlreadyExists(Id, category.Name));
 
             _recipeCategories.Add(category);            
         }
@@ -99,39 +99,22 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         public void RemoveCategory(Guid categoryId)
         {
             var category = _recipeCategories.Find(a => a.Id == categoryId)
-                ?? throw new RecipeDomainException(GetType(), RecipeErrorMessages.RecipeDoesNotContainsCategory(Id, categoryId));
+                ?? throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeDoesNotContainsCategory(Id, categoryId));
             RemoveCategory(category);
         }
 
         public void RemoveCategory(Category category)
         {            
             if (!_recipeCategories.Remove(category))
-                throw new RecipeDomainException(GetType(), RecipeErrorMessages.FailedRemoveCategoryFromRecipe(Id, category.Id));
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.FailedRemoveCategoryFromRecipe(Id, category.Id));
         }
 
-        public RecipeIngredient AddRequiredIngredient(Guid ingredientId, string ingredientName, string description, string measure, string? comment = null)
-        {         
-            return AddIngredientPrivate(ingredientId, ingredientName, description, measure, true, comment);
-        }
-
-        public RecipeIngredient AddIngredient(Guid ingredientId, string ingredientName, string description, string measure, string? comment = null)
+        public void AddIngredient(RecipeIngredient ingredient)
         {
-            return AddIngredientPrivate(ingredientId, ingredientName, description, measure, false, comment);
-        }
+            if (_recipeIngredients.Contains(ingredient))
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeIngredientAlreadyExists(Id, ingredient.IngredientId));
 
-
-        private RecipeIngredient AddIngredientPrivate(Guid ingredientId, string ingredientName, string description, string measure, bool isRequired, string? comment = null)
-        {                        
-            var newIngredient = new RecipeIngredient(Id, ingredientId, ingredientName, description, measure, isRequired) 
-            {
-                Comment = comment 
-            };
-
-            if (_recipeIngredients.Contains(newIngredient))
-                throw new RecipeDomainException(GetType(), RecipeErrorMessages.RecipeIngredientAlreadyExists(Id, ingredientId));
-
-            _recipeIngredients.Add(newIngredient);
-            return newIngredient;
-        }        
+            _recipeIngredients.Add(ingredient);
+        }                
     }
 }

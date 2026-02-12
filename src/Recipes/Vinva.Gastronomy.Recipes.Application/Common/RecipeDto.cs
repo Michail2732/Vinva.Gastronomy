@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Vinva.Gastronomy.Recipes.Application.Common
 {
-    public readonly record struct RecipeDto
+    public record RecipeDto
     {
-        public Guid Id { get; init; }
+        public required Guid Id { get; init; }
 
-        public string Name { get; init; }        
+        public required string Name { get; init; }        
 
         public string? Description { get; init; }
         
@@ -30,10 +30,10 @@ namespace Vinva.Gastronomy.Recipes.Application.Common
 
         public string? UsageComment { get; init; }
 
-        public RecipeIngredientDto[] Ingredients { get; init; }
+        public RecipeIngredientDto[] Ingredients { get; init; } = [];
 
-        public RecipeCategoryDto[] Categories { get; init; }
+        public RecipeCategoryDto[] Categories { get; init; } = [];
 
-        public RecipeStepDto[] Steps { get; init; }
+        public RecipeStepDto[] Steps { get; init; } = [];
     }
 }

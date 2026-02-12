@@ -60,7 +60,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                     IngredientId = a.IngredientId,
                     IngredientName = a.Name,
                     IsRequired = a.IsRequired,
-                    Measure = a.Measure
+                    Quantities = a.Quantities
                 }).ToArray(),
                 Steps = recipe.Steps.Select(a => new RecipeStepDto
                 {
