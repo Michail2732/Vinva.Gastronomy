@@ -5,6 +5,18 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="RemoveCategory\**" />
+    <Compile Remove="UpdateIngredient\**" />
+    <Compile Remove="UpdateRecipe\**" />
+    <EmbeddedResource Remove="RemoveCategory\**" />
+    <EmbeddedResource Remove="UpdateIngredient\**" />
+    <EmbeddedResource Remove="UpdateRecipe\**" />
+    <None Remove="RemoveCategory\**" />
+    <None Remove="UpdateIngredient\**" />
+    <None Remove="UpdateRecipe\**" />
+  </ItemGroup>
   
 
 	<ItemGroup>
@@ -15,15 +27,6 @@
     <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Domain\Vinva.Gastronomy.Recipes.Domain.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Persistence\Vinva.Gastronomy.Recipes.Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="RecipeUsecases\AddStep\" />
-    <Folder Include="RecipeUsecases\RemoveStep\" />
-    <Folder Include="RecipeUsecases\RemoveIngredient\" />
-    <Folder Include="RemoveCategory\" />
-    <Folder Include="UpdateIngredient\" />
-    <Folder Include="UpdateRecipe\" />
   </ItemGroup>
 
 </Project>

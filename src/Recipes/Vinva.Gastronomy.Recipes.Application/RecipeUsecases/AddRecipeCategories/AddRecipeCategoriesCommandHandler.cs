@@ -7,21 +7,21 @@ using Vinva.Gastronomy.Recipes.Application.Constants;
 using Vinva.Gastronomy.Recipes.Domain.Exceptions;
 using Vinva.Gastronomy.Recipes.Persistence;
 
-namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddRecipeCategory
+namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddRecipeCategories
 {
-    public sealed class AddRecipeCategoryCommandHandler : IRequestHandler<AddRecipeCategoryCommand, Result>
+    public sealed class AddRecipeCategoriesCommandHandler : IRequestHandler<AddRecipeCategoriesCommand, Result>
     {
         private readonly RecipeDbContext _dbContext;
 
-        public AddRecipeCategoryCommandHandler(RecipeDbContext dbContext)
+        public AddRecipeCategoriesCommandHandler(RecipeDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<Result> Handle(AddRecipeCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(AddRecipeCategoriesCommand request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var validator = new AddRecipeCategoryCommandValidator();
+            var validator = new AddRecipeCategoriesCommandValidator();
             var validationResult = validator.Validate(request);
 
             if (!validationResult.IsValid)

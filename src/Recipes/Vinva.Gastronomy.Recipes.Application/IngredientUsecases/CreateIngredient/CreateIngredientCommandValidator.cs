@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
+using Vinva.Gastronomy.Recipes.Domain.Validations;
 
 namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.CreateIngredient
 {
@@ -9,11 +10,17 @@ namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.CreateIngredie
         {
             RuleFor(a => a.Name)
                 .NotEmpty()
-                .WithMessage("Название ингредиенты не заполнено");
+                .Must(RecipeDomainValidator.ValidateName)
+                .WithMessage(RecipeDomainErrors.IncorrectName);
 
             RuleFor(a => a.Description)
                 .NotEmpty()
-                .WithMessage("Описание ингредиенты не заполнено");            
+                .Must(RecipeDomainValidator.ValidateDescription)
+                .WithMessage(RecipeDomainErrors.IncorrectDescription);            
+
+            RuleFor(a => a.UsageComment)
+                .Must(a => a == null || RecipeDomainValidator.ValidateComment(a))
+                .WithMessage(RecipeDomainErrors.IncorrectComment);
         }
     }
 }

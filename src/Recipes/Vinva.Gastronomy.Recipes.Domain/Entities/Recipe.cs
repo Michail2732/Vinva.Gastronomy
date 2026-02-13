@@ -74,16 +74,25 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         }                
         
         
-        public Recipe AddStep(string name, string description, string comment, Guid? photoId = null)
+        public Recipe AddStep(string? name, string description, string? comment, Guid? photoId = null)
         {
             var lastStep = _recipeSteps.LastOrDefault();
             int newSeqNumber = lastStep == null ? 1 : (lastStep.SeqNumber + 1);
-            _recipeSteps.Add(new RecipeStep(Id, newSeqNumber, name, description, photoId)
+            _recipeSteps.Add(new RecipeStep(Id, newSeqNumber, name ?? string.Empty, description, photoId)
             {
                 Comment = comment,
             });
             return this; 
         }       
+
+        public void RemoveStep(int seqNumber)
+        {
+            var step = _recipeSteps.FirstOrDefault(a => a.SeqNumber == seqNumber);
+            if (step == null)
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeStepNotExists(Id, seqNumber));
+            if (!_recipeSteps.Remove(step))
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.FailedRemoveStep(Id, seqNumber));
+        }
 
         public void AddCategory(Category category)
         {                        
@@ -115,6 +124,15 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
                 throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeIngredientAlreadyExists(Id, ingredient.IngredientId));
 
             _recipeIngredients.Add(ingredient);
-        }                
+        }
+
+        public void RemoveIngredient(Guid  ingredientId)
+        {
+            var recipeIngredient = Ingredients.FirstOrDefault(a => a.IngredientId == ingredientId);
+            if (recipeIngredient == null)
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeIngredientNotExists(Id, ingredientId));
+            if (!_recipeIngredients.Remove(recipeIngredient))
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.FailedRemoveIngredient(Id, ingredientId));
+        }
     }
 }

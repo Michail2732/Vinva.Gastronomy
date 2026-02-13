@@ -7,40 +7,36 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddIngredients
     public class AddIngredientCommandValidator : AbstractValidator<AddIngredientCommand>
     {
         public AddIngredientCommandValidator()
-        {
+        {            
             RuleFor(a => a.RecipeId)
                 .NotEmpty();
 
             RuleFor(a => a.Ingredients)
                 .NotEmpty();
+
+            RuleForEach(a => a.Ingredients)
+                .ChildRules(a =>
+                {
+                    a.RuleFor(b => b.IngredientId)
+                       .NotEmpty();
+
+                    a.RuleFor(b => b.Quantities)
+                        .NotEmpty();
+
+                    a.RuleForEach(b => b.Quantities)
+                        .ChildRules(b =>
+                        {
+                            b.RuleFor(c => c.Measure)
+                                .NotEmpty()
+                                .Must(RecipeDomainValidator.ValidateIngredientMeasure)
+                                .WithMessage(RecipeDomainErrors.IncorrectIngredientMeasure);
+
+                            b.RuleFor(c => c.Quantity)
+                                .NotEmpty()
+                                .Must(RecipeDomainValidator.ValidateIngredientQuantity)
+                                .WithMessage(RecipeDomainErrors.IncorrectIngredientQuantity);
+                        });
+                });                            
         }
-    }
-
-    public class AddIngredientIngredientValidator : AbstractValidator<RecipeIngredientDto>
-    {
-        public AddIngredientIngredientValidator()
-        {
-            RuleFor(a => a.IngredientId)
-                .NotEmpty();
-
-            RuleFor(a => a.Quantities)
-                .NotEmpty();
-        }
-    }
-
-    public class AddIngredientQuantiryValidator : AbstractValidator<IngredientQuantityDto>
-    {
-        public AddIngredientQuantiryValidator()
-        {
-            RuleFor(a => a.Measure)
-                .NotEmpty()
-                .Must(RecipeDomainValidator.ValidateIngredientMeasure)
-                .WithMessage(RecipeDomainErrors.IncorrectIngredientMeasure);
-
-            RuleFor(a => a.Quantity)
-                .NotEmpty()
-                .Must(RecipeDomainValidator.ValidateIngredientQuantity)
-                .WithMessage(RecipeDomainErrors.IncorrectIngredientQuantity);
-        }
-    }
+    }    
 }

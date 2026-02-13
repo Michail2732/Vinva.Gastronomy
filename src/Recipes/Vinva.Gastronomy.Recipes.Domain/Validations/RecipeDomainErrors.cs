@@ -12,10 +12,14 @@ namespace Vinva.Gastronomy.Recipes.Domain.Validations
         public static string IngredientQuantitiesHasDuplicate(string ingredientQuantities) => $"Количество ингредиентов содержит дублирующиеся единицы измерения ингредиента: '{ingredientQuantities}'";
         public static string FailedParseIngredientQuantity(string str) => $"Не удалось преобразовать строку '{str}' в '{typeof(IngredientQuantity)}'";
         public static string FailedRemoveCategoryFromRecipe(Guid recipeId, Guid categoryId) => $"Не удалось удалить категорию '{categoryId}' из рецепта '{recipeId}'";
+        public static string FailedRemoveIngredient(Guid recipeId, Guid ingredientId) => $"Не удалось удалить ингредиент '{ingredientId}' из рецепта '{recipeId}'";
+        public static string FailedRemoveStep(Guid recipeId, int seqNumber) => $"Не удалось удалить шаг '{seqNumber}' из рецепта '{recipeId}'";
         public static string RecipeDoesNotContainsCategory(Guid recipeId, Guid categoryId) => $"Рецепт '{recipeId}' не содержит категорию '{categoryId}'";
         public static string IncorrectTypeOfRecipeCategory(Guid recipeId, Guid categoryId) => $"Некорректный тип категории '{categoryId}' для рецепта '{recipeId}'";
         public static string RecipeCategoryAlreadyExists(Guid recipeId, string name) => $"Рецепт '{recipeId}' уже содержит категорию '{name}'";
+        public static string RecipeStepNotExists(Guid recipeId, int seqNumber) => $"Рецепт '{recipeId}' не содержит шага №'{seqNumber}'";
         public static string RecipeIngredientAlreadyExists(Guid recipeId, Guid ingredientId) => $"Рецепт '{recipeId}' уже содержит ингредиент '{ingredientId}'";
+        public static string RecipeIngredientNotExists(Guid recipeId, Guid ingredientId) => $"Рецепт '{recipeId}' не содержит ингредиент '{ingredientId}'";        
         public static string IngredientCategoryAlreadyExists(Guid ingredientId, string name) => $"Ингредиент '{ingredientId}' уже содержит категорию '{name}'";
         public static string NotPossibleInheritNotBaseRecipe(Guid recipeId) => $"Невозможно сделать вариацию рецепта '{recipeId}' так как он не является базовым";
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using Vinva.Gastronomy.Recipes.Domain.Validations;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Models
 {
-    public readonly record struct IngredientQuantities
+    public readonly record struct IngredientQuantities: IEnumerable<IngredientQuantity>
     {
         private readonly IngredientQuantity[] _rawData;        
 
@@ -18,6 +19,8 @@ namespace Vinva.Gastronomy.Recipes.Domain.Models
             if (_rawData.Length > _rawData.DistinctBy(a=> a.Measure).Count())
                 throw new RecipeDomainException(typeof(IngredientQuantities), RecipeDomainErrors.IngredientQuantitiesHasDuplicate(ToString()));
         }
+
+        public bool IsEmpty => _rawData.Length == 0;
 
         public static IngredientQuantities Parse(string str)
         {
@@ -48,6 +51,13 @@ namespace Vinva.Gastronomy.Recipes.Domain.Models
                 sb.Append(item.ToString()+';');
             }
             return sb.ToString();
+        }
+
+        public IEnumerator<IngredientQuantity> GetEnumerator() => _rawData.AsEnumerable().GetEnumerator();        
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 

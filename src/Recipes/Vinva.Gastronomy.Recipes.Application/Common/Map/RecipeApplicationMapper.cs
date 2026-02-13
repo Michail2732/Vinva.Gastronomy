@@ -20,7 +20,12 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                 RecipeId = ingredient.RecipeId,
                 UsageComment = ingredient.UsageComment,
                 Categories = ingredient.Categories?.Select(a =>
-                    new IngredientCategoryDto(a.Id, a.Name, a.Description)).ToArray()
+                    new IngredientCategoryDto
+                    {
+                        Id = a.Id,
+                        Name = a.Name,
+                        Description = a.Description,
+                    }).ToArray()
                     ?? Array.Empty<IngredientCategoryDto>()
             };
         }
@@ -60,12 +65,17 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                     IngredientId = a.IngredientId,
                     IngredientName = a.Name,
                     IsRequired = a.IsRequired,
-                    Quantities = a.Quantities
+                    Quantities = a.Quantities.Select(a => new IngredientQuantityDto
+                    {
+                        Measure = a.Measure,
+                        Quantity = a.Quantity
+                    }).ToArray()
                 }).ToArray(),
                 Steps = recipe.Steps.Select(a => new RecipeStepDto
                 {
                     Description = a.Description,
                     Name = a.Name,
+                    Comment = a.Comment,
                     SeqNumber = a.SeqNumber,
                     PhotoId = a.PhotoId
                 }).ToArray(),

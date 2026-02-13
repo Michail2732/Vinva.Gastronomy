@@ -16,12 +16,14 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         private RecipeIngredient() { }
 #pragma warning restore CS8618 
 
-        public RecipeIngredient(Guid recipeId, Guid ingredientId, string ingredientName, string description, string quantities, bool isRequired) 
+        public RecipeIngredient(Guid recipeId, Guid ingredientId, string ingredientName, string description, IngredientQuantities quantities, bool isRequired) 
             : base(ingredientName, description)
         {
             RecipeId = recipeId;
             IngredientId = ingredientId;
-            Quantities = quantities ?? throw new ArgumentNullException(nameof(quantities));
+            if (quantities.IsEmpty)
+                throw new ArgumentException(nameof(quantities));
+            Quantities = quantities;
             IsRequired = isRequired;
         }
 

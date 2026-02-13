@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Recipes.Domain.Exceptions;
+using Vinva.Gastronomy.Recipes.Domain.Models;
 using Vinva.Gastronomy.Recipes.Domain.Validations;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
@@ -39,6 +40,11 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
 
             _categories.Add(newCategory);
             return newCategory;
+        }
+
+        public RecipeIngredient ToRecipeIngredient(Guid recipeId, IngredientQuantities quantities, bool isRequired = false)
+        {
+            return new RecipeIngredient(recipeId, Id, Name, Description, quantities, isRequired);
         }
     }
 }

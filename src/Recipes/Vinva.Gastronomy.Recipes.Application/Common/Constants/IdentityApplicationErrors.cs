@@ -24,6 +24,6 @@ namespace Vinva.Gastronomy.Recipes.Application.Constants
         /// <summary>
         /// Не удалось найти категорию
         /// </summary>
-        public static Error CategoryNotFound(Guid id) => new("Recipes.CategoryNotFound", $"Не удалось найти категорию '{id}'");
+        public static Error CategoryNotFound(Guid id) => new("Recipes.CategoryNotFound", $"Не удалось найти категорию '{id}'");        
     }
 }

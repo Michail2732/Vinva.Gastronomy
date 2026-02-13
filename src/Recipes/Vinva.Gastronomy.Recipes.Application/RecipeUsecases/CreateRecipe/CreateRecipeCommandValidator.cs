@@ -21,6 +21,18 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.CreateRecipe
                 .NotEmpty()
                 .Must(RecipeDomainValidator.ValidateCookingTime)
                 .WithMessage(RecipeDomainErrors.IncorrectCookingTime);
+
+            RuleFor(a => a.Comment)                
+                .Must(a => a == null || RecipeDomainValidator.ValidateComment(a))
+                .WithMessage(RecipeDomainErrors.IncorrectComment);
+
+            RuleFor(a => a.StorageComment)
+                .Must(a => a == null || RecipeDomainValidator.ValidateComment(a))
+                .WithMessage(RecipeDomainErrors.IncorrectComment);
+
+            RuleFor(a => a.UsageComment)
+                .Must(a => a == null || RecipeDomainValidator.ValidateComment(a))
+                .WithMessage(RecipeDomainErrors.IncorrectComment);            
         }
     }
 }
