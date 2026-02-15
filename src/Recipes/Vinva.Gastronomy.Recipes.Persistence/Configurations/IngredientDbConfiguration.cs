@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vinva.Gastronomy.Common.Constants;
-using Vinva.Gastronomy.Recipes.Domain.Constants;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 
 namespace Vinva.Gastronomy.Recipes.Persistence.Configurations

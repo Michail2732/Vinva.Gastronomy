@@ -25,16 +25,7 @@ namespace Vinva.Gastronomy.Recipes.Domain.Models
                 Quantity = quantity,
                 Measure = splitedStr[1]
             };
-        }
-
-        public static bool ValidateMeasure(string measure, out string error)
-        {
-            error = string.Empty;
-            var result = Regex.IsMatch(measure, @"^[a-zA-Z0-9\(\)\[\]\.]+$");
-            if (!result)
-                error = RecipeDomainErrors.IncorrectName(me);
-            return result;
-        }
+        }        
     }
 
 }

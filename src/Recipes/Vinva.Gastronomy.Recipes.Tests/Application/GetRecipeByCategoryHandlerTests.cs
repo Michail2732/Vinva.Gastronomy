@@ -6,7 +6,7 @@ using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByCategory;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByIngredients;
 
-namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
+namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
     [TestFixture]
     public class GetRecipeByCategoryHandlerTests : BaseApplicationTests
@@ -234,6 +234,87 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
                 Assert.That(recipe.Categories, Is.Not.Null);
                 Assert.That(recipe.Steps, Is.Not.Null);
             }
+        }
+
+        [Test]
+        public async Task Handle_WhenIncludeSoupsCategory_ShouldReturnOnlySoupsRecipes()
+        {
+            var handler = new GetRecipeByCategoryHandler(DbContext);
+            var request = new GetRecipeByCategoryRequest
+            {
+                Include = new List<Guid> { SoupsCategoryId },
+                Exclude = null,
+                IncludeLogicAnd = false
+            };
+
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value.Recipes, Is.Not.Null);
+            Assert.That(result.Value.Recipes.Count, Is.EqualTo(1));
+            Assert.That(result.Value.Recipes[0].Categories.Any(c => c.Id == SoupsCategoryId), Is.True);
+        }
+
+        [Test]
+        public async Task Handle_WhenIncludeMainDishesCategory_ShouldReturnOnlyMainDishesRecipes()
+        {
+            var handler = new GetRecipeByCategoryHandler(DbContext);
+            var request = new GetRecipeByCategoryRequest
+            {
+                Include = new List<Guid> { MainDishesCategoryId },
+                Exclude = null,
+                IncludeLogicAnd = false
+            };
+
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value.Recipes, Is.Not.Null);
+            Assert.That(result.Value.Recipes.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public async Task Handle_WhenIncludeDuplicateCategoryIds_ShouldReturnCorrectRecipes()
+        {
+            var handler = new GetRecipeByCategoryHandler(DbContext);
+            var request = new GetRecipeByCategoryRequest
+            {
+                Include = new List<Guid> { DessertsCategoryId, DessertsCategoryId },
+                Exclude = null,
+                IncludeLogicAnd = false
+            };
+
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value.Recipes, Is.Not.Null);
+            var allHaveDesserts = result.Value.Recipes.All(r =>
+                r.Categories.Any(c => c.Id == DessertsCategoryId));
+            Assert.That(allHaveDesserts, Is.True);
+        }
+
+        [Test]
+        public async Task Handle_WhenExcludeAllCategoriesOfRecipe_ShouldNotReturnThatRecipe()
+        {
+            var handler = new GetRecipeByCategoryHandler(DbContext);
+            var request = new GetRecipeByCategoryRequest
+            {
+                Include = null,
+                Exclude = new List<Guid> { DessertsCategoryId, BreakfastsCategoryId },
+                IncludeLogicAnd = false
+            };
+
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value.Recipes, Is.Not.Null);
+            var blinyRecipeId = Guid.Parse("33333333-3333-3333-3333-333333333331");
+            var blinyInResult = result.Value.Recipes.Any(r => r.Id == blinyRecipeId);
+            Assert.That(blinyInResult, Is.False);
         }
     }
 }

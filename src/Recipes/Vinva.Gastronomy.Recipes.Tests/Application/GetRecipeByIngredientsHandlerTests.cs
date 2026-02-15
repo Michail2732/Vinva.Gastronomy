@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByIngredients;
 
-namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
+namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
     [TestFixture]
     public class GetRecipeByIngredientsHandlerTests : BaseApplicationTests
@@ -263,6 +263,69 @@ namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
             var allHaveFlour = result.Value.Recipes.All(r =>
                 r.Ingredients.Any(i => i.IngredientId == FlourIngredientId));
             Assert.That(allHaveFlour, Is.True);
+        }
+
+        [Test]
+        public async Task Handle_WhenIncludeFlourAndEggsAndMilkWithAndLogic_ShouldReturnOnlyBliny()
+        {
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
+            var request = new GetRecipeByIngredientsRequest
+            {
+                Include = new List<Guid> { FlourIngredientId, EggsIngredientId, MilkIngredientId },
+                Exclude = null,
+                IncludeLogicAnd = true
+            };
+
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value.Recipes, Is.Not.Null);
+            Assert.That(result.Value.Recipes.Count, Is.EqualTo(1));
+            var blinyId = Guid.Parse("33333333-3333-3333-3333-333333333331");
+            Assert.That(result.Value.Recipes[0].Id, Is.EqualTo(blinyId));
+        }
+
+        [Test]
+        public async Task Handle_WhenExcludeMultipleIngredients_ShouldNotReturnRecipesWithAnyOfThem()
+        {
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
+            var request = new GetRecipeByIngredientsRequest
+            {
+                Include = null,
+                Exclude = new List<Guid> { FlourIngredientId, CottageCheeseIngredientId },
+                IncludeLogicAnd = false
+            };
+
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value.Recipes, Is.Not.Null);
+            var noneHaveFlourOrCottageCheese = result.Value.Recipes.All(r =>
+                !r.Ingredients.Any(i => i.IngredientId == FlourIngredientId) &&
+                !r.Ingredients.Any(i => i.IngredientId == CottageCheeseIngredientId));
+            Assert.That(noneHaveFlourOrCottageCheese, Is.True);
+        }
+
+        [Test]
+        public async Task Handle_WhenIncludeSingleRareIngredient_ShouldReturnExpectedCount()
+        {
+            var handler = new GetRecipeByIngredientsHandler(DbContext);
+            var request = new GetRecipeByIngredientsRequest
+            {
+                Include = new List<Guid> { CottageCheeseIngredientId },
+                Exclude = null,
+                IncludeLogicAnd = false
+            };
+
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value.Recipes, Is.Not.Null);
+            Assert.That(result.Value.Recipes.Count, Is.EqualTo(1));
+            Assert.That(result.Value.Recipes[0].Ingredients.Any(i => i.IngredientId == CottageCheeseIngredientId), Is.True);
         }
     }
 }

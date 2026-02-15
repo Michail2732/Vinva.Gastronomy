@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Vinva.Gastronomy.Recipes.Persistence;
 
-namespace Vinva.Gastronomy.Recipes.Tests.ApplicationTests
+namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
     public abstract class BaseApplicationTests
     {
