@@ -15,8 +15,7 @@ namespace Vinva.Gastronomy.Recipes.Application.CategoryUsecases.CreateCategory
                 .NotEmpty()
                 .WithMessage("Описание категории не заполнено");
 
-            RuleFor(a => a.Type)
-                .NotEmpty()
+            RuleFor(a => a.Type)                
                 .Must(a =>
                 {
                     return Enum.GetNames<CategoryType>().Contains(Enum.GetName(a));                    

@@ -8,9 +8,9 @@ namespace Vinva.Gastronomy.Recipes.Domain.Validations
 {
     public class RegexFormats
     {
-        public const string AlphanumericWithSpaces = @"^[a-zA-Z0-9 ]+$";
-        public const string AlphanumericWithSpacesDotBrace = @"^[a-zA-Z0-9\(\)\[\]\. ]+$";
-        public const string AlphanumericWithSpacesDotBracePunctuation = @"^[a-zA-Z0-9\(\)\[\]\.\,\;\: ]+$";
+        public const string AlphanumericWithSpaces = @"^[а-яА-Яa-zA-Z0-9 ]+$";
+        public const string AlphanumericWithSpacesDotBrace = @"^[а-яА-Яa-zA-Z0-9\(\)\[\]\. ]+$";
+        public const string AlphanumericWithSpacesDotBracePunctuation = @"^[а-яА-Яa-zA-Z0-9\(\)\[\]\.\,\;\: ]+$";
 
 
         public const string IngredientMeasure = AlphanumericWithSpacesDotBrace;

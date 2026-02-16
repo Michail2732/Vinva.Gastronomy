@@ -25,7 +25,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddRecipeCategorie
             var validationResult = validator.Validate(request);
 
             if (!validationResult.IsValid)
-                return validationResult.HandleValidationErrors<Result>();
+                return validationResult.HandleValidationErrors();
 
             List<Guid> categoryIds = request.CategoryIds.Distinct().ToList();            
 

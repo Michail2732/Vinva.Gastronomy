@@ -17,7 +17,7 @@ namespace Vinva.Gastronomy.Recipes.Domain.Models
         public static IngredientQuantity Parse(string str)
         {
             var splitedStr = str.Trim().Trim(';').Split(':');
-            if (splitedStr.Length == 2 || !decimal.TryParse(splitedStr[0], out var quantity))
+            if (!(splitedStr.Length == 2 && decimal.TryParse(splitedStr[0], out var quantity)))
                 throw new RecipeDomainException(typeof(IngredientQuantity), RecipeDomainErrors.FailedParseIngredientQuantity(str));
             
             return new IngredientQuantity

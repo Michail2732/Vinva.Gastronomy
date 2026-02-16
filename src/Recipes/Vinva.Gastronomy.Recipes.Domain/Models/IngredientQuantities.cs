@@ -24,7 +24,7 @@ namespace Vinva.Gastronomy.Recipes.Domain.Models
 
         public static IngredientQuantities Parse(string str)
         {
-            var rawItems = str.Trim().Split(';');
+            var rawItems = str.Trim().Split(';', StringSplitOptions.RemoveEmptyEntries);
             var quantities = new IngredientQuantity[rawItems.Length];
             for (int i = 0; i < rawItems.Length; i++)
             {

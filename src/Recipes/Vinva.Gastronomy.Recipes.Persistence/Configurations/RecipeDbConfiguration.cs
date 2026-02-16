@@ -17,7 +17,10 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
             base.Configure(builder);
             builder.ToTable("Recipes");
 
-            builder.HasKey(x => x.Id);            
+            builder.HasKey(x => x.Id);
+
+            builder.HasIndex(a => a.Name)
+                   .IsUnique();
 
             builder.Property(a => a.CookingComment)
                    .HasMaxLength(CommonConstants.MaxLengthComment);
@@ -32,9 +35,9 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .HasMaxLength(CommonConstants.MaxLengthComment);
 
             builder.HasOne<Recipe>()
-                   .WithOne()                   
-                   .HasForeignKey<Recipe>(a => a.BaseRecipe)
-                   .OnDelete(DeleteBehavior.NoAction);            
+                   .WithMany()                   
+                   .HasForeignKey(a => a.BaseRecipe)
+                   .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(a => a.Steps)
                    .WithOne()

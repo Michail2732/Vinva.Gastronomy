@@ -11,7 +11,10 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
             base.Configure(builder);
             builder.ToTable("Categories");
 
-            builder.HasKey(a => a.Id);            
+            builder.HasKey(a => a.Id);
+
+            builder.HasIndex(a => a.Name)
+                   .IsUnique();
         }
     }
 }

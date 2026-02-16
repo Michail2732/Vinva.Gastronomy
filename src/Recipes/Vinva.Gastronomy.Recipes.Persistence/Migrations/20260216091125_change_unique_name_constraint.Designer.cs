@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Vinva.Gastronomy.Recipes.Persistence;
@@ -11,9 +12,11 @@ using Vinva.Gastronomy.Recipes.Persistence;
 namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    partial class RecipeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260216091125_change_unique_name_constraint")]
+    partial class change_unique_name_constraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,7 +176,8 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BaseRecipe");
+                    b.HasIndex("BaseRecipe")
+                        .IsUnique();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -236,6 +240,11 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<Guid?>("PhotoId")
                         .HasColumnType("uuid");
 
@@ -285,9 +294,9 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
             modelBuilder.Entity("Vinva.Gastronomy.Recipes.Domain.Entities.Recipe", b =>
                 {
                     b.HasOne("Vinva.Gastronomy.Recipes.Domain.Entities.Recipe", null)
-                        .WithMany()
-                        .HasForeignKey("BaseRecipe")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithOne()
+                        .HasForeignKey("Vinva.Gastronomy.Recipes.Domain.Entities.Recipe", "BaseRecipe")
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("Vinva.Gastronomy.Recipes.Domain.Entities.RecipeIngredient", b =>

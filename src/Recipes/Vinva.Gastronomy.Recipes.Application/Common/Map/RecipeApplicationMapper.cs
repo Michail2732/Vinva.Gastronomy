@@ -73,8 +73,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                 }).ToArray(),
                 Steps = recipe.Steps.Select(a => new RecipeStepDto
                 {
-                    Description = a.Description,
-                    Name = a.Name,
+                    Description = a.Description,                    
                     Comment = a.Comment,
                     SeqNumber = a.SeqNumber,
                     PhotoId = a.PhotoId

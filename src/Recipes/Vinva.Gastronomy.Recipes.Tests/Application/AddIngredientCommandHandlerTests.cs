@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
 using Vinva.Gastronomy.Recipes.Application.Common;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddIngredients;
@@ -25,7 +25,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                         IngredientId = ExistingIngredientId,
                         IngredientName = "Vanillin",
                         IsRequired = false,
-                        Quantities = [new IngredientQuantityDto { Measure = "1 pinch", Quantity = 1 }]
+                        Quantities = [new IngredientQuantityDto { Measure = "гр.", Quantity = 1 }]
                     }
                 ]
             };
@@ -53,7 +53,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                         IngredientId = ExistingIngredientId,
                         IngredientName = "Vanillin",
                         IsRequired = false,
-                        Quantities = [new IngredientQuantityDto { Measure = "1 g", Quantity = 1 }]
+                        Quantities = [new IngredientQuantityDto { Measure = "гр.", Quantity = 1 }]
                     }
                 ]
             };
@@ -76,7 +76,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                         IngredientId = Guid.NewGuid(),
                         IngredientName = "Fake",
                         IsRequired = false,
-                        Quantities = [new IngredientQuantityDto { Measure = "1 g", Quantity = 1 }]
+                        Quantities = [new IngredientQuantityDto { Measure = "гр.", Quantity = 1 }]
                     }
                 ]
             };
@@ -102,14 +102,14 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                         IngredientId = flourId,
                         IngredientName = "Flour",
                         IsRequired = false,
-                        Quantities = [new IngredientQuantityDto { Measure = "1 tbsp", Quantity = 1 }]
+                        Quantities = [new IngredientQuantityDto { Measure = "гр.", Quantity = 1 }]
                     },
                     new RecipeIngredientDto
                     {
                         IngredientId = sugarId,
                         IngredientName = "Sugar",
                         IsRequired = false,
-                        Quantities = [new IngredientQuantityDto { Measure = "1 tsp", Quantity = 1 }]
+                        Quantities = [new IngredientQuantityDto { Measure = "гр.", Quantity = 1 }]
                     }
                 ]
             };
@@ -153,7 +153,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                         IngredientId = ExistingIngredientId,
                         IngredientName = "Vanillin",
                         IsRequired = true,
-                        Quantities = [new IngredientQuantityDto { Measure = "1 g", Quantity = 1 }]
+                        Quantities = [new IngredientQuantityDto { Measure = "гр.", Quantity = 1 }]
                     }
                 ]
             };

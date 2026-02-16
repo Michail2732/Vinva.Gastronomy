@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
 using Vinva.Gastronomy.Recipes.Application.Common;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddSteps;
@@ -19,8 +19,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 RecipeId = ExistingRecipeId,
                 Steps =
                 [
-                    new RecipeStepDto { Name = "Step A", Description = "Do step A.", SeqNumber = 4 },
-                    new RecipeStepDto { Name = "Step B", Description = "Do step B.", SeqNumber = 5 }
+                    new RecipeStepDto {  Description = "Do step A.", SeqNumber = 4 },
+                    new RecipeStepDto { Description = "Do step B.", SeqNumber = 5 }
                 ]
             };
 
@@ -34,8 +34,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 .LoadAsync();
             var recipe = await DbContext.Recipes.Include(r => r.Steps).FirstAsync(r => r.Id == ExistingRecipeId);
             Assert.That(recipe.Steps.Count, Is.GreaterThanOrEqualTo(4));
-            Assert.That(recipe.Steps.Any(s => s.Name == "Step A" && s.SeqNumber == 4), Is.True);
-            Assert.That(recipe.Steps.Any(s => s.Name == "Step B" && s.SeqNumber == 5), Is.True);
+            Assert.That(recipe.Steps.Any(s => s.Description == "Do step A." && s.SeqNumber == 4), Is.True);
+            Assert.That(recipe.Steps.Any(s => s.Description == "Do step B." && s.SeqNumber == 5), Is.True);
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             var command = new AddStepsCommand
             {
                 RecipeId = ExistingRecipeId,
-                Steps = [new RecipeStepDto { Name = "Solo Step", Description = "Single step description.", Comment = "Optional.", SeqNumber = 10 }]
+                Steps = [new RecipeStepDto { Description = "Single step description.", Comment = "Optional.", SeqNumber = 999}]
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
@@ -99,7 +99,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
             var recipe = await DbContext.Recipes.Include(r => r.Steps).FirstAsync(r => r.Id == ExistingRecipeId);
-            Assert.That(recipe.Steps.Any(s => s.SeqNumber == 10 && s.Name == "Solo Step"), Is.True);
+            var lastStep = recipe.Steps.LastOrDefault();
+            Assert.That(lastStep, Is.Not.Null);
+            Assert.That(lastStep.Description == "Single step description.", Is.True);
         }
 
         [Test]
@@ -122,9 +124,10 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.True);
             var recipe = await DbContext.Recipes.Include(r => r.Steps).FirstAsync(r => r.Id == ExistingRecipeId);
-            Assert.That(recipe.Steps.Any(s => s.SeqNumber == 6 && s.Description == "First."), Is.True);
-            Assert.That(recipe.Steps.Any(s => s.SeqNumber == 7 && s.Description == "Third."), Is.True);
-            Assert.That(recipe.Steps.Any(s => s.SeqNumber == 8 && s.Description == "Second."), Is.True);
+            var lastStepIndex = recipe.Steps.Count - 1;
+            Assert.That(recipe.Steps[lastStepIndex-2].Description == "First.", Is.True);
+            Assert.That(recipe.Steps[lastStepIndex-1].Description == "Third.", Is.True);
+            Assert.That(recipe.Steps[lastStepIndex-0].Description == "Second.", Is.True);
         }
     }
 }

@@ -14,6 +14,9 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 
             builder.HasKey(a => a.Id);
 
+            builder.HasIndex(a => a.Name)
+                   .IsUnique();
+
             builder.HasOne<Recipe>()
                    .WithMany()
                    .HasForeignKey(a => a.RecipeId)

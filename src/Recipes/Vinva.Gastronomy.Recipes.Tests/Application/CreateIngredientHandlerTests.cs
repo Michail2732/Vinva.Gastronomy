@@ -1,4 +1,4 @@
-using Vinva.Gastronomy.Common.Infrastructure.Results;
+﻿using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Recipes.Application.IngredientUsecases.CreateIngredient;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application

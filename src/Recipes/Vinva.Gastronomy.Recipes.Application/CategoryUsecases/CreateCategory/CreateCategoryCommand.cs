@@ -6,8 +6,8 @@ namespace Vinva.Gastronomy.Recipes.Application.CategoryUsecases.CreateCategory
 {    
     public readonly record struct CreateCategoryCommand() : IRequest<Result<CreateCategoryResponse>>
     {
-        public string Name { get; init; }
-        public string Description { get; init; }
+        public string Name { get; init; } = "";
+        public string Description { get; init; } = "";
         public string? Comment { get; init; }
         public CategoryDtoType Type { get; init; }
     }

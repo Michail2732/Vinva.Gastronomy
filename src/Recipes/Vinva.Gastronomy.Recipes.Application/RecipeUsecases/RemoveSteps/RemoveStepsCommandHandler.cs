@@ -24,7 +24,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveSteps
             var validationResult = validator.Validate(command);
 
             if (!validationResult.IsValid)
-                return validationResult.HandleValidationErrors<Result>();
+                return validationResult.HandleValidationErrors();
 
             var recipe = await _dbContext.Recipes.Include(a => a.Steps)
                 .FirstOrDefaultAsync(a => a.Id == command.RecipeId, cancellationToken);

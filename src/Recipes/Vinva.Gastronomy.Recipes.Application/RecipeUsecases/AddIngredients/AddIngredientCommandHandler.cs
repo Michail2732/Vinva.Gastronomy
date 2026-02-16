@@ -27,7 +27,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddIngredients
             var validationResult = validator.Validate(command);
 
             if (!validationResult.IsValid)
-                return validationResult.HandleValidationErrors<Result>();
+                return validationResult.HandleValidationErrors();
 
             var recipe = await _dbContext.Recipes.Include(a => a.Ingredients)
                 .FirstOrDefaultAsync(a => a.Id == command.RecipeId, cancellationToken);

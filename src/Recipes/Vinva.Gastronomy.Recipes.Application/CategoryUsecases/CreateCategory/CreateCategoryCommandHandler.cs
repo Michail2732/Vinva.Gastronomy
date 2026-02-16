@@ -8,15 +8,13 @@ using Vinva.Gastronomy.Recipes.Persistence;
 namespace Vinva.Gastronomy.Recipes.Application.CategoryUsecases.CreateCategory
 {
     public sealed class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<CreateCategoryResponse>>
-    {
-        private readonly RecipeApplicationMapper _mapper;
+    {        
         private readonly CreateCategoryCommandValidator _validator;
         private readonly RecipeDbContext _dbContext;
 
         public CreateCategoryCommandHandler(RecipeDbContext dbContext)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _mapper = new RecipeApplicationMapper();
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));            
             _validator = new CreateCategoryCommandValidator();
         }
 

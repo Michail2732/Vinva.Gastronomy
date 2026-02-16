@@ -74,16 +74,34 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         }                
         
         
-        public Recipe AddStep(string? name, string description, string? comment, Guid? photoId = null)
+        public Recipe AddStep(string description, string? comment, Guid? photoId = null)
         {
             var lastStep = _recipeSteps.LastOrDefault();
-            int newSeqNumber = lastStep == null ? 1 : (lastStep.SeqNumber + 1);
-            _recipeSteps.Add(new RecipeStep(Id, newSeqNumber, name ?? string.Empty, description, photoId)
+            
+            var newStep = new RecipeStep(Id, description, photoId)
             {
                 Comment = comment,
-            });
+                SeqNumber = (lastStep?.SeqNumber ?? 0) + 1
+            };
+
+            _recipeSteps.Add(newStep);
             return this; 
-        }       
+        }    
+        
+        public void ChangeStepOrder(int seqNumber1, int seqNumber2)
+        {
+            var step1 = _recipeSteps.FirstOrDefault(a => a.SeqNumber == seqNumber1);
+            var step2 = _recipeSteps.FirstOrDefault(b => b.SeqNumber == seqNumber2);
+
+            if (step1 == null)
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeStepNotExists(Id, seqNumber1));
+            if (step2 == null)
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeStepNotExists(Id, seqNumber2));
+
+
+            step1.SeqNumber = seqNumber2;
+            step2.SeqNumber = seqNumber1;
+        }
 
         public void RemoveStep(int seqNumber)
         {

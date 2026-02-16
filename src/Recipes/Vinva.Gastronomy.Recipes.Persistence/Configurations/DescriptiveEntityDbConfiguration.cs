@@ -14,10 +14,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
         where TEntity : DescriptiveEntity        
     {
         public virtual void Configure(EntityTypeBuilder<TEntity> builder)
-        {
-            builder.HasIndex(a => a.Name)                
-                   .IsUnique();
-
+        {            
             builder.Property(a => a.Name)
                    .HasMaxLength(CommonConstants.MaxLengthName)                   
                    .IsRequired();

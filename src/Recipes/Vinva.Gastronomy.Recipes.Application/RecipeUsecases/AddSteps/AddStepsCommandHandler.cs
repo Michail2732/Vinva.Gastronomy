@@ -24,7 +24,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddSteps
             var validationResult = validator.Validate(command);
 
             if (!validationResult.IsValid)
-                return validationResult.HandleValidationErrors<Result>();
+                return validationResult.HandleValidationErrors();
 
             var recipe = await _dbContext.Recipes.Include(a => a.Steps)
                 .FirstOrDefaultAsync(a => a.Id == command.RecipeId, cancellationToken);
@@ -36,7 +36,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddSteps
 
             foreach (var step in orderedSteps)
             {
-                recipe.AddStep(step.Name, step.Description, step.Comment, step.PhotoId);
+                recipe.AddStep(step.Description, step.Comment, step.PhotoId);
             }
 
             _dbContext.Recipes.Update(recipe);

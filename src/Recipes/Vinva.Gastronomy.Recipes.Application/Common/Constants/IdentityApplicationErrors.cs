@@ -8,15 +8,11 @@ using Vinva.Gastronomy.Common.Infrastructure.Results;
 namespace Vinva.Gastronomy.Recipes.Application.Constants
 {
     public class RecipesApplicationErrors
-    {        
-        /// <summary>
-        /// Не удалось найти ингредиент по Id 
-        /// </summary>
-        public static Error IngredientNotFound => new("Recipes.IngredientNotFound", "Ингредиент не удалось найти");
+    {                
         /// <summary>
         /// Не удалось найти рецепт по Id 
         /// </summary>
-        public static Error RecipeNotFound => new("Recipes.RecipeNotFound", "Рецепт не удалось найти");
+        public static Error RecipeNotFound => new("Recipes.RecipeNotFound", "Рецепт не удалось найти");        
         /// <summary>
         /// Рецепт уже содержит категорию
         /// </summary>
@@ -24,6 +20,10 @@ namespace Vinva.Gastronomy.Recipes.Application.Constants
         /// <summary>
         /// Не удалось найти категорию
         /// </summary>
-        public static Error CategoryNotFound(Guid id) => new("Recipes.CategoryNotFound", $"Не удалось найти категорию '{id}'");        
+        public static Error CategoryNotFound(Guid id) => new("Recipes.CategoryNotFound", $"Не удалось найти категорию '{id}'");
+        /// <summary>
+        /// Не удалось найти ингредиент по Id 
+        /// </summary>
+        public static Error IngredientNotFound(Guid id) => new("Recipes.IngredientNotFound", $"Не удалось найти ингредиент '{id}'");
     }
 }
