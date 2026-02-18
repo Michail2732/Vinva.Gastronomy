@@ -10,4 +10,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Application\Vinva.Gastronomy.Recipes.Application.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -33,7 +33,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByCategor
             var recipes = await _dbContext.Recipes.Include(a => a.Ingredients)
                                     .Include(a => a.Categories)
                                     .Include(a => a.Steps)
-                                    .Where(exprFilter)
+                                    .Where(exprFilter)                                    
                                     .ToListAsync();
             var result = _mapper.Map(recipes);
 

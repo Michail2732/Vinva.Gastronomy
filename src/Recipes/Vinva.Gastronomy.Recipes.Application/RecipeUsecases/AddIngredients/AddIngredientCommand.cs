@@ -4,9 +4,9 @@ using Vinva.Gastronomy.Recipes.Application.Common;
 
 namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddIngredients
 {    
-    public record AddIngredientCommand : IRequest<Result>
+    public readonly record struct AddIngredientCommand : IRequest<Result>
     {
         public Guid RecipeId { get; init; }
-        public RecipeIngredientDto[] Ingredients { get; init; } = [];
+        public RecipeIngredientDto[] Ingredients { get; init; }
     }
 }
