@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using Vinva.Gastronomy.Common.Infrastructure.Filters;
+using Vinva.Gastronomy.Common.Infrastructure.Results;
 
 namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetByFilter
 {    
-    public record GetRecipesByFilterQuery : IRequest<GetRecipesByFilterQueryResponse>
+    public readonly record struct GetRecipesByFilterQuery : IRequest<Result<GetRecipesByFilterQueryResponse>>
     {
-        public required SearchQuery Filter { get; init; }
+        public required SearchQuery Query { get; init; }
     }
 }

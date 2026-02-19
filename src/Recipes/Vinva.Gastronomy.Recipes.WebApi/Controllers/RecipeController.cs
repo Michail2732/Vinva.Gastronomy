@@ -7,6 +7,7 @@ using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddIngredients;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddRecipeCategories;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddSteps;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.CreateRecipe;
+using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetByFilter;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByCategory;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByIngredients;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveIngredients;
@@ -15,7 +16,8 @@ using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveSteps;
 using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.ReorderSteps;
 
 namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
-{
+{    
+    [ApiController]
     [Route("api/Recipes")]
     [Authorize(Roles = UserRoles.Administrator)]
     public class RecipeController : Controller
@@ -71,7 +73,15 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
             return result;
         }
 
-        [HttpPatch]
+        [HttpGet]
+        [Authorize(Roles = UserRoles.User)]
+        public async Task<Result<GetRecipesByFilterQueryResponse>> GetByQuery([FromBody]GetRecipesByFilterQuery request)
+        {
+            var result = await _mediator.Send(request);
+            return result;
+        }
+
+        [HttpPatch]        
         public async Task<Result> RemoveIngredients([FromBody]RemoveIngredientsCommand command)
         {
             var result = await _mediator.Send(command);

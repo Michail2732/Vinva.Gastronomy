@@ -1,9 +1,14 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Vinva.Gastronomy.Common.Infrastructure.Filters;
+using Vinva.Gastronomy.Common.Infrastructure.Results;
+using Vinva.Gastronomy.Recipes.Application.Common.Map;
+using Vinva.Gastronomy.Recipes.Domain.Entities;
 using Vinva.Gastronomy.Recipes.Persistence;
 
 namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetByFilter
 {
-    public sealed class GetRecipesByFilterQueryHandler : IRequestHandler<GetRecipesByFilterQuery, GetRecipesByFilterQueryResponse>
+    public sealed class GetRecipesByFilterQueryHandler : IRequestHandler<GetRecipesByFilterQuery, Result<GetRecipesByFilterQueryResponse>>
     {
         private readonly RecipeDbContext _dbContext;
 
@@ -12,10 +17,18 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetByFilter
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<GetRecipesByFilterQueryResponse> Handle(GetRecipesByFilterQuery request, CancellationToken cancellationToken)
+        public async Task<Result<GetRecipesByFilterQueryResponse>> Handle(GetRecipesByFilterQuery request, CancellationToken cancellationToken)
         {
-            // Implement your logic here
-            throw new NotImplementedException();
+            var validator = new GetRecipesByFilterQueryValidator();
+            var exprBuilder = new QueryExpressionBuilder<Recipe>();
+            var mapper = new RecipeApplicationMapper();
+
+            var result = await exprBuilder.BuildQuery(_dbContext.Recipes, request.Query)
+                        .ToListAsync(cancellationToken);
+            return new GetRecipesByFilterQueryResponse
+            {
+                Recipes = mapper.Map(result)
+            };
         }
     }
 }
