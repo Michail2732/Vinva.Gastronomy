@@ -64,7 +64,7 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddIngredients
             {
                 var ingredient = ingredients.FirstOrDefault(a => a.Id == recipeIngredientDto.IngredientId);
                 if (ingredient == null)
-                    throw new BadRequestException(RecipesApplicationErrors.IngredientNotFound.Description);
+                    throw new BadRequestException(RecipesApplicationErrors.IngredientNotFound(recipeIngredientDto.IngredientId).Description);
 
                 var ingredientQuantityList = recipeIngredientDto.Quantities
                     .Select(a => new IngredientQuantity

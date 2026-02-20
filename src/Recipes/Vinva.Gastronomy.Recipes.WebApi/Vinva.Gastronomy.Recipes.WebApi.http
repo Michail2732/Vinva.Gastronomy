@@ -1,6 +1,0 @@
-@Vinva.Gastronomy.Recipes.WebApi_HostAddress = http://localhost:5128
-
-GET {{Vinva.Gastronomy.Recipes.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

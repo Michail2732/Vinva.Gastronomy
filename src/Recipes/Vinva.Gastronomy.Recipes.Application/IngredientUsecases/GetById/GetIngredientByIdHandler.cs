@@ -24,7 +24,7 @@ namespace Vinva.Gastronomy.Recipes.Application.IngredientUsecases.GetIngredientB
                                     .FirstOrDefaultAsync(a => a.Id == request.IngredientId);
 
             if (ingredient == null)
-                return Result.Failure<GetIngredientByIdResponce>(RecipesApplicationErrors.IngredientNotFound);
+                return Result.Failure<GetIngredientByIdResponce>(RecipesApplicationErrors.IngredientNotFound(request.IngredientId));
 
             var result = _mapper.Map(ingredient);
 
