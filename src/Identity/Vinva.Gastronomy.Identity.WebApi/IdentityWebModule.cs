@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Vinva.Gastronomy.Identity.WebApi
 {
-    public class IndentityWebModule
+    public class IdentityWebModule
     {        
 
     }

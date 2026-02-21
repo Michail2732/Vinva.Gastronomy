@@ -13,7 +13,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence
         public DbSet<RecipeStep> RecipeSteps { get; private set; }        
         public DbSet<Ingredient> Ingredients { get; private init; }
 
-        public RecipeDbContext(DbContextOptions options) : base(options)
+        public RecipeDbContext(DbContextOptions<RecipeDbContext> options) : base(options)
         {            
         }
 

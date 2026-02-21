@@ -14,7 +14,7 @@ namespace Vinva.Gastronomy.Identity.Persistence
         public DbSet<User> Users { get; private init; }
         public DbSet<UserTokens> UsersTokens { get; private init; }
 
-        public IdentityDbContext(DbContextOptions options) : base(options)
+        public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options)
         {
         }
 

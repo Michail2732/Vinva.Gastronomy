@@ -13,8 +13,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi
         public static IMvcBuilder AddRecipeWebModule(this IMvcBuilder builder, MediatRServiceConfiguration mediatrConfig)
         {
             builder.AddApplicationPart(typeof(RecipeWebModule).Assembly);
-            builder.Services.AddDbContext<RecipeDbContext>();
-            builder.Services.AddMediatR(cfg => cfg.())
+            builder.Services.AddDbContext<RecipeDbContext>();            
 
             return builder;
         }
