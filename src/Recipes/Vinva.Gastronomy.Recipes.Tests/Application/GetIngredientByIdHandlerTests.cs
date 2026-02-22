@@ -34,7 +34,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Error.Code, Is.EqualTo(RecipesApplicationErrors.IngredientNotFound.Code));
+            Assert.That(result.Error.Code, Is.EqualTo(RecipesApplicationErrors.IngredientNotFound(request.IngredientId).Code));
         }
 
         [Test]
