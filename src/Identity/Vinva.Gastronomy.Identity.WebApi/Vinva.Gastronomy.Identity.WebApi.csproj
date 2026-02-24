@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\Vinva.Gastronomy.Identity.Application\Vinva.Gastronomy.Identity.Application.csproj" />
   </ItemGroup>
 
 </Project>

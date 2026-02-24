@@ -33,7 +33,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        Task AddToBlackListAsync(string token, CancellationToken ct = default);
+        //Task AddToBlackListAsync(string token, CancellationToken ct = default);
 
         /// <summary>
         /// Валидация токена и извлечение информации о пользователе
