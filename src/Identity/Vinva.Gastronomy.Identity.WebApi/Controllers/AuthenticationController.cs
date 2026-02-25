@@ -1,13 +1,16 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurrentUser;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login;
+using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Logout;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.RefreshJwtToken;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.ValidateJwtToken;
 
@@ -16,6 +19,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
 
     [ApiController]
     [Route("api/Authentication")]
+    [Authorize]
     public class AuthenticationController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -36,6 +40,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         ///     Выполняет аутентификацию пользователя по логину и паролю.
         /// </remarks>
         [HttpPost("/login")]
+        [AllowAnonymous]
         public async Task<Result<LoginResponce>> Login([FromBody]LoginRequest request)
         {
             var result = await _mediator.Send(request);
@@ -66,6 +71,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         ///     Проверяет валидность JWT токена.
         /// </remarks>
         [HttpPost("/validate")]
+        [AllowAnonymous]
         public async Task ValidateTokenPost([FromBody]ValidateTokenRequest request)
         {
             await _mediator.Send(request);            
@@ -86,10 +92,10 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
                 throw new UnauthorizedException();
             }
 
-            var query = new ValidateTokenQuery { Token = token };
+            var query = new GetCurrentUserQuery { AccessToken = token };
             var result = await _mediator.Send(query);
 
-            return result.Value.Adapt<UserDto>();
+            return result;
         }
 
         /// <summary>
@@ -98,11 +104,9 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("/logout")]
-        public static Task<Result> Logout(ISender mediator, [FromBody] LogoutRequestDto? request)
-        {
-            var command = new LogoutCommand { RefreshToken = request?.RefreshToken ?? "" };
-
-            return mediator.Send(command);
+        public async Task Logout([FromBody]LogoutRequest request)
+        {            
+            await _mediator.Send(request);
         }
     }
 }

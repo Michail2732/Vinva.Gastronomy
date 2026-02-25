@@ -13,19 +13,19 @@ using Vinva.Gastronomy.Identity.Persistence;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.RegisterConfirm
 {
-    public class RegisterConfirmHandler : IRequestHandler<RegisterConfirmRequest>
+    public class RegisterConfirmCommandHandler : IRequestHandler<RegisterConfirmCommand>
     {
         private readonly IdentityDbContext _dbContext;        
         private readonly IRegistrationService _registrationService;
 
-        public RegisterConfirmHandler(IRegistrationService registrationService,
+        public RegisterConfirmCommandHandler(IRegistrationService registrationService,
             IdentityDbContext usersRepository)
         {                        
             _registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
             _dbContext = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
         }
 
-        public async Task Handle(RegisterConfirmRequest request, CancellationToken cancellationToken)
+        public async Task Handle(RegisterConfirmCommand request, CancellationToken cancellationToken)
         {
             var token = await _registrationService.PopTokenAsync(request.TokenId);
             if (token == null)

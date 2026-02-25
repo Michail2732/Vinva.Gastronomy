@@ -8,7 +8,7 @@ using Vinva.Gastronomy.Common.Infrastructure.Results;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.RegisterConfirm
 {
-    public readonly record struct RegisterConfirmRequest : IRequest
+    public readonly record struct RegisterConfirmCommand : IRequest
     {
         public Guid TokenId { get; init; }
     }

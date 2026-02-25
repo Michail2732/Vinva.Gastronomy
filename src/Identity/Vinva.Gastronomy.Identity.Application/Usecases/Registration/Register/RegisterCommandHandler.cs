@@ -14,14 +14,14 @@ using Vinva.Gastronomy.Identity.Persistence;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
 {
-    public class RegisterHandler : IRequestHandler<RegisterRequest>
+    public class RegisterCommandHandler : IRequestHandler<RegisterCommand>
     {
         private readonly IdentityDbContext _dbContext;
         private readonly IPasswordHashService _passwordHashService;
         private readonly IRegistrationService _registrationService;
-        private readonly RegisterSmtpConfig _registerConfig;
+        private readonly RegisterSmtpConfig _registerConfig;        
 
-        public RegisterHandler(IdentityDbContext identityUnitOfWork,
+        public RegisterCommandHandler(IdentityDbContext identityUnitOfWork,
             IRegistrationService registrationService,
             IOptions<RegisterSmtpConfig> emailConfig,
             IPasswordHashService passwordHashService)
@@ -32,9 +32,9 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
             _passwordHashService = passwordHashService ?? throw new ArgumentNullException(nameof(passwordHashService));
         }
 
-        public async Task Handle(RegisterRequest request, CancellationToken cancellationToken)
+        public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var validator = new RegisterRequestValidator();
+            var validator = new RegisterCommandValidator();
             var validResult = await validator.ValidateAsync(request, cancellationToken);
 
             if (validResult.IsValid)
@@ -53,11 +53,12 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
                 _registerConfig.SmtpCredentialPassword);
 
             smtpClient.Credentials = credentials;
+            var confirmLink = await _registrationService.GenerateRegisterConfirmLinkTokenAsync(token.Id);
             var message = new MailMessage()
             {
                 Sender = new MailAddress(_registerConfig.SmtpCredentialAddress),
                 Subject = _registerConfig.MailSubject,
-                Body = _registerConfig.GetMailBody(request.Login, token.Id)
+                Body = _registerConfig.GetMailBody(request.Login, confirmLink)
             };
             message.To.Add(request.Email);
             try

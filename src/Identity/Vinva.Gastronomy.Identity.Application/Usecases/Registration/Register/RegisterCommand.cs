@@ -8,7 +8,7 @@ using Vinva.Gastronomy.Common.Infrastructure.Results;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
 {
-    public readonly record struct RegisterRequest : IRequest
+    public readonly record struct RegisterCommand : IRequest
     {        
         public string Password { get; init; }
         public string Login { get; init; }

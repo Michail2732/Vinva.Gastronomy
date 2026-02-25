@@ -8,9 +8,9 @@ using Vinva.Gastronomy.Identity.Domain.Constants;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
 {
-    public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
+    public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
     {
-        public RegisterRequestValidator()
+        public RegisterCommandValidator()
         {
             RuleFor(x => x.Login)
            .NotEmpty()

@@ -8,9 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.20" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Modularity\Vinva.Gastronomy.Common.Modularity.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Identity.Application\Vinva.Gastronomy.Identity.Application.csproj" />
   </ItemGroup>
 
