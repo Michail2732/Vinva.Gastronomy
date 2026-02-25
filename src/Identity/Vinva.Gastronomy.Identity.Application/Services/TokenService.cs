@@ -72,17 +72,18 @@ namespace Vinva.Gastronomy.Identity.Application.Services
             return Task.FromResult(refreshToken);
         }
 
-        public Task<ClaimsPrincipal?> ValidateTokenAsync(string token, CancellationToken ct = default)
+        public Task<UserTokenPrincipals?> ValidateTokenAsync(string token, CancellationToken ct = default)
         {
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var principal = tokenHandler.ValidateToken(token, _tokenValidationParameters, out _);
-                return Task.FromResult<ClaimsPrincipal?>(principal);
+                var userTokenPrincipal = new UserTokenPrincipals(principal);
+                return Task.FromResult<UserTokenPrincipals?>(userTokenPrincipal);
             }
             catch
             {
-                return Task.FromResult<ClaimsPrincipal?>(null);
+                return Task.FromResult<UserTokenPrincipals?>(null);
             }
         }
 

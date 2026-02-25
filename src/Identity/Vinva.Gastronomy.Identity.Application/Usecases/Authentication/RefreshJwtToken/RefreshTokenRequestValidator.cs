@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
-using Vinva.Gastronomy.Identity.Application.Authentication.Login;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.RefreshJwtToken
 {

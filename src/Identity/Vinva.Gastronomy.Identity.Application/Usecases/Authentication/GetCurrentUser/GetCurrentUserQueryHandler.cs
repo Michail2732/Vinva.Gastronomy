@@ -1,13 +1,35 @@
 ﻿using MediatR;
+using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Identity.Application.Common.Constants;
+using Vinva.Gastronomy.Identity.Domain.Entities;
+using Vinva.Gastronomy.Identity.Domain.Services;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurrentUser
 {
-    internal sealed class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, GetCurrentUserQueryResponse>
+    public sealed class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, GetCurrentUserQueryResponse>
     {
-        public Task<GetCurrentUserQueryResponse> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+        private readonly ITokenService _tokenService;
+
+        public GetCurrentUserQueryHandler(ITokenService tokenService)
         {
-            // Implement your logic here
-            throw new NotImplementedException();
+            _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+        }
+
+        public async Task<GetCurrentUserQueryResponse> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var claims = await _tokenService.ValidateTokenAsync(request.AccessToken, cancellationToken);
+            if (claims == null)
+                throw new BadRequestException(IdentityApplicationErrors.ValidationFailed);
+
+            return new GetCurrentUserQueryResponse
+            {
+                Login = claims.Login,
+                Email = claims.Email,
+                State = claims.State
+            };
+
         }
     }
 }

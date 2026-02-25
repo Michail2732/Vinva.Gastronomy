@@ -1,32 +1,32 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Common.Infrastructure.Validations;
 using Vinva.Gastronomy.Identity.Application.Common.Constants;
 using Vinva.Gastronomy.Identity.Domain.Entities;
 using Vinva.Gastronomy.Identity.Domain.Services;
-using Vinva.Gastronomy.Identity.Persistence.Repositories;
-using Vinva.Gastronomy.Identity.Persistence.Specifications;
+using Vinva.Gastronomy.Identity.Persistence;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
 {
-    public class LoginHandler : IRequestHandler<LoginRequest, Result<LoginResponce>>
+    public class LoginHandler : IRequestHandler<LoginRequest, LoginResponce>
     {
-        private readonly IIdentityUnitOfWork _identityUnitOfWork;
+        private readonly IdentityDbContext _dbContext;
         private readonly IPasswordHashService _passwordHashService;
         private readonly ITokenService _tokenService;
         private readonly TimeProvider _timeProvider;
 
         public LoginHandler(IPasswordHashService passwordHashService, ITokenService tokenService,
-            TimeProvider timeProvider, IIdentityUnitOfWork identityUnitOfWork)
+            TimeProvider timeProvider, IdentityDbContext dbContext)
         {
             _passwordHashService = passwordHashService ?? throw new ArgumentNullException(nameof(passwordHashService));
             _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
             _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));            
-            _identityUnitOfWork = identityUnitOfWork ?? throw new ArgumentNullException(nameof(identityUnitOfWork));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<Result<LoginResponce>> Handle(LoginRequest request, CancellationToken cancellationToken)
+        public async Task<LoginResponce> Handle(LoginRequest request, CancellationToken cancellationToken)
         {
             try
             {
@@ -34,12 +34,16 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
 
                 var validResult = await validator.ValidateAsync(request, cancellationToken);
                 if (!validResult.IsValid)
-                    return validResult.HandleValidationErrors<LoginResponce>();
+                {
+                    var errors = validResult.HandleValidationErrors<LoginResponce>().Error;
+                    throw new BadRequestException($"{errors.Code}.{errors.Description}");
+                }                    
 
                 var passHash = _passwordHashService.HashPassword(request.Password);
-                var searchSpec = new ByLoginAndPasswordHashSpec(request.Login);
 
-                var user = await _identityUnitOfWork.Users.FirstOrDefaultAsync(searchSpec, cancellationToken)
+                Expression<Func<User, bool>> searchSpec = a => a.Login == request.Login;
+
+                var user = await _dbContext.Users.FirstOrDefaultAsync(searchSpec, cancellationToken)
                     ?? throw new UnauthorizedException(IdentityApplicationErrors.InvalidCredentials.Description);
 
                 if (!_passwordHashService.VerifyPassword(request.Password, passHash))
@@ -51,26 +55,28 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
 
                 user.LastLoginAt = _timeProvider.GetUtcNow();
 
-                await _identityUnitOfWork.BeginTransactionAsync(cancellationToken);
-                await _identityUnitOfWork.Users.UpdateAsync(user);
-
-                await UpdateUserTokens(user, accessToken, refreshToken, expiresAt, cancellationToken);
-
-                await _identityUnitOfWork.SaveAndCommitAsync(cancellationToken);
-
-                return new LoginResponce
+                using (var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    AccessToken = accessToken,
-                    RefreshToken = refreshToken,
-                    ExpiresAt = expiresAt,
-                    Login = user.Login,
-                    Role = user.Role
-                };                
+                    _dbContext.Users.Update(user);
+
+                    await UpdateUserTokens(user, accessToken, refreshToken, expiresAt, cancellationToken);
+
+                    await transaction.CommitAsync(cancellationToken);
+
+                    return new LoginResponce
+                    {
+                        AccessToken = accessToken,
+                        RefreshToken = refreshToken,
+                        ExpiresAt = expiresAt,
+                        Login = user.Login,
+                        Role = user.Role
+                    };
+                }                
             }
             catch (Exception)
             {
-                if (_identityUnitOfWork.IsTransactionOpen())
-                    await _identityUnitOfWork.RollbackAsync(cancellationToken);
+                if (_dbContext.Database.CurrentTransaction != null)
+                    await _dbContext.Database.RollbackTransactionAsync(cancellationToken);
                 throw;
             }            
         }
@@ -78,16 +84,16 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
         private async Task UpdateUserTokens(User user, string accessToken, string refreshToken,
             DateTimeOffset expiresAt, CancellationToken ct = default)
         {
-            var userToken = await _identityUnitOfWork.UserTokens.GetByIdAsync(user.Id);
+            var userToken = await _dbContext.UserTokens.FirstOrDefaultAsync(a => a.UserId == user.Id);
             if (userToken == null)
             {
                 userToken = new UserTokens(user.Id, accessToken, refreshToken, expiresAt);
-                await _identityUnitOfWork.UserTokens.AddAsync(userToken, ct);
+                await _dbContext.UserTokens.AddAsync(userToken, ct);
             }
             else
             {
                 userToken.SetNewToken(accessToken, refreshToken, expiresAt);
-                await _identityUnitOfWork.UserTokens.UpdateAsync(userToken, ct);
+                _dbContext.UserTokens.Update(userToken);
             }            
         }
     }

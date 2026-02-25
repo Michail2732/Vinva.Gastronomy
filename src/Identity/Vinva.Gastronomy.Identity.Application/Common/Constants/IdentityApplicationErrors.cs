@@ -65,6 +65,9 @@ namespace Vinva.Gastronomy.Identity.Application.Common.Constants
         /// Некорректный токен регистрации
         /// </summary>
         public static Error IncorrectRegisterToken => new("Identity.IncorrectRegisterToken", "Некорректный токен регистрации");
-
+        /// <summary>
+        /// Пользователь не найден
+        /// </summary>
+        public static Error UserCouldNotFound => new("Identity.UserCouldNotFound", "Пользователь не найден");
     }
 }

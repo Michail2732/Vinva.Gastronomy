@@ -4,50 +4,55 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Identity.Application.Common.Constants;
-using Vinva.Gastronomy.Identity.Persistence.Repositories;
-using Vinva.Gastronomy.Identity.Persistence.Specifications;
+using Vinva.Gastronomy.Identity.Persistence;
+
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Logout
 {
-    public class LogoutHandler : IRequestHandler<LogoutRequest, Result>
+    public class LogoutHandler : IRequestHandler<LogoutRequest>
     {
-        private readonly IUsersRepository _usersRepository;
-        private readonly IUserTokensRepository _userTokensRepository;        
+        private readonly IdentityDbContext _dbContext;        
         private readonly TimeProvider _timeProvider;
 
-        public LogoutHandler(IUsersRepository usersRepository, 
-            IUserTokensRepository userTokensRepository, TimeProvider timeProvider)
+        public LogoutHandler(IdentityDbContext dbContext, TimeProvider timeProvider)
         {
-            _usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
-            _userTokensRepository = userTokensRepository ?? throw new ArgumentNullException(nameof(userTokensRepository));            
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));            
             _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         }
 
-        public async Task<Result> Handle(LogoutRequest request, CancellationToken cancellationToken)
-        {
-            var searchSpec = new ByLoginAndPasswordHashSpec(request.Login);
-
-            var user = await _usersRepository.FirstOrDefaultAsync(searchSpec, cancellationToken);
+        public async Task Handle(LogoutRequest request, CancellationToken cancellationToken)
+        {            
+            var user = await _dbContext.Users.FirstOrDefaultAsync(a => a.Login == request.Login, cancellationToken);
             if (user == null)
                 throw new UnauthorizedException(IdentityApplicationErrors.InvalidCredentials.Description);
 
             user.LastLogoutAt = _timeProvider.GetUtcNow();
 
-            await _usersRepository.UpdateAsync(user);            
+            try
+            {
+                using (var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken))
+                {
+                    _dbContext.Users.Update(user);
 
-            var userToken = await _userTokensRepository.GetByIdAsync(user.Id, cancellationToken);
+                    var userToken = await _dbContext.UserTokens.FirstOrDefaultAsync(a => a.UserId == user.Id, cancellationToken);
 
-            if (userToken == null)
-                return Result.Success();
+                    if (userToken == null)
+                        return;
 
-            userToken.ResetToken();
-            await _userTokensRepository.UpdateAsync(userToken, cancellationToken);            
-
-            return Result.Success();
-
+                    userToken.ResetToken();
+                    _dbContext.UserTokens.Update(userToken);
+                    await transaction.CommitAsync(cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (_dbContext.Database.CurrentTransaction != null)
+                    await _dbContext.Database.CurrentTransaction.RollbackAsync();
+                throw;
+            }            
         }
     }
 }

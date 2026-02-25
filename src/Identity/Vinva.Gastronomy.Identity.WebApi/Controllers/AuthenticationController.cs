@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
+using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurrentUser;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.RefreshJwtToken;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.ValidateJwtToken;
@@ -50,7 +51,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         ///     Обновляет access токен используя refresh токен.
         /// </remarks>
         [HttpPost("/refresh")]
-        public async Task<Result<RefreshTokenResponce>> RefreshToken([FromBody]RefreshTokenRequest request)
+        public async Task<RefreshTokenResponce> RefreshToken([FromBody]RefreshTokenRequest request)
         {
             var result = await _mediator.Send(request);
             return result;
@@ -65,10 +66,9 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         ///     Проверяет валидность JWT токена.
         /// </remarks>
         [HttpPost("/validate")]
-        public async Task<Result> ValidateTokenPost([FromBody]ValidateTokenRequest request)
+        public async Task ValidateTokenPost([FromBody]ValidateTokenRequest request)
         {
-            var result = await _mediator.Send(request);
-            return result;
+            await _mediator.Send(request);            
         }        
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// <returns></returns>
         /// <exception cref="UnauthorizedException"></exception>
         [HttpGet("/me")]
-        public async Task<Result<UserDto>> GetCurrentUser()
+        public async Task<GetCurrentUserQueryResponse> GetCurrentUser()
         {
             var token = HttpContext.Request.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "");
             if (string.IsNullOrWhiteSpace(token))

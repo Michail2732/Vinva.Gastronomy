@@ -8,7 +8,7 @@ using Vinva.Gastronomy.Common.Infrastructure.Results;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.ValidateJwtToken
 {
-    public readonly record struct ValidateTokenRequest : IRequest<Result>
+    public readonly record struct ValidateTokenRequest : IRequest
     {
         public string AccessToken { get; init; }
     }

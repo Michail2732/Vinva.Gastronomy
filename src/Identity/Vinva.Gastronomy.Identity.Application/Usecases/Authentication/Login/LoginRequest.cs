@@ -8,7 +8,7 @@ using Vinva.Gastronomy.Common.Infrastructure.Results;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
 {
-    public readonly record struct LoginRequest : IRequest<Result<LoginResponce>>
+    public readonly record struct LoginRequest : IRequest<LoginResponce>
     {
         /// <summary>
         ///     Логин.
