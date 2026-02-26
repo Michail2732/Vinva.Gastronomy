@@ -47,28 +47,24 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
             var passwordHash = _passwordHashService.HashPassword(request.Password);
             var token = await _registrationService.GenerateTokenAsync(request.Email, request.Login, passwordHash, cancellationToken);
 
-            var smtpClient = new SmtpClient(_registerConfig.SmtpHost,
-                _registerConfig.SmtpPort);
-            var credentials = new NetworkCredential(_registerConfig.SmtpCredentialAddress, 
-                _registerConfig.SmtpCredentialPassword);
-
-            smtpClient.Credentials = credentials;
-            var confirmLink = await _registrationService.GenerateRegisterConfirmLinkTokenAsync(token.Id);
-            var message = new MailMessage()
+            var smtpClient = new SmtpClient(_registerConfig.SmtpHost, _registerConfig.SmtpPort)
             {
-                Sender = new MailAddress(_registerConfig.SmtpCredentialAddress),
-                Subject = _registerConfig.MailSubject,
-                Body = _registerConfig.GetMailBody(request.Login, confirmLink)
+                Credentials = new NetworkCredential(
+                    _registerConfig.SmtpCredentialAddress,
+                    _registerConfig.SmtpCredentialPassword),
+                EnableSsl = true
             };
-            message.To.Add(request.Email);
+            
             try
             {
-                smtpClient.Send(message);
+                var confirmLink = await _registrationService.GenerateRegisterConfirmLinkTokenAsync(token.Id);
+                var message = _registerConfig.GetMailBody(request.Login, confirmLink); 
+                smtpClient.Send(_registerConfig.From, request.Email, _registerConfig.MailSubject, message);
             }
             catch (Exception ex)
             {
-                throw new BadRequestException(IdentityApplicationErrors.CantSendRegistrationMessage.Description, ex);
-            }
+                throw;
+            }                                    
             smtpClient.Dispose();            
         }
     }

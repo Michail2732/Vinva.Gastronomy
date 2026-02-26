@@ -5,8 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -34,8 +36,8 @@ namespace Vinva.Gastronomy.Identity.WebApi
             typeof(Persistence.IdentityDbContext).Assembly,
         };
 
-        public Task InitializeAsync(WebApplication webApp, CancellationToken ct = default)
-        {
+        public Task InitializeAsync(WebApplication app, CancellationToken ct = default)
+        {            
             return Task.CompletedTask;
         }
 
@@ -67,6 +69,10 @@ namespace Vinva.Gastronomy.Identity.WebApi
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+                    if (builder.Environment.IsDevelopment())
+                    {
+                        options.IncludeErrorDetails = true;
+                    }                    
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
@@ -76,9 +82,9 @@ namespace Vinva.Gastronomy.Identity.WebApi
                         ValidateAudience = true,
                         ValidAudience = jwtConfig.Audience,
                         ValidateLifetime = true,
-                        ClockSkew = TimeSpan.FromMinutes(jwtConfig.ClockSkewMinutes)
-                    };
-                });
+                        ClockSkew = TimeSpan.FromMinutes(jwtConfig.ClockSkewMinutes),                        
+                    };                    
+                });           
 
             services.AddAuthorization();
         }

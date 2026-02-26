@@ -11,7 +11,8 @@ namespace Vinva.Gastronomy.Identity.Application.Common
         public string SmtpHost { get; init; } = string.Empty;
         public int SmtpPort { get; init; }
         public string SmtpCredentialAddress { get; init; } = string.Empty;
-        public string SmtpCredentialPassword { get; init; } = string.Empty;        
+        public string SmtpCredentialPassword { get; init; } = string.Empty;
+        public string From { get; init; } = string.Empty;
         public string MailSubject { get; init; } = string.Empty;
         public string MailBodyTemplate { get; init; } = string.Empty;        
 

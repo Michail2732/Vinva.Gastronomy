@@ -32,7 +32,8 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.RegisterCo
                 throw new BadRequestException(IdentityApplicationErrors.IncorrectRegisterToken);
 
             var user = new User(token.Login, token.PasswordHash, token.Email);
-            await _dbContext.Users.AddAsync(user);
+            await _dbContext.Users.AddAsync(user, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

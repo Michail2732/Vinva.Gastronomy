@@ -39,14 +39,10 @@ namespace Vinva.Gastronomy.Identity.Application.Services
         public Task<string> GenerateAccessTokenAsync(User user, CancellationToken ct = default)
         {
 
-            var claims = new List<Claim>
-            {
-                new(JwtRegisteredClaimNames.Name, user.Login),
-                new("user_state", user.State.ToString()),
-                new(JwtRegisteredClaimNames.Email, user.Email),            
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
-            };
+            var claims = UserTokenPrincipals.CreateCustomUserClaims(user.Login, user.State, user.Email);
+            claims.Add(new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+            claims.Add(new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
+            
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

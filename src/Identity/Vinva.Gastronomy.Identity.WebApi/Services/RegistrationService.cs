@@ -30,8 +30,8 @@ namespace Vinva.Gastronomy.Identity.WebApi.Services
         public async Task<Uri> GenerateRegisterConfirmLinkTokenAsync(Guid tokenId, CancellationToken ct = default)
         {
             var context = _httpContextAccess.HttpContext ?? throw new ArgumentException($"{nameof(IHttpContextAccessor.HttpContext)} is null");
-            var uriStr = _linkGenerator.GetPathByAction(context, nameof(RegistrationController.RegisterConfirm),
-                nameof(RegistrationController), tokenId) ?? throw new IdentityDomainException(GetType(), "Не удалось сформировать ссылку");
+            var uriStr = _linkGenerator.GetUriByAction(context, nameof(RegistrationController.RegisterConfirm),
+                "Registration", new { tokenId = tokenId }) ?? throw new IdentityDomainException(GetType(), "Не удалось сформировать ссылку");
             return new Uri(uriStr);
         }
 

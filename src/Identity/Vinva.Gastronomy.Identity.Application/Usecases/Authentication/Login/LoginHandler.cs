@@ -27,74 +27,53 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
         }
 
         public async Task<LoginResponce> Handle(LoginRequest request, CancellationToken cancellationToken)
-        {
-            try
+        {            
+            var validator = new LoginRequestValidator();
+
+            var validResult = await validator.ValidateAsync(request, cancellationToken);
+            if (!validResult.IsValid)
             {
-                var validator = new LoginRequestValidator();
+                var errors = validResult.HandleValidationErrors<LoginResponce>().Error;
+                throw new BadRequestException($"{errors.Code}.{errors.Description}");
+            }                    
 
-                var validResult = await validator.ValidateAsync(request, cancellationToken);
-                if (!validResult.IsValid)
-                {
-                    var errors = validResult.HandleValidationErrors<LoginResponce>().Error;
-                    throw new BadRequestException($"{errors.Code}.{errors.Description}");
-                }                    
+            var passHash = _passwordHashService.HashPassword(request.Password);
 
-                var passHash = _passwordHashService.HashPassword(request.Password);
+            Expression<Func<User, bool>> searchSpec = a => a.Login == request.Login;
 
-                Expression<Func<User, bool>> searchSpec = a => a.Login == request.Login;
+            var user = await _dbContext.Users.Include(a => a.Tokens)
+                .FirstOrDefaultAsync(searchSpec, cancellationToken)
+                ?? throw new UnauthorizedException(IdentityApplicationErrors.InvalidCredentials.Description);
 
-                var user = await _dbContext.Users.FirstOrDefaultAsync(searchSpec, cancellationToken)
-                    ?? throw new UnauthorizedException(IdentityApplicationErrors.InvalidCredentials.Description);
+            if (!_passwordHashService.VerifyPassword(request.Password, passHash))
+                throw new UnauthorizedException(IdentityApplicationErrors.InvalidCredentials.Description);
 
-                if (!_passwordHashService.VerifyPassword(request.Password, passHash))
-                    throw new UnauthorizedException(IdentityApplicationErrors.InvalidCredentials.Description);
+            var accessToken = await _tokenService.GenerateAccessTokenAsync(user);
+            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
+            var expiresAt = await _tokenService.GetTokenExpirationAsync(accessToken);
 
-                var accessToken = await _tokenService.GenerateAccessTokenAsync(user);
-                var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
-                var expiresAt = await _tokenService.GetTokenExpirationAsync(accessToken);
+            user.LastLoginAt = _timeProvider.GetUtcNow();
 
-                user.LastLoginAt = _timeProvider.GetUtcNow();
+            UpdateUserTokens(user, accessToken, refreshToken, expiresAt);
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
-                using (var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken))
-                {
-                    _dbContext.Users.Update(user);
-
-                    await UpdateUserTokens(user, accessToken, refreshToken, expiresAt, cancellationToken);
-
-                    await transaction.CommitAsync(cancellationToken);
-
-                    return new LoginResponce
-                    {
-                        AccessToken = accessToken,
-                        RefreshToken = refreshToken,
-                        ExpiresAt = expiresAt,
-                        Login = user.Login,
-                        Role = user.Role
-                    };
-                }                
-            }
-            catch (Exception)
+            return new LoginResponce
             {
-                if (_dbContext.Database.CurrentTransaction != null)
-                    await _dbContext.Database.RollbackTransactionAsync(cancellationToken);
-                throw;
-            }            
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                ExpiresAt = expiresAt,
+                Login = user.Login,
+                Role = user.Role
+            };            
         }
 
-        private async Task UpdateUserTokens(User user, string accessToken, string refreshToken,
-            DateTimeOffset expiresAt, CancellationToken ct = default)
-        {
-            var userToken = await _dbContext.UserTokens.FirstOrDefaultAsync(a => a.UserId == user.Id);
-            if (userToken == null)
-            {
-                userToken = new UserTokens(user.Id, accessToken, refreshToken, expiresAt);
-                await _dbContext.UserTokens.AddAsync(userToken, ct);
-            }
-            else
-            {
-                userToken.SetNewToken(accessToken, refreshToken, expiresAt);
-                _dbContext.UserTokens.Update(userToken);
-            }            
+        private void UpdateUserTokens(User user, string accessToken, string refreshToken, DateTimeOffset expiresAt)
+        {                        
+            if (user.Tokens == null)            
+                user.Tokens = new UserTokens(user.Id, accessToken, refreshToken, expiresAt);            
+            else            
+                user.Tokens.SetNewToken(accessToken, refreshToken, expiresAt);                     
         }
     }
 }

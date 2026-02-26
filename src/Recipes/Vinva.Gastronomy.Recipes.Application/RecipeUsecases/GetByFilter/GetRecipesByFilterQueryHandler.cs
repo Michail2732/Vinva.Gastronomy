@@ -23,7 +23,10 @@ namespace Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetByFilter
             var exprBuilder = new QueryExpressionBuilder<Recipe>();
             var mapper = new RecipeApplicationMapper();
 
-            var result = await exprBuilder.BuildQuery(_dbContext.Recipes, request.Query)
+            var result = await exprBuilder.BuildQuery(_dbContext.Recipes
+                .Include(a => a.Ingredients)
+                .Include(a => a.Steps)
+                .Include(a => a.Categories), request.Query)
                         .ToListAsync(cancellationToken);
             return new GetRecipesByFilterQueryResponse
             {

@@ -30,7 +30,7 @@ namespace Vinva.Gastronomy.Common.Modularity
 
             var mvcBuilder = collection.AddControllers();
 
-            collection.AddRouting();
+            collection.AddRouting();            
 
             foreach (var module in _modules)
             {

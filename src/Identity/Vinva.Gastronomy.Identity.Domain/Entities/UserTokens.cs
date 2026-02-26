@@ -16,7 +16,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
         public DateTimeOffset? ExpiresAt { get; private set; }
 
 
-        public UserTokens(Guid userId, string accessToken, string refreshToken, DateTimeOffset expiresAt)
+        public UserTokens(Guid userId, string accessToken, string refreshToken, DateTimeOffset? expiresAt)
         {
             UserId = userId;
             AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
