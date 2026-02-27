@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddRecipeCategories;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddCategories;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -23,10 +23,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CategoryIds = [SoupsCategoryId]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);            
 
             var recipeAfter = await DbContext.Recipes.Include(r => r.Categories).FirstAsync(r => r.Id == RecipeId);
             Assert.That(recipeAfter.Categories.Any(c => c.Id == SoupsCategoryId), Is.True);
@@ -42,8 +39,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CategoryIds = [SoupsCategoryId]
             };
 
-            Assert.ThrowsAsync<BadRequestException>(async () =>
-                await handler.Handle(command, CancellationToken.None));
+            var ex = Assert.ThrowsAsync<BadRequestException>(async () => await handler.Handle(command, CancellationToken.None));
+
+            Assert.That(ex, Is.Not.Null);
         }
 
         [Test]
@@ -56,8 +54,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CategoryIds = [Guid.NewGuid()]
             };
 
-            Assert.ThrowsAsync<BadRequestException>(async () =>
-                await handler.Handle(command, CancellationToken.None));
+            var ex = Assert.ThrowsAsync<BadRequestException>(async () => await handler.Handle(command, CancellationToken.None));
+            Assert.That(ex, Is.Not.Null);
         }
 
         [Test]
@@ -76,10 +74,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CategoryIds = [mainDishesId, SoupsCategoryId]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);
+            
             var recipeAfter = await DbContext.Recipes.Include(r => r.Categories).FirstAsync(r => r.Id == RecipeId);
             Assert.That(recipeAfter.Categories.Any(c => c.Id == mainDishesId), Is.True);
             Assert.That(recipeAfter.Categories.Any(c => c.Id == SoupsCategoryId), Is.True);
@@ -95,10 +91,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CategoryIds = []
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            var ex = Assert.Catch<BadRequestException>(async () => await handler.Handle(command, CancellationToken.None));
+            Assert.That(ex, Is.Not.Null);
         }
 
         [Test]
@@ -115,10 +109,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CategoryIds = [SoupsCategoryId, SoupsCategoryId]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);
+            
             var recipeAfter = await DbContext.Recipes.Include(r => r.Categories).FirstAsync(r => r.Id == RecipeId);
             Assert.That(recipeAfter.Categories.Count, Is.EqualTo(countBefore + 1));
             Assert.That(recipeAfter.Categories.Count(c => c.Id == SoupsCategoryId), Is.EqualTo(1));

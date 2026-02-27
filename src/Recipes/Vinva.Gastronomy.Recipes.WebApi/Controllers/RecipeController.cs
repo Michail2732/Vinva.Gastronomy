@@ -3,23 +3,23 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddIngredients;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddRecipeCategories;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddSteps;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.CreateRecipe;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetByFilter;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByCategory;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByIngredients;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveIngredients;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveRecipeCategory;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveSteps;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.ReorderSteps;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddCategories;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddIngredients;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddSteps;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Create;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByCategory;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByFilter;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByIngredients;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveCategory;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveIngredients;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveSteps;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.ReorderSteps;
 
 namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
 {    
     [ApiController]
     [Route("api/Recipes")]
-    //[Authorize(Roles = UserRoles.Administrator)]
+    [Authorize(Roles = UserRoles.Administrator)]
     public class RecipeController : Controller
     {
         private readonly IMediator _mediator;
@@ -74,7 +74,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
         }
 
         [HttpPost("SearchByQuery")]
-        //[Authorize(Roles = UserRoles.User)]
+        [Authorize(Roles = UserRoles.User)]
         [AllowAnonymous]
         public async Task<Result<GetRecipesByFilterQueryResponse>> SearchByQuery([FromBody]GetRecipesByFilterQuery request)
         {

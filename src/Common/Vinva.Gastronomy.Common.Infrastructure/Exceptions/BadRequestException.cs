@@ -12,7 +12,7 @@ public class BadRequestException : DomainException
 	}
 
     public BadRequestException(Error error, Exception? innerException = null)
-        : base($"{error.Code}.{error.Description}", innerException)
+        : base(error, innerException)
     {
 
     }

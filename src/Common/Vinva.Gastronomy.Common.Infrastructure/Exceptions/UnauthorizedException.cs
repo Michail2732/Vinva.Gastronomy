@@ -9,7 +9,7 @@ public class UnauthorizedException : DomainException
 
     }
 
-    public UnauthorizedException(Error error, Exception? innerException = null) : base($"{error.Code}.{error.Description}", innerException)
+    public UnauthorizedException(Error error, Exception? innerException = null) : base(error, innerException)
     {
 
     }

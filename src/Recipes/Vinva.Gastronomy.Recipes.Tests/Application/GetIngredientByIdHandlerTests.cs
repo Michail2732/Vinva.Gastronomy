@@ -1,6 +1,7 @@
-﻿using Vinva.Gastronomy.Common.Infrastructure.Results;
+﻿using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Recipes.Application.Constants;
-using Vinva.Gastronomy.Recipes.Application.IngredientUsecases.GetIngredientById;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.GetById;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -17,11 +18,10 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             var result = await handler.Handle(request, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.Ingredient, Is.Not.Null);
-            Assert.That(result.Value.Ingredient.Id, Is.EqualTo(ExistingIngredientId));
-            Assert.That(result.Value.Ingredient.Name, Is.Not.Null.And.Not.Empty);
+            
+            Assert.That(result.Ingredient, Is.Not.Null);
+            Assert.That(result.Ingredient.Id, Is.EqualTo(ExistingIngredientId));
+            Assert.That(result.Ingredient.Name, Is.Not.Null.And.Not.Empty);
         }
 
         [Test]
@@ -30,11 +30,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             var handler = new GetIngredientByIdHandler(DbContext);
             var request = new GetIngredientByIdRequest { IngredientId = Guid.NewGuid() };
 
-            var result = await handler.Handle(request, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Error.Code, Is.EqualTo(RecipesApplicationErrors.IngredientNotFound(request.IngredientId).Code));
+            Assert.ThrowsAsync<NotFoundException>(async () =>
+               await handler.Handle(request, CancellationToken.None));
         }
 
         [Test]
@@ -45,9 +42,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             var result = await handler.Handle(request, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.Ingredient.Categories, Is.Not.Null);
+           
+            Assert.That(result.Ingredient.Categories, Is.Not.Null);
         }
 
         [Test]
@@ -59,10 +55,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             var result = await handler.Handle(request, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.Ingredient.Id, Is.EqualTo(cheeseId));
-            Assert.That(result.Value.Ingredient.Name, Is.Not.Null.And.Not.Empty);
+            
+            Assert.That(result.Ingredient.Id, Is.EqualTo(cheeseId));
+            Assert.That(result.Ingredient.Name, Is.Not.Null.And.Not.Empty);
         }
     }
 }

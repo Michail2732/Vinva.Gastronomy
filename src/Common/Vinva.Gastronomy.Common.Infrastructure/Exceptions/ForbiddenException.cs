@@ -1,3 +1,16 @@
-﻿namespace Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+﻿using Vinva.Gastronomy.Common.Infrastructure.Results;
 
-public class ForbiddenException(string? message = null, Exception? innerException = null) : DomainException(message, innerException);
+namespace Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+
+public class ForbiddenException : DomainException
+{
+    public ForbiddenException(string? message = null, Exception? innerException = null) : base(message, innerException)
+    {
+
+    }
+
+    public ForbiddenException(Error error, Exception? innerException = null) : base(error, innerException)
+    {
+
+    }
+}

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
 using Vinva.Gastronomy.Recipes.Application.Common;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddSteps;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddSteps;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -24,10 +24,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 ]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);            
 
             await DbContext.Entry(DbContext.Recipes.Find(ExistingRecipeId)!)
                 .Collection(r => r.Steps)
@@ -62,10 +59,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 Steps = [new RecipeStepDto { Description = "", SeqNumber = 1 }]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
+            var ex = Assert.Catch<BadRequestException>(async () => await handler.Handle(command, CancellationToken.None));
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(ex, Is.Not.Null);            
         }
 
         [Test]
@@ -78,10 +74,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 Steps = []
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
+            var ex = Assert.Catch<BadRequestException>(async () => await handler.Handle(command, CancellationToken.None));
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(ex, Is.Not.Null);            
         }
 
         [Test]
@@ -94,10 +89,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 Steps = [new RecipeStepDto { Description = "Single step description.", Comment = "Optional.", SeqNumber = 999}]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);
+            
             var recipe = await DbContext.Recipes.Include(r => r.Steps).FirstAsync(r => r.Id == ExistingRecipeId);
             var lastStep = recipe.Steps.LastOrDefault();
             Assert.That(lastStep, Is.Not.Null);
@@ -119,10 +112,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 ]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);
+            
             var recipe = await DbContext.Recipes.Include(r => r.Steps).FirstAsync(r => r.Id == ExistingRecipeId);
             var lastStepIndex = recipe.Steps.Count - 1;
             Assert.That(recipe.Steps[lastStepIndex-2].Description == "First.", Is.True);

@@ -1,5 +1,6 @@
-﻿using Vinva.Gastronomy.Common.Infrastructure.Results;
-using Vinva.Gastronomy.Recipes.Application.IngredientUsecases.CreateIngredient;
+﻿using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Infrastructure.Results;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Create;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -18,12 +19,10 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
+            
+            Assert.That(result.IngredientId, Is.Not.EqualTo(Guid.Empty));
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.IngredientId, Is.Not.EqualTo(Guid.Empty));
-
-            var created = await DbContext.Ingredients.FindAsync(result.Value.IngredientId);
+            var created = await DbContext.Ingredients.FindAsync(result.IngredientId);
             Assert.That(created, Is.Not.Null);
             Assert.That(created!.Name, Is.EqualTo("New Ingredient"));
         }
@@ -36,12 +35,10 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             {
                 Name = "",
                 Description = "Valid description."
-            };
+            };            
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(async () =>
+                await handler.Handle(command, CancellationToken.None));            
         }
 
         [Test]
@@ -54,10 +51,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 Description = ""
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(async () =>
+                await handler.Handle(command, CancellationToken.None));
         }
 
         [Test]
@@ -72,10 +67,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            var created = await DbContext.Ingredients.FindAsync(result.Value.IngredientId);
+            
+            var created = await DbContext.Ingredients.FindAsync(result.IngredientId);
             Assert.That(created, Is.Not.Null);
             Assert.That(created!.UsageComment, Is.Null);
         }

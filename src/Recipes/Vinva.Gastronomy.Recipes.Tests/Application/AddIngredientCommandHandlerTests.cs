@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
 using Vinva.Gastronomy.Recipes.Application.Common;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.AddIngredients;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddIngredients;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -30,10 +30,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 ]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);            
 
             var recipe = await DbContext.Recipes.Include(r => r.Ingredients).FirstAsync(r => r.Id == ExistingRecipeId);
             Assert.That(recipe.Ingredients.Any(i => i.IngredientId == ExistingIngredientId), Is.True);
@@ -114,10 +111,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 ]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);
+            
             var recipe = await DbContext.Recipes.Include(r => r.Ingredients).FirstAsync(r => r.Id == omeletteRecipeId);
             Assert.That(recipe.Ingredients.Any(i => i.IngredientId == flourId), Is.True);
             Assert.That(recipe.Ingredients.Any(i => i.IngredientId == sugarId), Is.True);
@@ -133,10 +128,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 Ingredients = []
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
+            var ex = Assert.Catch<BadRequestException>( async () => await handler.Handle(command, CancellationToken.None));
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(ex, Is.Not.Null);            
         }
 
         [Test]
@@ -158,10 +152,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 ]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
+            await handler.Handle(command, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            
             var recipe = await DbContext.Recipes.Include(r => r.Ingredients).FirstAsync(r => r.Id == ExistingRecipeId);
             var added = recipe.Ingredients.First(i => i.IngredientId == ExistingIngredientId);
             Assert.That(added.IsRequired, Is.True);

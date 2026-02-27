@@ -1,3 +1,16 @@
-﻿namespace Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+﻿using Vinva.Gastronomy.Common.Infrastructure.Results;
 
-public class NotFoundException(string? message = null, Exception? innerException = null) : DomainException(message, innerException);
+namespace Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+
+public class NotFoundException : DomainException
+{
+    public NotFoundException(string? message = null, Exception? innerException = null) : base(message, innerException)
+    {
+
+    }
+
+    public NotFoundException(Error error, Exception? innerException = null) : base(error, innerException)
+    {
+
+    }
+}

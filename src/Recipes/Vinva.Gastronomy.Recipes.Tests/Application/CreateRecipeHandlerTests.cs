@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.CreateRecipe;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Create;
 using Vinva.Gastronomy.Recipes.Persistence;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
@@ -21,13 +22,11 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
+            
+            Assert.That(result.RecipeId, Is.Not.EqualTo(Guid.Empty));
+            Assert.That(result.Name, Is.EqualTo("Test Recipe"));
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.RecipeId, Is.Not.EqualTo(Guid.Empty));
-            Assert.That(result.Value.Name, Is.EqualTo("Test Recipe"));
-
-            var created = await DbContext.Recipes.FindAsync(result.Value.RecipeId);
+            var created = await DbContext.Recipes.FindAsync(result.RecipeId);
             Assert.That(created, Is.Not.Null);
             Assert.That(created!.Name, Is.EqualTo("Test Recipe"));
             Assert.That(created.Description, Is.EqualTo("Test description for recipe."));
@@ -44,10 +43,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CookingTime = TimeSpan.FromMinutes(30)
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(async () =>
+                await handler.Handle(command, CancellationToken.None));
         }
 
         [Test]
@@ -61,10 +59,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CookingTime = TimeSpan.Zero
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(async () =>
+                await handler.Handle(command, CancellationToken.None));
         }
 
         [Test]
@@ -78,10 +74,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CookingTime = TimeSpan.FromMinutes(30)
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(async () =>
+                await handler.Handle(command, CancellationToken.None));
         }
 
         [Test]
@@ -102,9 +96,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             var result = await handler.Handle(command, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            var created = await DbContext.Recipes.FindAsync(result.Value.RecipeId);
+            
+            var created = await DbContext.Recipes.FindAsync(result.RecipeId);
             Assert.That(created, Is.Not.Null);
             Assert.That(created!.BaseRecipe, Is.EqualTo(baseRecipeId));
             Assert.That(created.Comment, Is.EqualTo("Comment text."));
@@ -125,10 +118,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             var result = await handler.Handle(command, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.RecipeId, Is.Not.EqualTo(Guid.Empty));
-            Assert.That(result.Value.Name, Is.EqualTo("Minimal Recipe"));
+            
+            Assert.That(result.RecipeId, Is.Not.EqualTo(Guid.Empty));
+            Assert.That(result.Name, Is.EqualTo("Minimal Recipe"));
         }
     }
 }

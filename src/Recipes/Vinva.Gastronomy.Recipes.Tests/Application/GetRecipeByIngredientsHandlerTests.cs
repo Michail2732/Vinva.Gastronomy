@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByIngredients;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByIngredients;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -32,15 +32,12 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
-            Assert.That(result.Value.Recipes.Count, Is.GreaterThan(0));
+            // Assert            
+            Assert.That(result.Recipes, Is.Not.Null);
+            Assert.That(result.Recipes.Count, Is.GreaterThan(0));
             
             // Verify all returned recipes have the flour ingredient
-            var allHaveFlour = result.Value.Recipes.All(r =>
+            var allHaveFlour = result.Recipes.All(r =>
                 r.Ingredients.Any(i => i.IngredientId == FlourIngredientId));
             Assert.That(allHaveFlour, Is.True);
         }
@@ -60,15 +57,12 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
-            Assert.That(result.Value.Recipes.Count, Is.GreaterThan(0));
+            // Assert                        
+            Assert.That(result.Recipes, Is.Not.Null);
+            Assert.That(result.Recipes.Count, Is.GreaterThan(0));
             
             // Verify all returned recipes have at least one of the ingredients
-            var allHaveAtLeastOneIngredient = result.Value.Recipes.All(r =>
+            var allHaveAtLeastOneIngredient = result.Recipes.All(r =>
                 r.Ingredients.Any(i => i.IngredientId == FlourIngredientId || i.IngredientId == CheeseIngredientId));
             Assert.That(allHaveAtLeastOneIngredient, Is.True);
         }
@@ -88,14 +82,11 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
+            // Assert                        
+            Assert.That(result.Recipes, Is.Not.Null);
             
             // Verify all returned recipes have all three ingredients
-            var allHaveAllIngredients = result.Value.Recipes.All(r =>
+            var allHaveAllIngredients = result.Recipes.All(r =>
                 r.Ingredients.Any(i => i.IngredientId == FlourIngredientId) &&
                 r.Ingredients.Any(i => i.IngredientId == EggsIngredientId) &&
                 r.Ingredients.Any(i => i.IngredientId == MilkIngredientId));
@@ -117,14 +108,11 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
+            // Assert           
+            Assert.That(result.Recipes, Is.Not.Null);
             
             // Verify no returned recipes have the excluded ingredient
-            var noneHaveExcludedIngredient = result.Value.Recipes.All(r =>
+            var noneHaveExcludedIngredient = result.Recipes.All(r =>
                 !r.Ingredients.Any(i => i.IngredientId == FlourIngredientId));
             Assert.That(noneHaveExcludedIngredient, Is.True);
         }
@@ -144,14 +132,11 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
+            // Assert            
+            Assert.That(result.Recipes, Is.Not.Null);
             
             // Verify all returned recipes have eggs but not flour
-            var allMatchConditions = result.Value.Recipes.All(r =>
+            var allMatchConditions = result.Recipes.All(r =>
                 r.Ingredients.Any(i => i.IngredientId == EggsIngredientId) &&
                 !r.Ingredients.Any(i => i.IngredientId == FlourIngredientId));
             Assert.That(allMatchConditions, Is.True);

@@ -1,3 +1,18 @@
-﻿namespace Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+﻿using Vinva.Gastronomy.Common.Infrastructure.Results;
 
-public abstract class DomainException(string? message = null, Exception? innerException = null) : Exception(message, innerException);
+namespace Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+
+public abstract class DomainException : Exception
+{
+    public DomainException(string? message = null, Exception? innerException = null)
+        : base(message, innerException)
+    {
+
+    }
+
+    public DomainException(Error error, Exception? innerException = null)
+        : base($"{error.Code}.{error.Description}", innerException)
+    {
+
+    }
+}

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Infrastructure.Results;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByCategory;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.GetRecipeByIngredients;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByCategory;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -31,15 +30,12 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
-            Assert.That(result.Value.Recipes.Count, Is.GreaterThan(0));
+            // Assert                        
+            Assert.That(result.Recipes, Is.Not.Null);
+            Assert.That(result.Recipes.Count, Is.GreaterThan(0));
             
-            // Verify all returned recipes have the desserts category
-            var allHaveDessertsCategory = result.Value.Recipes.All(r =>
+            
+            var allHaveDessertsCategory = result.Recipes.All(r =>
                 r.Categories.Any(c => c.Id == DessertsCategoryId));
             Assert.That(allHaveDessertsCategory, Is.True);
         }
@@ -59,15 +55,12 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
-            Assert.That(result.Value.Recipes.Count, Is.GreaterThan(0));
+            // Assert                        
+            Assert.That(result.Recipes, Is.Not.Null);
+            Assert.That(result.Recipes.Count, Is.GreaterThan(0));
             
-            // Verify all returned recipes have at least one of the categories
-            var allHaveAtLeastOneCategory = result.Value.Recipes.All(r =>
+            
+            var allHaveAtLeastOneCategory = result.Recipes.All(r =>
                 r.Categories.Any(c => c.Id == DessertsCategoryId || c.Id == BreakfastsCategoryId));
             Assert.That(allHaveAtLeastOneCategory, Is.True);
         }
@@ -87,14 +80,11 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
+            // Assert                        
+            Assert.That(result.Recipes, Is.Not.Null);
             
             // Verify all returned recipes have both categories
-            var allHaveBothCategories = result.Value.Recipes.All(r =>
+            var allHaveBothCategories = result.Recipes.All(r =>
                 r.Categories.Any(c => c.Id == DessertsCategoryId) &&
                 r.Categories.Any(c => c.Id == BreakfastsCategoryId));
             Assert.That(allHaveBothCategories, Is.True);
@@ -115,14 +105,11 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
+            // Assert            
+            Assert.That(result.Recipes, Is.Not.Null);
             
             // Verify no returned recipes have the excluded category
-            var noneHaveExcludedCategory = result.Value.Recipes.All(r =>
+            var noneHaveExcludedCategory = result.Recipes.All(r =>
                 !r.Categories.Any(c => c.Id == DessertsCategoryId));
             Assert.That(noneHaveExcludedCategory, Is.True);
         }
@@ -142,14 +129,11 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
+            // Assert            
+            Assert.That(result.Recipes, Is.Not.Null);
             
             // Verify all returned recipes have breakfast category but not desserts
-            var allMatchConditions = result.Value.Recipes.All(r =>
+            var allMatchConditions = result.Recipes.All(r =>
                 r.Categories.Any(c => c.Id == BreakfastsCategoryId) &&
                 !r.Categories.Any(c => c.Id == DessertsCategoryId));
             Assert.That(allMatchConditions, Is.True);
@@ -170,14 +154,11 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
+            // Assert            
+            Assert.That(result.Recipes, Is.Not.Null);
             
-            // Should return all recipes from test data (4 recipes)
-            Assert.That(result.Value.Recipes.Count, Is.EqualTo(4));
+            
+            Assert.That(result.Recipes.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -196,12 +177,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
-            Assert.That(result.Value.Recipes.Count, Is.EqualTo(0));
+            // Assert            
+            Assert.That(result.Recipes, Is.Not.Null);
+            Assert.That(result.Recipes.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -219,14 +197,11 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value == default, Is.False);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
+            // Assert            
+            Assert.That(result.Recipes, Is.Not.Null);
             
             // Verify recipes have all required data populated
-            foreach (var recipe in result.Value.Recipes)
+            foreach (var recipe in result.Recipes)
             {
                 Assert.That(recipe.Id, Is.Not.EqualTo(Guid.Empty));
                 Assert.That(recipe.Name, Is.Not.Null.And.Not.Empty);
@@ -248,12 +223,10 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             var result = await handler.Handle(request, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
-            Assert.That(result.Value.Recipes.Count, Is.EqualTo(1));
-            Assert.That(result.Value.Recipes[0].Categories.Any(c => c.Id == SoupsCategoryId), Is.True);
+            
+            Assert.That(result.Recipes, Is.Not.Null);
+            Assert.That(result.Recipes.Count, Is.EqualTo(1));
+            Assert.That(result.Recipes[0].Categories.Any(c => c.Id == SoupsCategoryId), Is.True);
         }
 
         [Test]
@@ -269,10 +242,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             var result = await handler.Handle(request, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
-            Assert.That(result.Value.Recipes.Count, Is.EqualTo(1));
+            
+            Assert.That(result.Recipes, Is.Not.Null);
+            Assert.That(result.Recipes.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -288,10 +260,9 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             var result = await handler.Handle(request, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
-            var allHaveDesserts = result.Value.Recipes.All(r =>
+            
+            Assert.That(result.Recipes, Is.Not.Null);
+            var allHaveDesserts = result.Recipes.All(r =>
                 r.Categories.Any(c => c.Id == DessertsCategoryId));
             Assert.That(allHaveDesserts, Is.True);
         }
@@ -309,11 +280,10 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             var result = await handler.Handle(request, CancellationToken.None);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.Recipes, Is.Not.Null);
+            
+            Assert.That(result.Recipes, Is.Not.Null);
             var blinyRecipeId = Guid.Parse("33333333-3333-3333-3333-333333333331");
-            var blinyInResult = result.Value.Recipes.Any(r => r.Id == blinyRecipeId);
+            var blinyInResult = result.Recipes.Any(r => r.Id == blinyRecipeId);
             Assert.That(blinyInResult, Is.False);
         }
     }

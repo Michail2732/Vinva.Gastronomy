@@ -1,6 +1,7 @@
-﻿using Vinva.Gastronomy.Common.Infrastructure.Results;
-using Vinva.Gastronomy.Recipes.Application.CategoryUsecases.CreateCategory;
+﻿using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Recipes.Application.Common;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Categories.CreateCategory;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -20,12 +21,10 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
+            
+            Assert.That(result.CategoryId, Is.Not.EqualTo(Guid.Empty));
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.CategoryId, Is.Not.EqualTo(Guid.Empty));
-
-            var created = await DbContext.Categories.FindAsync(result.Value.CategoryId);
+            var created = await DbContext.Categories.FindAsync(result.CategoryId);
             Assert.That(created, Is.Not.Null);
             Assert.That(created!.Name, Is.EqualTo("New Category"));
         }
@@ -42,10 +41,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.CategoryId, Is.Not.EqualTo(Guid.Empty));
+            
+            Assert.That(result.CategoryId, Is.Not.EqualTo(Guid.Empty));
         }
 
         [Test]
@@ -59,10 +56,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 Type = CategoryDtoType.Recipe
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(async () =>
+                await handler.Handle(command, CancellationToken.None));
         }
 
         [Test]
@@ -76,10 +71,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 Type = CategoryDtoType.Recipe
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(async () =>
+                await handler.Handle(command, CancellationToken.None));            
         }
 
         [Test]
@@ -95,10 +88,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
-            var created = await DbContext.Categories.FindAsync(result.Value.CategoryId);
+            
+            var created = await DbContext.Categories.FindAsync(result.CategoryId);
             Assert.That(created, Is.Not.Null);
             Assert.That(created!.Comment, Is.Null);
         }
