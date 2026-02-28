@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UUIDNext;
 using Vinva.Gastronomy.Common.Entities;
+using Vinva.Gastronomy.Common.Services;
 
 namespace Vinva.Gastronomy.Common
 {
@@ -26,7 +27,7 @@ namespace Vinva.Gastronomy.Common
         internal static bool TryGenerateId(out T field)
         {
             field = default;
-            if (typeof(T) == typeof(Guid) && Uuid.NewSequential() is T newId)
+            if (typeof(T) == typeof(Guid) && GuidProvider.Instance.Generate() is T newId)
             {
                 field = newId;
                 return true;

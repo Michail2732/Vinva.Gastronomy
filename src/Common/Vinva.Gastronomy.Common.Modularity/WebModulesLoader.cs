@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vinva.Gastronomy.Common.Modularity.MediatR;
 
 namespace Vinva.Gastronomy.Common.Modularity
 {
@@ -26,6 +27,8 @@ namespace Vinva.Gastronomy.Common.Modularity
             {
                 var assemblies = _modules.SelectMany(a => a.Assemblies).ToArray();
                 cfg.RegisterServicesFromAssemblies(assemblies);
+                cfg.AddOpenBehavior(typeof(LoggingMediatRBehavior<,>));
+                cfg.AddOpenBehavior(typeof(ValidationMediatRBehavior<,>));
             });
 
             var mvcBuilder = collection.AddControllers();

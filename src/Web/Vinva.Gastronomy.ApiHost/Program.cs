@@ -1,10 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using Vinva.Gastronomy.Common.Modularity;
-using Vinva.Gastronomy.Identity.Persistence;
 using Vinva.Gastronomy.Identity.WebApi;
-using Vinva.Gastronomy.Recipes.Application.Common;
-using Vinva.Gastronomy.Recipes.Persistence;
 using Vinva.Gastronomy.Recipes.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);

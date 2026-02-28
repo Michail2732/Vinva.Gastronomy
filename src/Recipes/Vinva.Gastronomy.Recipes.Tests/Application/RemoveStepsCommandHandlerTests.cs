@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveSteps;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveSteps;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -23,10 +23,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 SeqNumbers = [2]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);            
 
             await DbContext.Entry(DbContext.Recipes.Find(RecipeWithStepsId)!)
                 .Collection(r => r.Steps)
@@ -64,10 +61,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 SeqNumbers = [1, 3]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);
+            
             var recipeAfter = await DbContext.Recipes.Include(r => r.Steps).FirstAsync(r => r.Id == RecipeWithStepsId);
             Assert.That(recipeAfter.Steps.Count, Is.EqualTo(countBefore - 2));
             Assert.That(recipeAfter.Steps.Any(s => s.SeqNumber == 1), Is.False);
@@ -84,10 +79,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 SeqNumbers = []
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(() => handler.Handle(command, CancellationToken.None));            
         }
     }
 }

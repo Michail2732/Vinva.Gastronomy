@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveRecipeCategory;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveCategory;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -24,10 +24,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CategoryIds = [BreakfastsCategoryId]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);            
 
             var recipeAfter = await DbContext.Recipes.Include(r => r.Categories).FirstAsync(r => r.Id == RecipeId);
             Assert.That(recipeAfter.Categories.Count, Is.EqualTo(countBefore - 1));
@@ -58,10 +55,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CategoryIds = []
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(() => handler.Handle(command, CancellationToken.None));            
         }
 
         [Test]
@@ -80,10 +74,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 CategoryIds = [BreakfastsCategoryId, dessertsId]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);
+            
             var recipeAfter = await DbContext.Recipes.Include(r => r.Categories).FirstAsync(r => r.Id == RecipeId);
             Assert.That(recipeAfter.Categories.Count, Is.EqualTo(countBefore - 2));
             Assert.That(recipeAfter.Categories.Any(c => c.Id == BreakfastsCategoryId), Is.False);

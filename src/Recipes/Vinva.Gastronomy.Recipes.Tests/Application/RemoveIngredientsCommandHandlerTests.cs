@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Recipes.Application.RecipeUsecases.RemoveIngredients;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveIngredients;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
 {
@@ -24,10 +24,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 IngredientIds = [IngredientInRecipeId]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);            
 
             var recipeAfter = await DbContext.Recipes.Include(r => r.Ingredients).FirstAsync(r => r.Id == RecipeWithIngredientsId);
             Assert.That(recipeAfter.Ingredients.Count, Is.EqualTo(countBefore - 1));
@@ -65,10 +62,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 IngredientIds = [flourId, sugarId]
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.True);
+            await handler.Handle(command, CancellationToken.None);
+            
             var recipeAfter = await DbContext.Recipes.Include(r => r.Ingredients).FirstAsync(r => r.Id == RecipeWithIngredientsId);
             Assert.That(recipeAfter.Ingredients.Count, Is.EqualTo(countBefore - 2));
             Assert.That(recipeAfter.Ingredients.Any(i => i.IngredientId == flourId), Is.False);
@@ -85,10 +80,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                 IngredientIds = []
             };
 
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.IsSuccess, Is.False);
+            Assert.ThrowsAsync<BadRequestException>(() => handler.Handle(command, CancellationToken.None));            
         }
     }
 }
