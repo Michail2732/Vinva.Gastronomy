@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using Vinva.Gastronomy.Common.Modularity;
+using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Identity.WebApi;
 using Vinva.Gastronomy.Recipes.WebApi;
 
@@ -11,7 +12,7 @@ var moduleLoader = new WebModulesLoader(new List<IWebModule>
     new RecipeWebModule()
 });
 moduleLoader.RegisterServices(builder, builder.Configuration);
-
+builder.Services.AddSingleton(GuidProvider.Instance);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {

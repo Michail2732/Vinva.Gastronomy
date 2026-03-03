@@ -9,7 +9,7 @@ using Vinva.Gastronomy.Recipes.Domain.Validations;
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
     [DisplayName("Полная информация о рецепте")]
-    public class Recipe : DescriptiveEntityOfT<Guid>, IAggregateRoot
+    public class Recipe : DescriptiveSoftDeleteEntityOfT<Guid>, IAggregateRoot
     {
         private readonly List<Category> _recipeCategories = new();
         private readonly List<RecipeStep> _recipeSteps = new();
@@ -19,7 +19,7 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         private string? storageComment;
         private string? usageComment;
 
-
+        
         public Guid? BaseRecipe { get; private set; }
 
         public Guid? PhotoId { get; set; }
@@ -86,8 +86,8 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
 
             _recipeSteps.Add(newStep);
             return this; 
-        }    
-        
+        }                    
+
         public void ChangeStepOrder(int seqNumber1, int seqNumber2)
         {
             var step1 = _recipeSteps.FirstOrDefault(a => a.SeqNumber == seqNumber1);

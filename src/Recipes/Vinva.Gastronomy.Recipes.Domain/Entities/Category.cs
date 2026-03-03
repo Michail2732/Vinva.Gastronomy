@@ -9,7 +9,7 @@ using Vinva.Gastronomy.Common.Entities;
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
 
-    public class Category : DescriptiveEntityOfT<Guid>
+    public class Category : DescriptiveSoftDeleteEntityOfT<Guid>
     {
         public CategoryType Type { get; private set; }
 

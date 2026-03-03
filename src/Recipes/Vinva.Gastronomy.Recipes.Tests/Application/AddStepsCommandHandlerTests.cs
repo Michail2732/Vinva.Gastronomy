@@ -37,44 +37,41 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
         [Test]
         public void Handle_WithNonExistentRecipeId_ShouldThrowBadRequestException()
-        {
-            var handler = new AddStepsCommandHandler(DbContext);
+        {            
             var command = new AddStepsCommand
             {
                 RecipeId = Guid.NewGuid(),
                 Steps = [new RecipeStepDto { Description = "Valid step.", SeqNumber = 1 }]
             };
 
-            Assert.ThrowsAsync<BadRequestException>(async () =>
-                await handler.Handle(command, CancellationToken.None));
+            Assert.ThrowsAsync<NotFoundException>(async () =>
+                await Mediator.Send(command, CancellationToken.None));
         }
 
         [Test]
         public async Task Handle_WithInvalidStepDescription_ShouldReturnValidationFailure()
-        {
-            var handler = new AddStepsCommandHandler(DbContext);
+        {            
             var command = new AddStepsCommand
             {
                 RecipeId = ExistingRecipeId,
                 Steps = [new RecipeStepDto { Description = "", SeqNumber = 1 }]
             };
 
-            var ex = Assert.Catch<BadRequestException>(async () => await handler.Handle(command, CancellationToken.None));
+            var ex = Assert.ThrowsAsync<BadRequestException>(async () => await Mediator.Send(command, CancellationToken.None));
 
             Assert.That(ex, Is.Not.Null);            
         }
 
         [Test]
         public async Task Handle_WithEmptySteps_ShouldReturnValidationFailure()
-        {
-            var handler = new AddStepsCommandHandler(DbContext);
+        {            
             var command = new AddStepsCommand
             {
                 RecipeId = ExistingRecipeId,
                 Steps = []
             };
 
-            var ex = Assert.Catch<BadRequestException>(async () => await handler.Handle(command, CancellationToken.None));
+            var ex = Assert.ThrowsAsync<BadRequestException>(async () => await Mediator.Send(command, CancellationToken.None));
 
             Assert.That(ex, Is.Not.Null);            
         }

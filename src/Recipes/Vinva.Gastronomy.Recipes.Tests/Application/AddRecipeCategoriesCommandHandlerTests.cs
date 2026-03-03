@@ -31,15 +31,14 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
         [Test]
         public void Handle_WithNonExistentRecipeId_ShouldThrowBadRequestException()
-        {
-            var handler = new AddRecipeCategoriesCommandHandler(DbContext);
+        {            
             var command = new AddRecipeCategoriesCommand
             {
                 RecipeId = Guid.NewGuid(),
                 CategoryIds = [SoupsCategoryId]
             };
 
-            var ex = Assert.ThrowsAsync<BadRequestException>(async () => await handler.Handle(command, CancellationToken.None));
+            var ex = Assert.ThrowsAsync<NotFoundException>(async () => await Mediator.Send(command, CancellationToken.None));
 
             Assert.That(ex, Is.Not.Null);
         }
@@ -83,15 +82,14 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
         [Test]
         public async Task Handle_WithEmptyCategoryIds_ShouldReturnValidationFailure()
-        {
-            var handler = new AddRecipeCategoriesCommandHandler(DbContext);
+        {            
             var command = new AddRecipeCategoriesCommand
             {
                 RecipeId = RecipeId,
                 CategoryIds = []
             };
 
-            var ex = Assert.Catch<BadRequestException>(async () => await handler.Handle(command, CancellationToken.None));
+            var ex = Assert.ThrowsAsync<BadRequestException>(async () => await Mediator.Send(command, CancellationToken.None));
             Assert.That(ex, Is.Not.Null);
         }
 

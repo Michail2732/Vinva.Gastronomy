@@ -1,9 +1,14 @@
 ﻿using System;
 using System.IO;
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Vinva.Gastronomy.Common.Modularity.MediatR;
+using Vinva.Gastronomy.Common.Services;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes;
 using Vinva.Gastronomy.Recipes.Persistence;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
@@ -13,6 +18,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
         protected RecipeDbContext DbContext { get; private set; } = null!;
         protected IConfiguration Configuration { get; private set; } = null!;
         protected ServiceProvider ServiceProvider { get; private set; } = null!;
+        protected IMediator Mediator { get; private set; } = null!;
 
         [SetUp]
         public void SetupApplicationTests()
@@ -33,8 +39,24 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
                       .LogTo(Console.WriteLine, LogLevel.Information)
                       .EnableSensitiveDataLogging());
 
+            services.AddOptions(); 
+            services.AddMemoryCache(); 
+            services.AddHttpClient();
+            services.AddSingleton(a => GuidProvider.Instance);
+
+            services.AddMediatR(cfg =>
+            {                
+                cfg.RegisterServicesFromAssembly(typeof(BaseRecipeHandler).Assembly);
+                cfg.AddOpenBehavior(typeof(LoggingMediatRBehavior<,>));
+                cfg.AddOpenBehavior(typeof(ValidationMediatRBehavior<,>));
+            });
+
+            services.AddValidatorsFromAssembly(typeof(BaseRecipeHandler).Assembly);
+
             ServiceProvider = services.BuildServiceProvider();
             DbContext = ServiceProvider.GetRequiredService<RecipeDbContext>();
+
+            Mediator = ServiceProvider.GetRequiredService<IMediator>();
 
             // Clean and seed database
             var clearSqlRaw = File.ReadAllText("CleanupDb.sql");

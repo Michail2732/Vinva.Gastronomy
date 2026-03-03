@@ -15,6 +15,8 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 
             builder.HasIndex(a => a.Name)
                    .IsUnique();
+
+            builder.HasQueryFilter(b => !b.IsDeleted);
         }
     }
 }

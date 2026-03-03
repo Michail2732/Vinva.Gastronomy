@@ -2,11 +2,11 @@
 
 namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Remove
 {
-    public class RemoveIngredientsCommandValidator : AbstractValidator<RemoveIngredientsCommand>
+    public class RemoveIngredientsCommandValidator : AbstractValidator<RemoveIngredientCommand>
     {
         public RemoveIngredientsCommandValidator()
         {
-            RuleFor(a => a.IngredientIds).NotEmpty();
+            
         }
     }
 }

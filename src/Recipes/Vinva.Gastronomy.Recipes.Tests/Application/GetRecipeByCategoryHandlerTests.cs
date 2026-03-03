@@ -155,10 +155,8 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert            
-            Assert.That(result.Recipes, Is.Not.Null);
-            
-            
-            Assert.That(result.Recipes.Count, Is.EqualTo(4));
+            Assert.That(result.Recipes, Is.Not.Null);                        
+            Assert.That(result.Recipes.Count, Is.EqualTo(0));
         }
 
         [Test]

@@ -47,8 +47,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
         [Test]
         public async Task Handle_WithEmptyName_ShouldReturnValidationFailure()
-        {
-            var handler = new CreateCategoryCommandHandler(DbContext);
+        {            
             var command = new CreateCategoryCommand
             {
                 Name = "",
@@ -57,13 +56,12 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             Assert.ThrowsAsync<BadRequestException>(async () =>
-                await handler.Handle(command, CancellationToken.None));
+                await Mediator.Send(command, CancellationToken.None));
         }
 
         [Test]
         public async Task Handle_WithEmptyDescription_ShouldReturnValidationFailure()
-        {
-            var handler = new CreateCategoryCommandHandler(DbContext);
+        {            
             var command = new CreateCategoryCommand
             {
                 Name = "Valid Name",
@@ -72,7 +70,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             Assert.ThrowsAsync<BadRequestException>(async () =>
-                await handler.Handle(command, CancellationToken.None));            
+                await Mediator.Send(command, CancellationToken.None));            
         }
 
         [Test]

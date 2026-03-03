@@ -29,8 +29,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
         [Test]
         public async Task Handle_WithInvalidName_ShouldReturnValidationFailure()
-        {
-            var handler = new CreateIngredientHandler(DbContext);
+        {            
             var command = new CreateIngredientCommand
             {
                 Name = "",
@@ -38,13 +37,12 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };            
 
             Assert.ThrowsAsync<BadRequestException>(async () =>
-                await handler.Handle(command, CancellationToken.None));            
+                await Mediator.Send(command, CancellationToken.None));            
         }
 
         [Test]
         public async Task Handle_WithInvalidDescription_ShouldReturnValidationFailure()
-        {
-            var handler = new CreateIngredientHandler(DbContext);
+        {            
             var command = new CreateIngredientCommand
             {
                 Name = "Valid Name",
@@ -52,7 +50,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             };
 
             Assert.ThrowsAsync<BadRequestException>(async () =>
-                await handler.Handle(command, CancellationToken.None));
+                await Mediator.Send(command, CancellationToken.None));
         }
 
         [Test]

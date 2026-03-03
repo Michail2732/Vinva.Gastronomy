@@ -5,6 +5,6 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Categories.RemoveCategor
 {    
     public readonly record struct RemoveCategoryCommand : IRequest
     {
-        public Guid[] CategoryIds { get; init; }
+        public Guid CategoryId { get; init; }
     }
 }

@@ -24,16 +24,28 @@ namespace Vinva.Gastronomy.Common.Modularity.MediatR
             _guidProvider = guidProvider ?? throw new ArgumentNullException(nameof(guidProvider));
         }
 
-        public Task<TResponce> Handle(TRequest request, RequestHandlerDelegate<TResponce> next, CancellationToken cancellationToken)
+        public async Task<TResponce> Handle(TRequest request, RequestHandlerDelegate<TResponce> next, CancellationToken cancellationToken)
         {
             var id = _guidProvider.Generate();
             var requestJson = JsonSerializer.Serialize(request);
             _logger.LogInformation($"[{id}] {requestJson}");
-
-            var responce = next();
-
-            var responceJson = JsonSerializer.Serialize(responce);
-            _logger.LogInformation($"[{id}] {responceJson}");
+            TResponce responce = default!;
+            try
+            {
+                responce = await next();                                
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }   
+            finally
+            {
+                if (responce != null)
+                {
+                    var responceJson = JsonSerializer.Serialize(responce);
+                    _logger.LogInformation($"[{id}] {responceJson}");
+                }
+            }
             return responce;
         }
     }

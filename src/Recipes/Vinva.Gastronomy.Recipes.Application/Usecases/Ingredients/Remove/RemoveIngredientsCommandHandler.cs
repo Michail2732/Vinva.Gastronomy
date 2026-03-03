@@ -6,7 +6,7 @@ using Vinva.Gastronomy.Recipes.Persistence;
 
 namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Remove
 {
-    public sealed class RemoveIngredientsCommandHandler : IRequestHandler<RemoveIngredientsCommand>
+    public sealed class RemoveIngredientsCommandHandler : IRequestHandler<RemoveIngredientCommand>
     {
         private readonly RecipeDbContext _dbContext;
 
@@ -15,21 +15,19 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Remove
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task Handle(RemoveIngredientsCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RemoveIngredientCommand request, CancellationToken ct)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            ct.ThrowIfCancellationRequested();
 
-            var ingredientIds = request.IngredientIds.Distinct().ToList();
-            var ingredients = await _dbContext.Ingredients.Where(a => ingredientIds.Contains(a.Id))
-                                .ToListAsync();
+            var ingredientId = request.IngredientId;
+            var ingredient = await _dbContext.Ingredients.FirstOrDefaultAsync(a => a.Id == ingredientId, ct);                                
 
-            foreach (var ingredientId in ingredientIds)            
-                if (!ingredients.Any(a => a.Id == ingredientId))
-                    throw new BadRequestException(RecipesApplicationErrors.IngredientNotFound(ingredientId));
-            
+            if (ingredient == null)            
+                 throw new NotFoundException(RecipesApplicationErrors.IngredientNotFound(ingredientId));
 
-            _dbContext.Ingredients.RemoveRange(ingredients);
-            await _dbContext.SaveChangesAsync(cancellationToken);            
+            ingredient.Delete();
+            _dbContext.Ingredients.Update(ingredient);
+            await _dbContext.SaveChangesAsync(ct);            
         }
     }
 }

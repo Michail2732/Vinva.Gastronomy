@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Modularity.MediatR;
@@ -23,13 +25,17 @@ namespace Vinva.Gastronomy.Common.Modularity
         public void RegisterServices(WebApplicationBuilder webAppBuilder, IConfiguration config)
         {
             var collection = webAppBuilder.Services;
+
+            Assembly[] assemblies = _modules.SelectMany(a => a.Assemblies).ToArray();
+
             collection.AddMediatR(cfg =>
-            {
-                var assemblies = _modules.SelectMany(a => a.Assemblies).ToArray();
+            {                
                 cfg.RegisterServicesFromAssemblies(assemblies);
                 cfg.AddOpenBehavior(typeof(LoggingMediatRBehavior<,>));
                 cfg.AddOpenBehavior(typeof(ValidationMediatRBehavior<,>));
             });
+
+            collection.AddValidatorsFromAssemblies(assemblies);
 
             var mvcBuilder = collection.AddControllers();
 

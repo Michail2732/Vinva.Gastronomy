@@ -9,7 +9,7 @@ using Vinva.Gastronomy.Recipes.Domain.Validations;
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
     [DisplayName("Ингредиент")]
-    public class Ingredient: DescriptiveEntityOfT<Guid>, IAggregateRoot
+    public class Ingredient: DescriptiveSoftDeleteEntityOfT<Guid>, IAggregateRoot
     {
         private readonly List<Category> _categories = new();
         

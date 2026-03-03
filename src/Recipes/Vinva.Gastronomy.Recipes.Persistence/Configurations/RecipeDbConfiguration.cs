@@ -20,7 +20,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
             builder.HasKey(x => x.Id);
 
             builder.HasIndex(a => a.Name)
-                   .IsUnique();
+                   .IsUnique();            
 
             builder.Property(a => a.CookingComment)
                    .HasMaxLength(CommonConstants.MaxLengthComment);
@@ -50,6 +50,8 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
             builder.HasMany(a => a.Categories)
                    .WithMany()
                    .UsingEntity(a => a.ToTable("RecipeCategories"));
+
+            builder.HasQueryFilter(b => !b.IsDeleted);
         }
     }
 }

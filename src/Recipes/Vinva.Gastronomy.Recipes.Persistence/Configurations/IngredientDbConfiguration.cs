@@ -29,6 +29,8 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
             builder.HasMany(a => a.Categories)
                    .WithMany()
                    .UsingEntity(a => a.ToTable("IngredientCategories"));
+
+            builder.HasQueryFilter(b => !b.IsDeleted);
         }
     }
 }

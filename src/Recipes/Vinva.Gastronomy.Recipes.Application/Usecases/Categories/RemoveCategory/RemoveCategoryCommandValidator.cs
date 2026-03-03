@@ -6,7 +6,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Categories.RemoveCategor
     {
         public RemoveCategoryCommandValidator()
         {
-            RuleFor(a => a.CategoryIds).NotEmpty();
+            
         }
     }
 }

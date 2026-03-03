@@ -3,8 +3,8 @@ using Vinva.Gastronomy.Common.Infrastructure.Results;
 
 namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Remove
 {    
-    public readonly record struct RemoveIngredientsCommand : IRequest
+    public readonly record struct RemoveIngredientCommand : IRequest
     {
-        public Guid[] IngredientIds { get; init; }
+        public Guid IngredientId { get; init; }
     }
 }

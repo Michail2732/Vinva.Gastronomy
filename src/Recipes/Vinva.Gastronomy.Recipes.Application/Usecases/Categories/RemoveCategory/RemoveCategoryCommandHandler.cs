@@ -15,21 +15,20 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Categories.RemoveCategor
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task Handle(RemoveCategoryCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RemoveCategoryCommand request, CancellationToken ct)
         {
-            cancellationToken.ThrowIfCancellationRequested();            
+            ct.ThrowIfCancellationRequested();            
 
-            var categoryIds = request.CategoryIds.Distinct().ToList();
+            var categoryId = request.CategoryId;
 
-            var categories = await _dbContext.Categories.Where(a => categoryIds.Contains(a.Id))
-                                .ToListAsync(cancellationToken);
+            var category = await _dbContext.Categories.FirstOrDefaultAsync(a => a.Id == categoryId, ct);
 
-            foreach (var categoryId in request.CategoryIds)            
-                if (!categories.Any(a => a.Id == categoryId))
-                    throw new BadRequestException(RecipesApplicationErrors.CategoryNotFound(categoryId).Description);
+            if (category == null)
+                throw new NotFoundException(RecipesApplicationErrors.CategoryNotFound(categoryId));
 
-            _dbContext.Categories.RemoveRange(categories);
-            await _dbContext.SaveChangesAsync(cancellationToken);            
+            category.Delete();
+            _dbContext.Categories.Update(category);
+            await _dbContext.SaveChangesAsync(ct);            
         }
     }
 }
