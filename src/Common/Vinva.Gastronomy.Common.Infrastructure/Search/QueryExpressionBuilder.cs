@@ -109,7 +109,7 @@ namespace Vinva.Gastronomy.Common.Infrastructure.Filters
 
                     // Для сравнений с nullable типами
                     var convertedConstant = Expression.Constant(value, nonNullableType);
-                    var propertyValue = Expression.Property(propertyExpression, valueProperty);
+                    var propertyValue = Expression.Property(propertyExpression, valueProperty!);
 
                     return BuildComparisonExpression(propertyValue, convertedConstant, condition.Operator);
                 }
