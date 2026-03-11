@@ -11,5 +11,6 @@ namespace Vinva.Gastronomy.Common.Constants
         public const int MaxLengthName = 64;
         public const int MaxLengthDescription = 256;
         public const int MaxLengthComment = 512;
+        public const int MaxLengthPath = 256;
     }
 }

@@ -1,18 +1,20 @@
-<script setup>
-defineProps(['recipe'])
+<script setup lang="ts">
+import { RecipeDto } from '@/api/generated'; '@/api/generated/models/RecipeDto'
+
+defineProps<RecipeDto>()
 defineEmits(['icon-click'])
 </script>
 
 <template >
     <div class="recipe-card">    
         <div class="recipe-image">
-            <img  :src="recipe.image" 
-                  :alt="recipe.title"
+            <img  :src="photoId" 
+                  :alt="name"
                   class="img-fluid">
         </div>        
         <div class="recipe-footer">
-            <span class="recipe-title">{{ recipe.title }}</span>
-            <button class="recipe-icon-btn" @click="$emit('icon-click', recipe.title)">
+            <span class="recipe-title">{{ name }}</span>
+            <button class="recipe-icon-btn" @click="$emit('icon-click', name)">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>

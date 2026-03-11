@@ -33,9 +33,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.We
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{8266E64A-0B97-4FA6-B0F5-E19A2FAF82EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.ApiHost", "src\Web\Vinva.Gastronomy.ApiHost\Vinva.Gastronomy.ApiHost.csproj", "{6EAA793D-779F-4A43-8000-0B476706F16E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.ApiHost", "src\Web\Vinva.Gastronomy.ApiHost\Vinva.Gastronomy.ApiHost.csproj", "{6EAA793D-779F-4A43-8000-0B476706F16E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Common.Modularity", "src\Common\Vinva.Gastronomy.Common.Modularity\Vinva.Gastronomy.Common.Modularity.csproj", "{639CA723-AD4F-4B38-874D-C9504F9E49C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Common.Modularity", "src\Common\Vinva.Gastronomy.Common.Modularity\Vinva.Gastronomy.Common.Modularity.csproj", "{639CA723-AD4F-4B38-874D-C9504F9E49C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Media", "Media", "{F096D05C-7551-43FF-8F3E-FA132517484D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Media.Domain", "src\Media\Vinva.Gastronomy.Media.Domain\Vinva.Gastronomy.Media.Domain.csproj", "{3F7EB579-4E78-4528-B63E-125D69770435}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Media.Persistence", "src\Media\Vinva.Gastronomy.Media.Persistence\Vinva.Gastronomy.Media.Persistence.csproj", "{C5858E23-518D-4136-8941-2EF1D3402A82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Media.Application", "src\Media\Vinva.Gastronomy.Media.Application\Vinva.Gastronomy.Media.Application.csproj", "{6EFFCD24-C175-4F07-97BA-DF58133F0C54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +103,18 @@ Global
 		{639CA723-AD4F-4B38-874D-C9504F9E49C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{639CA723-AD4F-4B38-874D-C9504F9E49C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{639CA723-AD4F-4B38-874D-C9504F9E49C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F7EB579-4E78-4528-B63E-125D69770435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F7EB579-4E78-4528-B63E-125D69770435}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F7EB579-4E78-4528-B63E-125D69770435}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F7EB579-4E78-4528-B63E-125D69770435}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5858E23-518D-4136-8941-2EF1D3402A82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5858E23-518D-4136-8941-2EF1D3402A82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5858E23-518D-4136-8941-2EF1D3402A82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5858E23-518D-4136-8941-2EF1D3402A82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EFFCD24-C175-4F07-97BA-DF58133F0C54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EFFCD24-C175-4F07-97BA-DF58133F0C54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EFFCD24-C175-4F07-97BA-DF58133F0C54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EFFCD24-C175-4F07-97BA-DF58133F0C54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +133,9 @@ Global
 		{40BB1766-3407-45CB-8CB1-0ECE9122A980} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
 		{6EAA793D-779F-4A43-8000-0B476706F16E} = {8266E64A-0B97-4FA6-B0F5-E19A2FAF82EE}
 		{639CA723-AD4F-4B38-874D-C9504F9E49C5} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{3F7EB579-4E78-4528-B63E-125D69770435} = {F096D05C-7551-43FF-8F3E-FA132517484D}
+		{C5858E23-518D-4136-8941-2EF1D3402A82} = {F096D05C-7551-43FF-8F3E-FA132517484D}
+		{6EFFCD24-C175-4F07-97BA-DF58133F0C54} = {F096D05C-7551-43FF-8F3E-FA132517484D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D0A805C-E161-43EB-893E-A4C934EBBC51}
