@@ -10,13 +10,13 @@ using Vinva.Gastronomy.Media.Domain.Entities;
 
 namespace Vinva.Gastronomy.Media.Persistence.Configurations
 {
-    public class MediaFileDbConfiguration : IEntityTypeConfiguration<MediaFile>
+    public class MediaFileDbConfiguration : IEntityTypeConfiguration<MediaItem>
     {
-        public void Configure(EntityTypeBuilder<MediaFile> builder)
+        public void Configure(EntityTypeBuilder<MediaItem> builder)
         {
             builder.HasKey(a => a.Id);
 
-            builder.Property(a => a.StoragePath)
+            builder.Property(a => a.Path)
                 .HasMaxLength(CommonConstants.MaxLengthPath)
                 .IsRequired();
 

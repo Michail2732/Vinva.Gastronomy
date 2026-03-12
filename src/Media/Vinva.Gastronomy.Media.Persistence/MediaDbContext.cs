@@ -6,7 +6,7 @@ namespace Vinva.Gastronomy.Media.Persistence
 {
     public class MediaDbContext: DbContext
     {
-        public DbSet<MediaFile> Files { get; init; }
+        public DbSet<MediaItem> Files { get; init; }
 
         public MediaDbContext(DbContextOptions<MediaDbContext> options): base(options)
         {

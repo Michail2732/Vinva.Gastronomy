@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Vinva.Gastronomy.Media.Domain.Entities
 {
-    public enum MediaFileState
+    public enum MediaItemState
     {
         None,
         Uploading,
