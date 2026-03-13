@@ -12,6 +12,8 @@ namespace Vinva.Gastronomy.Media.Domain.Services
         Task<string> UploadAsync(Stream itemStream, string name, CancellationToken ct = default);        
         Task<Stream> DownloadAsync(string path, CancellationToken ct = default);        
         Task DeleteAsync(string path, CancellationToken ct = default);
-        Task<string> GetUrlAsync(string path);        
+        Task<string> GetUrlAsync(string path, CancellationToken ct = default);
+        Task<bool> IsExistsAsync(string path, CancellationToken ct = default);
+        Task<string> CreatePathAsync(Guid id, string name, string format, CancellationToken ct = default);
     }
 }

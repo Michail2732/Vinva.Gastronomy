@@ -24,6 +24,21 @@ namespace Vinva.Gastronomy.Media.Application.Services.Impl
             _configuraiton = fileStorageConfiguration?.Value ?? throw new ArgumentNullException(nameof(fileStorageConfiguration));
         }
 
+
+        public Task<string> CreatePathAsync(Guid id, string name, string format, CancellationToken ct = default)
+        {            
+            var invalidPathChars = Path.GetInvalidPathChars()
+                                       .Union(Path.GetInvalidFileNameChars())
+                                       .Distinct()
+                                       .ToArray();            
+            
+            name = string.Concat(name.Split(invalidPathChars));
+            format = string.Concat(format.Split(invalidPathChars));
+
+            string newItemPath = $"{id}_{name}_{format}";            
+            return Task.FromResult(newItemPath);
+        }
+
         public Task DeleteAsync(string path, CancellationToken ct = default)
         {
             File.Delete(path);
@@ -35,9 +50,20 @@ namespace Vinva.Gastronomy.Media.Application.Services.Impl
             return Task.FromResult<Stream>(new FileStream(path, FileMode.Open));
         }
 
-        public Task<string> GetUrlAsync(string path)
+        public Task<string> GetUrlAsync(string path, CancellationToken ct = default)
         {
-            Path.GetRelativePath
+            if (string.IsNullOrEmpty(_configuraiton.PublicPathPart))
+                throw new MediaDomainException($"Url for file storage doesn't configured: {nameof(FileStorageConfiguration.PublicPathPart)}");
+            var fileName = Path.GetFileName(path);            
+            var relativePath = Path.GetRelativePath(_configuraiton.FilesDirectory, path);
+            var resultPath = Path.Combine(_configuraiton.PublicPathPart, path);
+            return Task.FromResult(resultPath);
+        }
+
+        public Task<bool> IsExistsAsync(string path, CancellationToken ct = default)
+        {
+            var filePath = Path.Combine(_configuraiton.FilesDirectory, path);
+            return Task.FromResult(File.Exists(filePath));
         }
 
         public async Task<string> UploadAsync(Stream itemStream, string name, CancellationToken ct = default)

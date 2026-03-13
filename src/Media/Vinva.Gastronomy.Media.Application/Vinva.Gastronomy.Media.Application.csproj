@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Services\Impl\MediaItemLocalFileStorage.cs~RF9769c7a.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Usecases\GetVideoById\" />
     <Folder Include="Usecases\UploadVideo\" />
     <Folder Include="Usecases\UploadPhoto\" />

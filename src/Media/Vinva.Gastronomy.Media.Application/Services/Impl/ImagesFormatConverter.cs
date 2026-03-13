@@ -17,16 +17,14 @@ using Vinva.Gastronomy.Media.Domain.Models;
 
 namespace Vinva.Gastronomy.Media.Application.Services.Impl
 {
+    
     public class ImagesFormatConverter
     {                
-        public async Task ConvertToFileAsync(string inputFilePath, string outputFilePath, 
-            ConversionOptions options, CancellationToken ct = default)
+        public async Task<FileStream> ConvertToFileAsync(Stream mediaStream, ConversionOptions options, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            if (!File.Exists(inputFilePath))
-                throw new FileNotFoundException(null, inputFilePath);
-
-            using var image = await Image.LoadAsync(inputFilePath, ct);
+            var tempFilePath = Path.GetTempFileName();
+            using var image = await Image.LoadAsync(mediaStream, ct);
             if (options.Width.HasValue || options.Height.HasValue )
             {
                 image.Mutate(op =>
@@ -45,9 +43,11 @@ namespace Vinva.Gastronomy.Media.Application.Services.Impl
             }
 
             var prepareTargetFormat = options.TargetFormat.Trim().ToLower();
-            var targetEncoder = CreateCoder(prepareTargetFormat, options.Quality);            
-            
-            await image.SaveAsync(outputFilePath, targetEncoder, ct);
+            var targetEncoder = CreateCoder(prepareTargetFormat, options.Quality);
+
+            var tempFileStream = new FileStream(tempFilePath, FileMode.OpenOrCreate);
+            await image.SaveAsync(tempFileStream, targetEncoder, ct);
+            return tempFileStream;
         }
 
         private IImageEncoder CreateCoder(string preparedFormat, int quality)

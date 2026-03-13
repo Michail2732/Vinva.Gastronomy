@@ -15,6 +15,8 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
 
         public required string ContentType { get; init; }
 
+        public required string Format { get; init; }
+
         public required string OwnerId { get; init; } 
 
         public required long Size { get; init; }
@@ -32,12 +34,13 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
 
         }
 #pragma warning restore CS8618
-        public MediaItem(Guid id, MediaStorage storage, string name, string path)
+        public MediaItem(Guid id, string name, string path)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));                        
-            Path = path ?? throw new ArgumentNullException(nameof(path));
-            Storage = storage;
-        }        
+            Path = path ?? throw new ArgumentNullException(nameof(path));            
+        }   
+        
+        public string GetFormat() => 
     }
 }

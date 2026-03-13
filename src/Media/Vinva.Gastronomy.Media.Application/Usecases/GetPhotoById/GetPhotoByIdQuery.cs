@@ -7,6 +7,7 @@ namespace Vinva.Gastronomy.Media.Application.Usecases.GetPhotoById
         public Guid MediaId { get; init; }
         public int? Width { get; init; }
         public int? Height { get; init; }
-        public int? Quality { get; init; }          
+        public int? Quality { get; init; }       
+        public required string Format { get; init; }
     }
 }
