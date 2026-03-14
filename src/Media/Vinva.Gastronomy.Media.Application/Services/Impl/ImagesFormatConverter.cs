@@ -20,12 +20,13 @@ namespace Vinva.Gastronomy.Media.Application.Services.Impl
     
     public class ImagesFormatConverter
     {                
-        public async Task<FileStream> ConvertToFileAsync(Stream mediaStream, ConversionOptions options, CancellationToken ct = default)
+        public async Task<FileStream> ConvertToFileAsync(Stream mediaStream, ImageOptions options, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
             var tempFilePath = Path.GetTempFileName();
             using var image = await Image.LoadAsync(mediaStream, ct);
-            if (options.Width.HasValue || options.Height.HasValue )
+            if (image.Width != options.Width || 
+                image.Height != options.Height)
             {
                 image.Mutate(op =>
                 {
@@ -33,8 +34,8 @@ namespace Vinva.Gastronomy.Media.Application.Services.Impl
                     {
                         Size = new Size
                         {
-                            Width = options.Width.HasValue ? options.Width.Value : image.Width,
-                            Height = options.Height.HasValue ? options.Height.Value : image.Height
+                            Width = options.Width,
+                            Height = options.Height
                         },
                         Mode = ResizeMode.Max,
                         Sampler = KnownResamplers.Lanczos3

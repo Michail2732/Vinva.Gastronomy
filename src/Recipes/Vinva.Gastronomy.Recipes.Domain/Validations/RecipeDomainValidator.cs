@@ -4,35 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Vinva.Gastronomy.Common.Validations;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Validations
 {
-    public class RecipeDomainValidator
+    public class RecipeDomainValidator : DescriptiveEntityValidator
     {
+        public const string IngredientMeasure = DescriptiveEntityValidationRegex.AlphanumericWithSpacesDotBrace;
+
         public static bool ValidateIngredientMeasure(string measure)
         {
-            return Regex.IsMatch(measure, RegexFormats.IngredientMeasure);
+            return ValidateCustom(measure, IngredientMeasure);
         }
 
         public static bool ValidateIngredientQuantity(decimal quantity)
         {
             return quantity > 0;
-        }
-
-        public static bool ValidateName(string name)
-        {
-            return Regex.IsMatch(name, RegexFormats.Name);
-        }
-
-        public static bool ValidateDescription(string description)
-        {
-            return Regex.IsMatch(description, RegexFormats.Description);
-        }
-
-        public static bool ValidateComment(string comment)
-        {
-            return Regex.IsMatch(comment, RegexFormats.Comment);
-        }
+        }        
 
         public static bool ValidateCookingTime(TimeSpan time)
         {

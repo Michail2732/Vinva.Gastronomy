@@ -7,16 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Constants;
 using Vinva.Gastronomy.Media.Domain.Entities;
+using Vinva.Gastronomy.Media.Persistence.Converters;
 
 namespace Vinva.Gastronomy.Media.Persistence.Configurations
 {
-    public class MediaFileDbConfiguration : IEntityTypeConfiguration<MediaItem>
+    public class MediaFileDbConfiguration : IEntityTypeConfiguration<ImageMetadata>
     {
-        public void Configure(EntityTypeBuilder<MediaItem> builder)
+        public void Configure(EntityTypeBuilder<ImageMetadata> builder)
         {
             builder.HasKey(a => a.Id);
 
             builder.Property(a => a.Path)
+                .HasConversion<ImagePathConverter>()
                 .HasMaxLength(CommonConstants.MaxLengthPath)
                 .IsRequired();
 

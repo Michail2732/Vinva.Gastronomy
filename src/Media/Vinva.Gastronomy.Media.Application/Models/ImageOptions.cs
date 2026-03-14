@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 
 namespace Vinva.Gastronomy.Media.Domain.Models
 {
-    public class ConversionOptions
+    public class ImageOptions
     {
+        public const int DefaultQuality = 75;
         public string TargetFormat { get; private set; }
-        public int? Width { get; private set; }
-        public int? Height { get; private set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
         public int Quality { get; private set; }
 
-        public ConversionOptions(string targetFormat, int ? width, int? height, int quality = 75)
+        public ImageOptions(string targetFormat, int width, int height, int? quality = null)
         {
             Width = width;
             Height = height;
-            Quality = quality;
+            Quality = quality ?? DefaultQuality;
             TargetFormat = targetFormat ?? throw new ArgumentNullException(nameof(targetFormat));
         }
     }

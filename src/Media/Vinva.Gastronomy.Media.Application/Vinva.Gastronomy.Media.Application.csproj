@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Usecases\GetVideoById\" />
+    <Folder Include="Usecases\GetPthotosByGroup\" />
     <Folder Include="Usecases\UploadVideo\" />
     <Folder Include="Usecases\UploadPhoto\" />
   </ItemGroup>

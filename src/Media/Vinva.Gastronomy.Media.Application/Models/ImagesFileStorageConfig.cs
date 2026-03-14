@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Vinva.Gastronomy.Media.Domain.Models
 {
-    public class FileStorageConfiguration
+    public class ImagesFileStorageConfig
     {        
         public required string FilesDirectory { get; init; }
-        public string? PublicPathPart { get; set; }
+        public required string MapedPath { get; set; }
     }
 }

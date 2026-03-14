@@ -7,21 +7,19 @@ using Vinva.Gastronomy.Common;
 
 namespace Vinva.Gastronomy.Media.Domain.Entities
 {
-    public class MediaItem : EntityOfT<Guid>
+    public class ImageMetadata : EntityOfT<Guid>
     {
         public string Name { get; private set; }        
 
-        public string Path { get; private set; }        
+        public ImagePath Path { get; private set; }        
 
-        public required string ContentType { get; init; }
-
-        public required string Format { get; init; }
+        public required string ContentType { get; init; }        
 
         public required string OwnerId { get; init; } 
 
         public required long Size { get; init; }
 
-        public required MediaItemState State { get; set; }
+        public required ImageState State { get; set; }
 
         public DateTime UploadedAt { get; init; }        
 
@@ -29,18 +27,17 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
 
 
 #pragma warning disable CS8618
-        private MediaItem()
+        private ImageMetadata()
         {
 
         }
 #pragma warning restore CS8618
-        public MediaItem(Guid id, string name, string path)
+        public ImageMetadata(Guid id, string name, ImagePath path)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));                        
             Path = path ?? throw new ArgumentNullException(nameof(path));            
         }   
-        
-        public string GetFormat() => 
+                
     }
 }
