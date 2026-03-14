@@ -7,17 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Services\Impl\MediaItemLocalFileStorage.cs~RF9769c7a.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Usecases\GetVideoById\" />
-    <Folder Include="Usecases\GetPthotosByGroup\" />
-    <Folder Include="Usecases\UploadVideo\" />
-    <Folder Include="Usecases\UploadPhoto\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR" Version="13.1.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
   </ItemGroup>

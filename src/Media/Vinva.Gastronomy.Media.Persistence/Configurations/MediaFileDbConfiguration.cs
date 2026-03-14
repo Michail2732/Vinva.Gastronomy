@@ -17,9 +17,8 @@ namespace Vinva.Gastronomy.Media.Persistence.Configurations
         {
             builder.HasKey(a => a.Id);
 
-            builder.Property(a => a.Path)
-                .HasConversion<ImagePathConverter>()
-                .HasMaxLength(CommonConstants.MaxLengthPath)
+            builder.Property(a => a.Format)                
+                .HasMaxLength(64)
                 .IsRequired();
 
             builder.Property(a => a.Name)

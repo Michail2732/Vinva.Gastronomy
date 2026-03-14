@@ -11,18 +11,11 @@ namespace Vinva.Gastronomy.Media.Domain.Services
     /// Хранилище файлов
     /// </summary>
     public interface IImagesStorage
-    {        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="itemStream"></param>
-        /// <param name="path"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        Task UploadAsync(Stream itemStream, ImagePath path, CancellationToken ct = default);
-        Task<Stream> DownloadAsync(ImagePath path, CancellationToken ct = default);
-        Task DeleteAsync(ImagePath path, CancellationToken ct = default);
-        Task<string> GetUrlAsync(ImagePath path, CancellationToken ct = default);
-        Task<bool> IsExistsAsync(ImagePath path, CancellationToken ct = default);
+    {                
+        Task UploadAsync(Stream itemStream, Guid imageId, CancellationToken ct = default);
+        Task<Stream> DownloadAsync(Guid imageId, CancellationToken ct = default);
+        Task DeleteAsync(Guid imageId, CancellationToken ct = default);
+        Task<string> GetUrlAsync(Guid imageId, ImageInfo info, CancellationToken ct = default);
+        Task<bool> IsExistsAsync(Guid imageId, CancellationToken ct = default);
     }
 }

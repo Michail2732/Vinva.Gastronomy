@@ -8,9 +8,9 @@ using Vinva.Gastronomy.Media.Domain.Entities;
 
 namespace Vinva.Gastronomy.Media.Persistence.Converters
 {
-    public class ImagePathConverter: ValueConverter<ImagePath, string>
+    public class ImageInfoConverter: ValueConverter<ImageInfo, string>
     {
-        public ImagePathConverter() : base(to => to.ToString(), from => ImagePath.Parce(from))
+        public ImageInfoConverter() : base(to => to.ToString(), from => ImageInfo.Parce(from))
         {
 
         }

@@ -10,16 +10,14 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
     public class ImageMetadata : EntityOfT<Guid>
     {
         public string Name { get; private set; }        
-
-        public ImagePath Path { get; private set; }        
+        
+        public required string Format { get; init; }
 
         public required string ContentType { get; init; }        
 
         public required string OwnerId { get; init; } 
 
-        public required long Size { get; init; }
-
-        public required ImageState State { get; set; }
+        public required long Size { get; init; }        
 
         public DateTime UploadedAt { get; init; }        
 
@@ -32,12 +30,16 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
 
         }
 #pragma warning restore CS8618
-        public ImageMetadata(Guid id, string name, ImagePath path)
+        public ImageMetadata(Guid id, string name) 
         {
             Id = id;
-            Name = name ?? throw new ArgumentNullException(nameof(name));                        
-            Path = path ?? throw new ArgumentNullException(nameof(path));            
-        }   
-                
+            Name = name ?? throw new ArgumentNullException(nameof(name));            
+        }
+
+        public ImageMetadata(string name) : base()
+        {            
+            Name = name ?? throw new ArgumentNullException(nameof(name));            
+        }
+
     }
 }

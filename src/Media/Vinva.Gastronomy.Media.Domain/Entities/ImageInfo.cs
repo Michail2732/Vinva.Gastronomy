@@ -9,18 +9,16 @@ using Vinva.Gastronomy.Media.Domain.Exceptions;
 
 namespace Vinva.Gastronomy.Media.Domain.Entities
 {
-    public record ImagePath
-    {
-        public Guid ImageId { get; }
+    public record ImageInfo
+    {        
         public string Format { get; }
         public int Width { get; }
         public int Height { get; }
         public int Quality { get; }
 
-        public ImagePath(Guid imageId, string format, int width, int height, int quality)
+        public ImageInfo(string format, int width, int height, int quality)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(format);
-            ImageId = imageId;
+            ArgumentException.ThrowIfNullOrWhiteSpace(format);            
             Format = format;
             if (!DescriptiveEntityValidator.ValidateName(Format))
                 throw new MediaDomainException(MediaErrorMessages.IncorrectImageFormat(Format));
@@ -31,17 +29,16 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
 
         public string GetStringPath() => ToString();
 
-        public static ImagePath Parce(string str)
+        public static ImageInfo Parce(string str)
         {                        
             try
             {
-                var splitedResult = str.Split(str, StringSplitOptions.RemoveEmptyEntries);
-                var id = Guid.Parse(splitedResult[0]);
-                var format = splitedResult[1];
-                var width = int.Parse(splitedResult[2]);
-                var height = int.Parse(splitedResult[3]);
-                var quality = int.Parse(splitedResult[4]);
-                return new ImagePath(id, format, width, height, quality);                                
+                var splitedResult = str.Split(str, StringSplitOptions.RemoveEmptyEntries);                
+                var format = splitedResult[0];
+                var width = int.Parse(splitedResult[1]);
+                var height = int.Parse(splitedResult[2]);
+                var quality = int.Parse(splitedResult[3]);
+                return new ImageInfo(format, width, height, quality);                                
             }
             catch (Exception ex)
             {
@@ -49,7 +46,7 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
             }
         }
 
-        public static bool TryParce(string str, out ImagePath? path)
+        public static bool TryParce(string str, out ImageInfo? path)
         {
             path = null;
             try
@@ -65,7 +62,7 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
 
         public override string ToString()
         {
-            return $"{ImageId}_{Format}_{Width}_{Height}_{Quality}";
+            return $"{Format}_{Width}_{Height}_{Quality}";
         }        
     }
 }
