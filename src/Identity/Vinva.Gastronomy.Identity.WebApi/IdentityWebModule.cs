@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ using Vinva.Gastronomy.Identity.Application.Common;
 using Vinva.Gastronomy.Identity.Application.Services;
 using Vinva.Gastronomy.Identity.Domain.Services;
 using Vinva.Gastronomy.Identity.Persistence;
+using Vinva.Gastronomy.Identity.WebApi.Filters;
 using Vinva.Gastronomy.Identity.WebApi.Services;
 
 namespace Vinva.Gastronomy.Identity.WebApi
@@ -27,49 +29,54 @@ namespace Vinva.Gastronomy.Identity.WebApi
     {
         public string ModuleName => "Identity";
 
-        public int Order => 0;
-
-        public Assembly[] Assemblies { get; } = 
-        {
-            typeof(Domain.Entities.User).Assembly,
-            typeof(Application.Common.JwtTokenConfig).Assembly,
-            typeof(Persistence.IdentityDbContext).Assembly,
-        };
+        public int Order => 0;        
 
         public Task InitializeAsync(WebApplication app, CancellationToken ct = default)
         {            
             return Task.CompletedTask;
         }
 
-        public void RegisterServices(WebApplicationBuilder builder, IConfiguration config)
+        public void RegisterServices(WebModuleContext context)
         {
-            var services = builder.Services;
+            context.ConfigureMediatR(opt =>
+            {
+                opt.RegisterServicesFromAssemblies(typeof(JwtTokenConfig).Assembly);
+            });
+
+            context.ConfigureMvc(opt =>
+            {
+                opt.Filters.Add<UserStateFilter>();
+            });
+            context.AddApplicationPart(GetType().Assembly);
+            var services = context.Services;
+
+            services.AddValidatorsFromAssembly(typeof(JwtTokenConfig).Assembly);
             services.AddHttpContextAccessor();
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IPasswordHashService, PasswordHashService>();
             services.AddSingleton<IRegistrationService, RegistrationService>();
             services.AddDbContext<IdentityDbContext>(options =>
             {
-                options.UseNpgsql(config.GetConnectionString("DefaultConnectionString"));
+                options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnectionString"));
             });
 
 
             Func<IConfiguration, IConfigurationSection> identityConfigSpec =
-                builder.Environment.IsDevelopment()
+                context.Environment.IsDevelopment()
                 ? a => a.GetSection("IdentityModule").GetSection("Development")
                 : a => a.GetSection("IdentityModule").GetSection("Production");            
 
-            services.Configure<JwtTokenConfig>(identityConfigSpec(config).GetSection("JwtTokenConfig"));
-            services.Configure<PasswordConfig>(identityConfigSpec(config).GetSection("PasswordConfig"));
-            services.Configure<RegisterSmtpConfig>(identityConfigSpec(config).GetSection("RegisterSmtpConfig"));
+            services.Configure<JwtTokenConfig>(identityConfigSpec(context.Configuration).GetSection("JwtTokenConfig"));
+            services.Configure<PasswordConfig>(identityConfigSpec(context.Configuration).GetSection("PasswordConfig"));
+            services.Configure<RegisterSmtpConfig>(identityConfigSpec(context.Configuration).GetSection("RegisterSmtpConfig"));
 
-            var jwtConfig = identityConfigSpec(config).GetSection("JwtTokenConfig").Get<JwtTokenConfig>()
+            var jwtConfig = identityConfigSpec(context.Configuration).GetSection("JwtTokenConfig").Get<JwtTokenConfig>()
                 ?? throw new DomainException("Couldnt read jwt config section");
-
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    if (builder.Environment.IsDevelopment())
+                    if (context.Environment.IsDevelopment())
                     {
                         options.IncludeErrorDetails = true;
                     }                    
@@ -84,8 +91,38 @@ namespace Vinva.Gastronomy.Identity.WebApi
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.FromMinutes(jwtConfig.ClockSkewMinutes),                        
                     };                    
-                });           
+                });
 
+            context.ConfigureSwagger(opt =>
+            {
+                var sequrityScheme = new OpenApiSecurityScheme
+                {
+                    Description = "Введите 'Bearer' [пробел] и затем ваш JWT токен в поле ниже.\r\n\r\nПример: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT"
+                };
+                opt.AddSecurityDefinition("Bearer", sequrityScheme);
+
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
+
+            
             services.AddAuthorization();
         }
     }

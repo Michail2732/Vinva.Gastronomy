@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,27 +18,27 @@ namespace Vinva.Gastronomy.Recipes.WebApi
     {
         public string ModuleName => "Recipe";
 
-        public int Order => 0;
-
-        public Assembly[] Assemblies { get; } =
-        {
-            typeof(Domain.Entities.Recipe).Assembly,
-            typeof(Application.Common.CategoryDto).Assembly,
-            typeof(Persistence.RecipeDbContext).Assembly,
-        };
+        public int Order => 0;        
 
         public Task InitializeAsync(WebApplication webApp, CancellationToken ct = default)
         {
             return Task.CompletedTask;
         }
 
-        public void RegisterServices(WebApplicationBuilder webAppBuilder, IConfiguration config)
+        public void RegisterServices(WebModuleContext context)
         {
-            var services = webAppBuilder.Services;
+            var services = context.Services;
+
+            context.ConfigureMediatR(opt =>
+            {
+                opt.RegisterServicesFromAssemblies(typeof(Application.Common.CategoryDto).Assembly);
+            });
+            context.AddApplicationPart(GetType().Assembly);
+            services.AddValidatorsFromAssembly(typeof(Application.Common.CategoryDto).Assembly);
             services.AddDbContext<RecipeDbContext>(options =>
             {
-                options.UseNpgsql(config.GetConnectionString("DefaultConnectionString"));
+                options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnectionString"));
             });
         }
     }
-}
+}   

@@ -9,9 +9,8 @@ namespace Vinva.Gastronomy.Common.Modularity
     public interface IWebModule
     {
         string ModuleName { get; }
-        int Order { get; }
-        Assembly[] Assemblies { get; }        
-        void RegisterServices(WebApplicationBuilder webAppBuilder, IConfiguration config);
+        int Order { get; }        
+        void RegisterServices(WebModuleContext context);
         Task InitializeAsync(WebApplication webApp, CancellationToken ct = default);
     }
 }

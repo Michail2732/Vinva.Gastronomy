@@ -22,32 +22,19 @@ namespace Vinva.Gastronomy.Common.Modularity
         }
 
 
-        public void RegisterServices(WebApplicationBuilder webAppBuilder, IConfiguration config)
-        {
-            var collection = webAppBuilder.Services;
-
-            Assembly[] assemblies = _modules.SelectMany(a => a.Assemblies).ToArray();
-
-            collection.AddMediatR(cfg =>
-            {                
-                cfg.RegisterServicesFromAssemblies(assemblies);
-                cfg.AddOpenBehavior(typeof(LoggingMediatRBehavior<,>));
-                cfg.AddOpenBehavior(typeof(ValidationMediatRBehavior<,>));
-            });
-
-            collection.AddValidatorsFromAssemblies(assemblies);
-
-            var mvcBuilder = collection.AddControllers();
-
-            collection.AddRouting();            
-
-            foreach (var module in _modules)
+        public void RegisterServices(WebModuleContext context)
+        {                                    
+            foreach (var module in _modules.OrderBy(a => a.Order))
             {
-                module.RegisterServices(webAppBuilder, config);
-                foreach (var moduleAssembly in module.Assemblies)
-                {
-                    mvcBuilder.AddApplicationPart(moduleAssembly);
-                }
+                module.RegisterServices(context);                
+            }            
+            var mvcBuilder = context.Services.AddControllers(context.MvcConfigurations);
+            context.Services.AddRouting(context.RouteConfigurations);            
+            context.Services.AddSwaggerGen(context.SwaggerConfigurations);
+            context.Services.AddMediatR(context.MediatRConfigurations);
+            foreach (var applicationPart in context.ApplicationParts)
+            {
+                mvcBuilder.AddApplicationPart(applicationPart);
             }
         }
 

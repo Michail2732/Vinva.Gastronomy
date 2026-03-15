@@ -12,6 +12,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
     [ApiController]
     [Route("api/Ingredients")]
     [Authorize(Roles = UserRoles.Administrator)]
+    [Produces("application/json")]
     public class IngredientController : Controller
     {
         private readonly IMediator _mediator;

@@ -1,20 +1,26 @@
 ﻿using Microsoft.OpenApi.Models;
 using Vinva.Gastronomy.Common.Modularity;
+using Vinva.Gastronomy.Common.Modularity.MediatR;
 using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Identity.WebApi;
 using Vinva.Gastronomy.Recipes.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var moduleContext = new WebModuleContext(
+    builder.Services,
+    builder.Configuration,
+    builder.Environment);
 var moduleLoader = new WebModulesLoader(new List<IWebModule>
 {
     new IdentityWebModule(),
     new RecipeWebModule()
 });
-moduleLoader.RegisterServices(builder, builder.Configuration);
-builder.Services.AddSingleton(GuidProvider.Instance);
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(opt =>
+moduleContext.ConfigureMediatR(cfg =>
+{
+    cfg.AddOpenBehavior(typeof(LoggingMediatRBehavior<,>));
+    cfg.AddOpenBehavior(typeof(ValidationMediatRBehavior<,>));
+});
+moduleContext.ConfigureSwagger(opt =>
 {
     opt.SwaggerDoc("v1", new OpenApiInfo
     {
@@ -22,33 +28,11 @@ builder.Services.AddSwaggerGen(opt =>
         Version = "v1",
         Description = "Gastronomy API"
     });
-
-    var sequrityScheme = new OpenApiSecurityScheme
-    {
-        Description = "Введите 'Bearer' [пробел] и затем ваш JWT токен в поле ниже.\r\n\r\nПример: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT"
-    };
-    opt.AddSecurityDefinition("Bearer", sequrityScheme);
-
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
 });
+
+moduleLoader.RegisterServices(moduleContext);
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSingleton(GuidProvider.Instance);
 
 var app = builder.Build();
 
