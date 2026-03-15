@@ -25,7 +25,7 @@ namespace Vinva.Gastronomy.Media.Application.Usecases.GetImagesByIds
         {
 
             var imageIds = request.ImageDtos.Select(a => a.ImageId).Distinct().ToList();
-            var images = await _dbContext.MediaItems.Where(a => imageIds.Contains(a.Id))
+            var images = await _dbContext.Images.Where(a => imageIds.Contains(a.Id))
                                 .ToListAsync(ct);
 
             var imageResponceDtos = new List<ImageResponceDto>(imageIds.Count);

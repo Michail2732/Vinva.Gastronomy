@@ -20,7 +20,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
 {    
     [ApiController]
     [Route("api/Recipes")]
-    [Authorize(Roles = UserRoles.Administrator)]
+    [Authorize(Roles = UserRoles.Manager)]
     public class RecipeController : Controller
     {
         private readonly IMediator _mediator;

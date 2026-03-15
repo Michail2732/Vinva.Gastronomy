@@ -23,7 +23,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Validate
         {
             var result = await _tokenService.ValidateTokenAsync(request.AccessToken, cancellationToken);
             if (result is null)
-                throw new UnauthorizedAccessException(IdentityApplicationErrors.TokenInvalid.Description);            
+                throw new UnauthorizedAccessException(IdentityApplicationErrors.TokenInvalid.Description);
         }
     }
 }

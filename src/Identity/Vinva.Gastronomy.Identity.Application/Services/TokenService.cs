@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Identity.Application.Common;
 using Vinva.Gastronomy.Identity.Domain.Entities;
 using Vinva.Gastronomy.Identity.Domain.Services;
@@ -17,8 +18,10 @@ namespace Vinva.Gastronomy.Identity.Application.Services
     {
         private readonly JwtTokenConfig _jwtSettings;
         private readonly TokenValidationParameters _tokenValidationParameters;
+        private readonly GuidProvider _guidProvider;
+        private readonly TimeProvider _timeProvider;
 
-        public TokenService(IOptions<JwtTokenConfig> jwtConfig)
+        public TokenService(IOptions<JwtTokenConfig> jwtConfig, TimeProvider timeProvider, GuidProvider guidProvider)
         {
             _jwtSettings = jwtConfig.Value
                         ?? throw new ArgumentNullException(nameof(jwtConfig));
@@ -34,14 +37,16 @@ namespace Vinva.Gastronomy.Identity.Application.Services
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.FromMinutes(_jwtSettings.ClockSkewMinutes)
             };
+            _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
+            _guidProvider = guidProvider ?? throw new ArgumentNullException(nameof(guidProvider));
         }
 
         public Task<string> GenerateAccessTokenAsync(User user, CancellationToken ct = default)
         {
 
-            var claims = UserTokenPrincipals.CreateCustomUserClaims(user.Login, user.State, user.Email);
-            claims.Add(new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-            claims.Add(new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
+            var claims = UserClaims.CreateClaims(user);            
+            claims.Add(new(JwtRegisteredClaimNames.Jti, _guidProvider.Generate().ToString()));
+            claims.Add(new(JwtRegisteredClaimNames.Iat, _timeProvider.GetUtcNow().ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
             
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -64,22 +69,22 @@ namespace Vinva.Gastronomy.Identity.Application.Services
         //todo: repair stuff
         public Task<string> GenerateRefreshTokenAsync(User user, CancellationToken ct = default)
         {            
-            var refreshToken = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
+            var refreshToken = _guidProvider.Generate().ToString("N") + _guidProvider.Generate().ToString("N");
             return Task.FromResult(refreshToken);
         }
 
-        public Task<UserTokenPrincipals?> ValidateTokenAsync(string token, CancellationToken ct = default)
+        public Task<UserClaims?> ValidateTokenAsync(string token, CancellationToken ct = default)
         {
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var principal = tokenHandler.ValidateToken(token, _tokenValidationParameters, out _);
-                var userTokenPrincipal = new UserTokenPrincipals(principal);
-                return Task.FromResult<UserTokenPrincipals?>(userTokenPrincipal);
+                var userTokenPrincipal = new UserClaims(principal);
+                return Task.FromResult<UserClaims?>(userTokenPrincipal);
             }
             catch
             {
-                return Task.FromResult<UserTokenPrincipals?>(null);
+                return Task.FromResult<UserClaims?>(null);
             }
         }
 

@@ -40,7 +40,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
         /// </summary>
         /// <param name="token">Токен для валидации</param>
         /// <returns>Информация о пользователе или null если токен невалидный</returns>
-        Task<UserTokenPrincipals?> ValidateTokenAsync(string token, CancellationToken ct = default);
+        Task<UserClaims?> ValidateTokenAsync(string token, CancellationToken ct = default);
 
         /// <summary>
         /// Получение времени истечения токена

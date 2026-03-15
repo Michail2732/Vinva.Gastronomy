@@ -27,16 +27,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
         }
 
         public async Task<LoginResponce> Handle(LoginRequest request, CancellationToken cancellationToken)
-        {            
-            var validator = new LoginRequestValidator();
-
-            var validResult = await validator.ValidateAsync(request, cancellationToken);
-            if (!validResult.IsValid)
-            {
-                var errors = validResult.HandleValidationErrors<LoginResponce>().Error;
-                throw new BadRequestException($"{errors.Code}.{errors.Description}");
-            }                    
-
+        {                                 
             var passHash = _passwordHashService.HashPassword(request.Password);
 
             Expression<Func<User, bool>> searchSpec = a => a.Login == request.Login;

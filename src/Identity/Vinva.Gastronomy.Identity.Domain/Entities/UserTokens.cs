@@ -13,6 +13,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
         public Guid UserId { get; private set; }
         public string? AccessToken { get; private set; }
         public string? RefreshToken { get; private set; }
+        // todo: Походу ненужно 
         public DateTimeOffset? ExpiresAt { get; private set; }
 
 

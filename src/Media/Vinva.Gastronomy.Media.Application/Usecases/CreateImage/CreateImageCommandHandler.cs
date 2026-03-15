@@ -27,7 +27,7 @@ namespace Vinva.Gastronomy.Media.Application.Usecases.CreateImage
             };
 
             await _imagesStorage.UploadAsync(request.Content, imageMeta.Id, ct);
-            await _dbContext.MediaItems.AddAsync(imageMeta, ct);
+            await _dbContext.Images.AddAsync(imageMeta, ct);
 
             return new CreateImageCommandResponse
             {

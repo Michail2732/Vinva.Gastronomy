@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 17
-VisualStudioVersion = 17.11.35222.181
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Domain", "src\Recipes\Vinva.Gastronomy.Recipes.Domain\Vinva.Gastronomy.Recipes.Domain.csproj", "{A58DB1A0-659A-41B8-BB40-B05EADDC2D72}"
 EndProject
@@ -44,6 +44,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Media.Persistence", "src\Media\Vinva.Gastronomy.Media.Persistence\Vinva.Gastronomy.Media.Persistence.csproj", "{C5858E23-518D-4136-8941-2EF1D3402A82}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Media.Application", "src\Media\Vinva.Gastronomy.Media.Application\Vinva.Gastronomy.Media.Application.csproj", "{6EFFCD24-C175-4F07-97BA-DF58133F0C54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Media.WebApi", "src\Media\Vinva.Gastronomy.Media.WebApi\Vinva.Gastronomy.Media.WebApi.csproj", "{7D6AB2DF-4C7A-4EA3-8E1E-F41B829F5ACE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +117,10 @@ Global
 		{6EFFCD24-C175-4F07-97BA-DF58133F0C54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EFFCD24-C175-4F07-97BA-DF58133F0C54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EFFCD24-C175-4F07-97BA-DF58133F0C54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D6AB2DF-4C7A-4EA3-8E1E-F41B829F5ACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D6AB2DF-4C7A-4EA3-8E1E-F41B829F5ACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D6AB2DF-4C7A-4EA3-8E1E-F41B829F5ACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D6AB2DF-4C7A-4EA3-8E1E-F41B829F5ACE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,6 +142,7 @@ Global
 		{3F7EB579-4E78-4528-B63E-125D69770435} = {F096D05C-7551-43FF-8F3E-FA132517484D}
 		{C5858E23-518D-4136-8941-2EF1D3402A82} = {F096D05C-7551-43FF-8F3E-FA132517484D}
 		{6EFFCD24-C175-4F07-97BA-DF58133F0C54} = {F096D05C-7551-43FF-8F3E-FA132517484D}
+		{7D6AB2DF-4C7A-4EA3-8E1E-F41B829F5ACE} = {F096D05C-7551-43FF-8F3E-FA132517484D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D0A805C-E161-43EB-893E-A4C934EBBC51}
