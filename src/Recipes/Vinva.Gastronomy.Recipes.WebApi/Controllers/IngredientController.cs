@@ -32,7 +32,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
 
 
         [HttpGet("GetById")]
-        [Authorize(Roles = UserRoles.User)]
+        [Authorize(Roles = UserRoles.Client)]
         public async Task<GetIngredientByIdResponce> GetById([FromQuery] Guid ingredientId)
         {
             var request = new GetIngredientByIdRequest

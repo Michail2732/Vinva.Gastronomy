@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Common.Modularity;
+using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Identity.Application.Common;
 using Vinva.Gastronomy.Identity.Application.Services;
 using Vinva.Gastronomy.Identity.Domain.Services;
@@ -52,6 +53,7 @@ namespace Vinva.Gastronomy.Identity.WebApi
 
             services.AddValidatorsFromAssembly(typeof(JwtTokenConfig).Assembly);
             services.AddHttpContextAccessor();
+            services.AddSingleton<IUserContext, UserContext>();
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IPasswordHashService, PasswordHashService>();
             services.AddSingleton<IRegistrationService, RegistrationService>();

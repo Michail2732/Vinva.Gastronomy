@@ -43,8 +43,8 @@ namespace Vinva.Gastronomy.Identity.Application.Services
 
         public Task<string> GenerateAccessTokenAsync(User user, CancellationToken ct = default)
         {
-
-            var claims = UserClaims.CreateClaims(user);            
+            var parser = new UserClaimsParcer();
+            var claims = parser.Parce(user);            
             claims.Add(new(JwtRegisteredClaimNames.Jti, _guidProvider.Generate().ToString()));
             claims.Add(new(JwtRegisteredClaimNames.Iat, _timeProvider.GetUtcNow().ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
             
@@ -73,18 +73,17 @@ namespace Vinva.Gastronomy.Identity.Application.Services
             return Task.FromResult(refreshToken);
         }
 
-        public Task<UserClaims?> ValidateTokenAsync(string token, CancellationToken ct = default)
+        public Task<ClaimsPrincipal?> ValidateTokenAsync(string token, CancellationToken ct = default)
         {
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var principal = tokenHandler.ValidateToken(token, _tokenValidationParameters, out _);
-                var userTokenPrincipal = new UserClaims(principal);
-                return Task.FromResult<UserClaims?>(userTokenPrincipal);
+                var principal = tokenHandler.ValidateToken(token, _tokenValidationParameters, out _);                
+                return Task.FromResult<ClaimsPrincipal?>(principal);
             }
             catch
             {
-                return Task.FromResult<UserClaims?>(null);
+                return Task.FromResult<ClaimsPrincipal?>(null);
             }
         }
 

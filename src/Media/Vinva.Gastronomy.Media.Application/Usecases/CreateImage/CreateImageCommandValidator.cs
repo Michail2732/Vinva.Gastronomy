@@ -18,7 +18,7 @@ namespace Vinva.Gastronomy.Media.Application.Usecases.CreateImage
                 .Must(DescriptiveEntityValidator.ValidateName)
                 .WithMessage(MediaApplicationErrors.IncorrectImageFormat);
 
-            RuleFor(a => a.Name)
+            RuleFor(a => a.FileName)
                 .NotEmpty()
                 .Must(DescriptiveEntityValidator.ValidateName)
                 .WithMessage(CommonErrorMessages.IncorrectName);            

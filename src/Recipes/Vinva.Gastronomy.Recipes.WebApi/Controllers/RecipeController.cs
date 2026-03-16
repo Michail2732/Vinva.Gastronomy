@@ -57,7 +57,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
         }
 
         [HttpPost("SearchByCategories")]
-        [Authorize(Roles = UserRoles.User)]
+        [Authorize(Roles = UserRoles.Client)]
         public async Task<GetRecipeByCategoryResponce> SearchByCategories([FromBody]GetRecipeByCategoryRequest request)
         {
             var result = await _mediator.Send(request);
@@ -65,7 +65,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
         }
 
         [HttpPost("SearchByIngredients")]
-        [Authorize(Roles = UserRoles.User)]
+        [Authorize(Roles = UserRoles.Client)]
         public async Task<GetRecipeByIngredientsResponce> SearchByIngredients([FromBody]GetRecipeByIngredientsRequest request)
         {
             var result = await _mediator.Send(request);
@@ -73,7 +73,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
         }
 
         [HttpPost("SearchByQuery")]
-        [Authorize(Roles = UserRoles.User)]        
+        [Authorize(Roles = UserRoles.Client)]        
         public async Task<GetRecipesByFilterQueryResponse> SearchByQuery([FromBody]GetRecipesByFilterQuery request)
         {
             var result = await _mediator.Send(request);

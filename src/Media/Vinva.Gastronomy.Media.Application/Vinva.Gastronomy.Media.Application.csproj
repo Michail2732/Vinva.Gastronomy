@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Vinva.Gastronomy.Media.Persistence\Vinva.Gastronomy.Media.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Usecases\CreateVideo\" />
+  </ItemGroup>
+
 </Project>

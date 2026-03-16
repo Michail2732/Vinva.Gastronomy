@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vinva.Gastronomy.Identity.Domain.Entities;
+using Vinva.Gastronomy.Identity.Domain.Services;
 
 namespace Vinva.Gastronomy.Identity.WebApi.Filters
 {
@@ -18,7 +18,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Filters
             if ((user.Identity?.IsAuthenticated) != true)
                 return;
 
-            var state = user.FindFirst(UserClaims.StateType)?.Value;
+            var state = user.FindFirst(UserClaimsParcer.StateType)?.Value;
 
             if (state == UserState.Blocked.ToString())
             {

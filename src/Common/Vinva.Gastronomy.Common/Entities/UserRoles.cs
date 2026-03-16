@@ -8,8 +8,8 @@ namespace Vinva.Gastronomy.Common.Entities
 {
     public class UserRoles
     {
-        public const string Manager = "Manager";
-        public const string Administrator = "Administrator";
-        public const string User = "User";
+        public const string Manager = nameof(UserRole.Manager);
+        public const string Administrator = nameof(UserRole.Admin);
+        public const string Client = nameof(UserRole.Client);
     }
 }

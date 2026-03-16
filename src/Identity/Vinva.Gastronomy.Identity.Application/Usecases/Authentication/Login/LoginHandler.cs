@@ -55,7 +55,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
                 RefreshToken = refreshToken,
                 ExpiresAt = expiresAt,
                 Login = user.Login,
-                Role = user.Role
+                Role = user.Roles
             };            
         }
 

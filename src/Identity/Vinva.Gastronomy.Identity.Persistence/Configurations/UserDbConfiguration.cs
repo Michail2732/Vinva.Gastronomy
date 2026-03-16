@@ -31,7 +31,7 @@ namespace Vinva.Gastronomy.Identity.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property(a => a.Role)
+            builder.Property(a => a.Roles)
                 .IsRequired();
 
             builder.Property(a => a.State)

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vinva.Gastronomy.Identity.Domain.Entities
+namespace Vinva.Gastronomy.Common.Entities
 {
-    public enum UserRole
+    public enum UserState
     {
-        Client,
-        Manager,
-        Admin,
+        Active,
+        Blocked,
+        Unactive
     }
 }

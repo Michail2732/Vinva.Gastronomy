@@ -23,11 +23,13 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurre
             if (claims == null)
                 throw new BadRequestException(IdentityApplicationErrors.ValidationFailed);
 
+            var parser = new UserClaimsParcer();            
+
             return new GetCurrentUserQueryResponse
             {
-                Login = claims.Login,
-                Email = claims.Email,
-                State = claims.State
+                Login = parser.ParseLogin(claims),
+                Email = parser.ParseEmail(claims),
+                State = parser.ParseState(claims)
             };
 
         }
