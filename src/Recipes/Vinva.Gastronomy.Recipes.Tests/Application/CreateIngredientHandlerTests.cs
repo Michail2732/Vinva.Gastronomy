@@ -1,5 +1,5 @@
 ﻿using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
+
 using Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Create;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application

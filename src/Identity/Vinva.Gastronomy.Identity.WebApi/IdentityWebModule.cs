@@ -32,9 +32,14 @@ namespace Vinva.Gastronomy.Identity.WebApi
 
         public int Order => 0;        
 
-        public Task InitializeAsync(WebApplication app, CancellationToken ct = default)
-        {            
-            return Task.CompletedTask;
+        public async Task InitializeAsync(WebApplication webApp, CancellationToken ct = default)
+        {
+            using (var scope = webApp.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<IdentityDbContext>()
+                    ?? throw new ArgumentNullException($"Not found {nameof(IdentityDbContext)}");
+                await context!.Database.MigrateAsync();
+            }
         }
 
         public void RegisterServices(WebModuleContext context)

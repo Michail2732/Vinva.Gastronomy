@@ -21,6 +21,9 @@ namespace Vinva.Gastronomy.Media.Persistence.Configurations
                 .HasMaxLength(64)
                 .IsRequired();
 
+            builder.Property(a => a.Group)
+                .HasMaxLength(128);
+
             builder.Property(a => a.Name)
                 .HasMaxLength(CommonConstants.MaxLengthName)
                 .IsRequired();            

@@ -3,6 +3,7 @@ using Vinva.Gastronomy.Common.Modularity;
 using Vinva.Gastronomy.Common.Modularity.MediatR;
 using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Identity.WebApi;
+using Vinva.Gastronomy.Media.WebApi;
 using Vinva.Gastronomy.Recipes.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,10 +11,12 @@ var moduleContext = new WebModuleContext(
     builder.Services,
     builder.Configuration,
     builder.Environment);
+
 var moduleLoader = new WebModulesLoader(new List<IWebModule>
 {
     new IdentityWebModule(),
-    new RecipeWebModule()
+    new RecipeWebModule(),
+    new MediaWebModule()
 });
 moduleContext.ConfigureMediatR(cfg =>
 {
@@ -44,11 +47,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.Use(async (context, next) =>
-{
-    Console.WriteLine();
-    await next();
-});
 app.UseAuthentication();
 app.UseAuthorization();
 

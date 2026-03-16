@@ -8,11 +8,12 @@ using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Media.Application.Usecases.CreateImage;
 using Vinva.Gastronomy.Media.Application.Usecases.GetImagesByIds;
+using Vinva.Gastronomy.Media.WebApi.Dto;
 
 namespace Vinva.Gastronomy.Media.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Images")]
     [Authorize(Roles = UserRoles.Manager)]
     [Produces("application/json")]
     [Consumes("application/json")]
@@ -36,19 +37,20 @@ namespace Vinva.Gastronomy.Media.WebApi.Controllers
         }
 
         [HttpPost("Create")]
+        [Consumes("multipart/form-data")]
         [RequestSizeLimit(10_500_000)]
-        public async Task<CreateImageCommandResponse> CreateImageAsync([FromForm]IFormFile file, [FromForm]string group)
+        public async Task<CreateImageCommandResponse> CreateImageAsync([FromForm]CreateImageDto dto)
         {            
-            var dto = new CreateImageCommand
+            var command = new CreateImageCommand
             {
-                Content = file.OpenReadStream(),
-                ContentType = file.ContentType,                
-                FileName = file.FileName,
-                Group = group,
+                Content = dto.File.OpenReadStream(),
+                ContentType = dto.File.ContentType,                
+                FileName = dto.File.FileName,
+                Group = dto.Group,
                 OwnerId = _userContext.GetLogin(),
-                Size = file.Length
+                Size = dto.File.Length
             };
-            return await _mediator.Send(dto);
+            return await _mediator.Send(command);
         }
 
     }

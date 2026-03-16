@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Identity.Domain.Services;
 
 namespace Vinva.Gastronomy.Identity.WebApi.Filters

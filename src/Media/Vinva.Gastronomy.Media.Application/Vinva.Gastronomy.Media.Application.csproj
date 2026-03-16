@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Usecases\CreateVideo\**" />
+    <EmbeddedResource Remove="Usecases\CreateVideo\**" />
+    <None Remove="Usecases\CreateVideo\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" Version="13.1.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
   </ItemGroup>
@@ -14,10 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Media.Persistence\Vinva.Gastronomy.Media.Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Usecases\CreateVideo\" />
   </ItemGroup>
 
 </Project>

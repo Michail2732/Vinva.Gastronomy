@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
+
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Create;
 using Vinva.Gastronomy.Recipes.Persistence;
 

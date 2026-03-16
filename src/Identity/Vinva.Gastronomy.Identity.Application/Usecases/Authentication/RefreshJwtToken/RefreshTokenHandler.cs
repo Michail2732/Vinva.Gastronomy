@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
 using Vinva.Gastronomy.Identity.Application.Common.Constants;
 using Vinva.Gastronomy.Identity.Domain.Entities;
@@ -55,7 +56,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.RefreshJ
                 RefreshToken = refreshToken,
                 ExpiresAt = expiresAt,
                 Login = user.Login,
-                Role = user.Roles
+                Roles = user.Roles
             };
         }
     }

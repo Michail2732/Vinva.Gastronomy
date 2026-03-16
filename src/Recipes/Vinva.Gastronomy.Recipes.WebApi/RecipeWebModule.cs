@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,30 @@ namespace Vinva.Gastronomy.Recipes.WebApi
 
         public int Order => 0;        
 
-        public Task InitializeAsync(WebApplication webApp, CancellationToken ct = default)
+        public async Task InitializeAsync(WebApplication webApp, CancellationToken ct = default)
         {
-            return Task.CompletedTask;
+            using (var scope = webApp.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<RecipeDbContext>()
+                    ?? throw new ArgumentNullException($"Not found {nameof(RecipeDbContext)}");
+                await context!.Database.MigrateAsync();
+                if (webApp.Environment.IsDevelopment())
+                {
+                    var recipeCount = context.Recipes.Count();
+                    var ingredientsCount = context.Ingredients.Count();
+                    if (recipeCount == 0 && ingredientsCount == 0)
+                    {
+                        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                        var recipesGeneratorSqlPath = Path.Combine(baseDir, "Data/RecipesGenerator.sql");
+                        var ingredientsGeneratorSqlPath = Path.Combine(baseDir, "./Data/IngredientsGenerator.sql");
+                        var recipesGeneratorSql = await File.ReadAllTextAsync(recipesGeneratorSqlPath, ct);
+                        var ingredientsGeneratorSql = await File.ReadAllTextAsync(ingredientsGeneratorSqlPath, ct);
+
+                        await context.Database.ExecuteSqlRawAsync(recipesGeneratorSql, ct);
+                        await context.Database.ExecuteSqlRawAsync(ingredientsGeneratorSql, ct);
+                    }
+                }
+            }            
         }
 
         public void RegisterServices(WebModuleContext context)

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">  
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">  
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Identity\Vinva.Gastronomy.Identity.WebApi\Vinva.Gastronomy.Identity.WebApi.csproj" />
+    <ProjectReference Include="..\..\Media\Vinva.Gastronomy.Media.WebApi\Vinva.Gastronomy.Media.WebApi.csproj" />
     <ProjectReference Include="..\..\Recipes\Vinva.Gastronomy.Recipes.WebApi\Vinva.Gastronomy.Recipes.WebApi.csproj" />
   </ItemGroup>
 

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Common.Infrastructure.Validations;
 using Vinva.Gastronomy.Identity.Application.Common.Constants;
 using Vinva.Gastronomy.Identity.Domain.Entities;
 using Vinva.Gastronomy.Identity.Domain.Services;
@@ -55,7 +54,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
                 RefreshToken = refreshToken,
                 ExpiresAt = expiresAt,
                 Login = user.Login,
-                Role = user.Roles
+                Roles = user.Roles
             };            
         }
 

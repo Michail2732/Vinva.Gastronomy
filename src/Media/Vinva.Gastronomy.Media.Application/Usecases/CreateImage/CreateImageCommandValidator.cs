@@ -13,10 +13,8 @@ namespace Vinva.Gastronomy.Media.Application.Usecases.CreateImage
                 .NotEmpty()
                 .Must(a => a.CanRead);
 
-            RuleFor(a => a.Format)
-                .NotEmpty()
-                .Must(DescriptiveEntityValidator.ValidateName)
-                .WithMessage(MediaApplicationErrors.IncorrectImageFormat);
+            RuleFor(a => a.ContentType)
+                .NotEmpty();
 
             RuleFor(a => a.FileName)
                 .NotEmpty()

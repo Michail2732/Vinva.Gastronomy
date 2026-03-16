@@ -13,7 +13,7 @@ INSERT INTO "Ingredients"  ("Id" , "Name" , "Description" , "Comment" , "IsDelet
 SELECT     
 	gen_random_uuid(),
 	(select * from ingredient_names offset ser % 50 limit 1) || ' ' || ser,    
-    'Описание ингредиента ' || (select * from ingredient_names skip ser % 50 limit 1) || ' для использования в различных блюдах',
+    'Описание ингредиента ' || (select * from ingredient_names offset ser % 50 limit 1) || ' для использования в различных блюдах',
     'Хранить в прохладном месте, срок годности - ' || (random() * 30 + 1)::int || ' дней',
     CASE WHEN random() < 0.05
     	THEN true 

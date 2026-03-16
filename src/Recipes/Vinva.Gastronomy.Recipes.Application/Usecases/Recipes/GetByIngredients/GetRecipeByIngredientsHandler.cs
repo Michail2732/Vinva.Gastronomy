@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
+
 using Vinva.Gastronomy.Recipes.Application.Common.Map;
 using Vinva.Gastronomy.Recipes.Persistence;
 

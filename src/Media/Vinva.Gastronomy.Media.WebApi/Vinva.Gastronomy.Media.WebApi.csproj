@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Modularity\Vinva.Gastronomy.Common.Modularity.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Media.Application\Vinva.Gastronomy.Media.Application.csproj" />
   </ItemGroup>
 

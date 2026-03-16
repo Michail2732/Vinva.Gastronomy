@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
+
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByCategory;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application

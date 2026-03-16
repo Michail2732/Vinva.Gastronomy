@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Filters;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
+
 using Vinva.Gastronomy.Recipes.Application.Common.Map;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 using Vinva.Gastronomy.Recipes.Persistence;

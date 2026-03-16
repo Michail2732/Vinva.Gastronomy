@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vinva.Gastronomy.Identity.Domain.Entities;
+using Vinva.Gastronomy.Identity.Persistence.Converters;
 
 namespace Vinva.Gastronomy.Identity.Persistence.Configurations
 {
@@ -32,6 +33,7 @@ namespace Vinva.Gastronomy.Identity.Persistence.Configurations
                 .HasMaxLength(100);
 
             builder.Property(a => a.Roles)
+                .HasConversion<UserRoleArrayToStringConverter>()
                 .IsRequired();
 
             builder.Property(a => a.State)
