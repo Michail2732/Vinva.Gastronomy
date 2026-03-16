@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurrentUser;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Logout;
@@ -20,6 +19,8 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
     [ApiController]
     [Route("api/Authentication")]
     [Authorize]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -41,7 +42,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// </remarks>
         [HttpPost("/login")]
         [AllowAnonymous]
-        public async Task<Result<LoginResponce>> Login([FromBody]LoginRequest request)
+        public async Task<LoginResponce> Login([FromBody]LoginRequest request)
         {
             var result = await _mediator.Send(request);
             return result;

@@ -7,7 +7,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Common.Infrastructure.Validations;
 using Vinva.Gastronomy.Identity.Application.Common.Constants;
 using Vinva.Gastronomy.Identity.Domain.Entities;
 using Vinva.Gastronomy.Identity.Domain.Services;
@@ -28,16 +27,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.RefreshJ
         }
 
         public async Task<RefreshTokenResponce> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
-        {
-            var validator = new RefreshTokenRequestValidator();
-            var validationResult = await validator.ValidateAsync(request);
-
-            if (!validationResult.IsValid)
-            {
-                var errors = validationResult.HandleValidationErrors<RefreshTokenResponce>().Error;
-                throw new BadRequestException(errors);
-            }                
-            
+        {                        
             var userTokens = await _dbContext.UserTokens.FirstOrDefaultAsync(a => a.RefreshToken == request.RefreshToken, cancellationToken);
 
             if (userTokens == null)

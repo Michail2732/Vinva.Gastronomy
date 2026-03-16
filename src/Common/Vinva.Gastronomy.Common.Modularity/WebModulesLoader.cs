@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Vinva.Gastronomy.Common.Modularity.Filters;
 using Vinva.Gastronomy.Common.Modularity.MediatR;
 
 namespace Vinva.Gastronomy.Common.Modularity
@@ -23,7 +24,12 @@ namespace Vinva.Gastronomy.Common.Modularity
 
 
         public void RegisterServices(WebModuleContext context)
-        {                                    
+        {
+            context.Services.AddSingleton<DomainExceptionFilter>();
+            context.ConfigureMvc(opt =>
+            {
+                opt.Filters.Add<DomainExceptionFilter>();
+            });
             foreach (var module in _modules.OrderBy(a => a.Order))
             {
                 module.RegisterServices(context);                

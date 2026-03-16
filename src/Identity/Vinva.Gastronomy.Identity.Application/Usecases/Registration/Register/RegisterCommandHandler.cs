@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
-using Vinva.Gastronomy.Common.Infrastructure.Validations;
 using Vinva.Gastronomy.Identity.Application.Common;
 using Vinva.Gastronomy.Identity.Application.Common.Constants;
 using Vinva.Gastronomy.Identity.Domain.Services;
@@ -33,13 +31,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
         }
 
         public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
-        {
-            var validator = new RegisterCommandValidator();
-            var validResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (validResult.IsValid)
-                validResult.HandleValidationErrors<Result>();
-            
+        {                        
             var user = await _dbContext.Users.FirstOrDefaultAsync(a => a.Email == request.Email, cancellationToken);
             if (user != null)
                 throw new BadRequestException(IdentityApplicationErrors.UserWithSameEmailExists);

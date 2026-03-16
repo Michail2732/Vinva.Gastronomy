@@ -12,8 +12,9 @@ namespace Vinva.Gastronomy.Media.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = UserRoles.User)]
+    [Authorize(Roles = UserRoles.Manager)]
     [Produces("application/json")]
+    [Consumes("application/json")]
     public class ImageController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -25,16 +26,23 @@ namespace Vinva.Gastronomy.Media.WebApi.Controllers
 
 
         [HttpPost("GetByIds")]
-        []
+        [Authorize(Roles = UserRoles.User)]
         public async Task<GetImagesByIdsQueryResponse> GetImagesByIdsAsync([FromBody]GetImagesByIdsQuery query)
         {
 
         }
 
         [HttpPost("Create")]
-        public async Task<CreateImageCommandResponse> CreateImageAsync(IFormFile file, )
+        [RequestSizeLimit(10_500_000)]
+        public async Task<CreateImageCommandResponse> CreateImageAsync(IFormFile file)
         {
-
+            var dto = new CreateImageCommand
+            {
+                Content = file.OpenReadStream(),
+                Format = file.ContentType,
+                Name = file.Name,
+                
+            }
         }
 
     }

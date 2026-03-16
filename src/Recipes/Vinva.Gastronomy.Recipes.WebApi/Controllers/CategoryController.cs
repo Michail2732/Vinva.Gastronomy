@@ -9,8 +9,9 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
 {
     [ApiController]
     [Route("api/Categories")]
-    [Authorize(Roles = UserRoles.Administrator)]
+    [Authorize(Roles = UserRoles.Manager)]
     [Produces("application/json")]
+    [Consumes("application/json")]
     public class CategoryController : Controller
     {
         private readonly IMediator _mediator;
@@ -27,6 +28,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
         }
 
         [HttpDelete("Remove")]
+        [Authorize(Roles = UserRoles.Administrator)]
         public async Task Remove([FromBody] RemoveCategoryCommand command)
         {
             await _mediator.Send(command);            

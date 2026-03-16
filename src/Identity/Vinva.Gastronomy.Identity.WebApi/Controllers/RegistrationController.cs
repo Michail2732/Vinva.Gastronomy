@@ -8,6 +8,8 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
 {
     [ApiController]
     [Route("api/Registration")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class RegistrationController : ControllerBase
     {
         private readonly IMediator _mediator;

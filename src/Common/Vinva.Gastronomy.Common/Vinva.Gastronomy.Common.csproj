@@ -6,8 +6,7 @@
 	<LangVersion>11</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Ardalis.Specification" Version="9.3.1" />
+  <ItemGroup>    
 	<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
     <PackageReference Include="UUIDNext" Version="4.2.1" />
   </ItemGroup>

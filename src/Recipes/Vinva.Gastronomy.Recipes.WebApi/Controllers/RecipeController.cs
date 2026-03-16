@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vinva.Gastronomy.Common.Entities;
-using Vinva.Gastronomy.Common.Infrastructure.Results;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddCategories;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddIngredients;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddSteps;
@@ -22,6 +21,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
     [Route("api/Recipes")]
     [Authorize(Roles = UserRoles.Manager)]
     [Produces("application/json")]
+    [Consumes("application/json")]
     public class RecipeController : Controller
     {
         private readonly IMediator _mediator;
@@ -80,7 +80,8 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
             return result;
         }
 
-        [HttpDelete("Remove")]        
+        [HttpDelete("Remove")]
+        [Authorize(Roles = UserRoles.Administrator)]
         public async Task Remove([FromQuery] Guid recipeId)
         {
             var command = new RemoveCommand

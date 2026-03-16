@@ -11,8 +11,9 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
 {
     [ApiController]
     [Route("api/Ingredients")]
-    [Authorize(Roles = UserRoles.Administrator)]
+    [Authorize(Roles = UserRoles.Manager)]
     [Produces("application/json")]
+    [Consumes("application/json")]
     public class IngredientController : Controller
     {
         private readonly IMediator _mediator;
@@ -31,6 +32,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
 
 
         [HttpGet("GetById")]
+        [Authorize(Roles = UserRoles.User)]
         public async Task<GetIngredientByIdResponce> GetById([FromQuery] Guid ingredientId)
         {
             var request = new GetIngredientByIdRequest
@@ -42,6 +44,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
         }
 
         [HttpDelete("Remove")]
+        [Authorize(Roles = UserRoles.Administrator)]
         public async Task Remove([FromBody] RemoveIngredientCommand command)
         {
             await _mediator.Send(command);            

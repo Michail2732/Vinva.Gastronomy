@@ -1,4 +1,5 @@
-﻿using Vinva.Gastronomy.Common.Infrastructure.Results;
+﻿using Vinva.Gastronomy.Common.Entities;
+using Vinva.Gastronomy.Common.Exceptions;
 
 namespace Vinva.Gastronomy.Common.Infrastructure.Exceptions;
 
