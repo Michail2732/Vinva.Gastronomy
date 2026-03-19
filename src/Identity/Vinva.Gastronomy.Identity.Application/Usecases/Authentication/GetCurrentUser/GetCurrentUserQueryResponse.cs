@@ -6,8 +6,10 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurre
 {
     public readonly record struct GetCurrentUserQueryResponse 
     {
-        public string Login { get; init; }
-        public string Email { get; init; }
-        public UserState State { get; init; }
+        public required Guid Id { get; init; }
+        public required string Login { get; init; }
+        public required string Email { get; init; }
+        public required UserState State { get; init; }
+        public required UserRole[] Roles { get; init; }
     }
 }

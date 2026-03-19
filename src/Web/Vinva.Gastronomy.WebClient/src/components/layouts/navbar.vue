@@ -1,35 +1,18 @@
 <template>
   <header class="navbar">
-    <div class="navbar-container">
-      <!-- Левая часть: логотип и бургер-меню -->
-      <div class="navbar-left">
-        <!-- Кнопка бургер-меню (только на мобилках) -->
+    <div class="navbar-container">      
+      <div class="navbar-left">        
         <Button 
           v-if="isMobile"
           icon="pi pi-bars"
           class="navbar-burger p-button-text"
-          @click="$emit('toggle-mobile-menu')"
-        />
-        
+          @click="$emit('toggle-mobile-menu')"/>        
         <!-- Логотип -->
         <router-link to="/" class="navbar-logo">
           <img src="/logo.svg" alt="Лого" height="40">
           <span class="navbar-logo-text hidden sm:inline">Кулинарный клуб</span>
         </router-link>
-      </div>
-      
-      <!-- Поиск (только на десктопе) -->
-      <div class="navbar-search hidden md:block">
-        <span class="p-input-icon-left">
-          <i class="pi pi-search" />
-          <InputText 
-            v-model="searchQuery"
-            placeholder="Поиск рецептов..."
-            class="p-inputtext-sm"
-            @keyup.enter="search"
-          />
-        </span>
-      </div>
+      </div>            
       
       <!-- Правая часть: меню и профиль -->
       <div class="navbar-right">
@@ -54,22 +37,14 @@
             @click="goToFavorites"
           />
           
-          <Menu ref="menu" :model="userMenuItems" popup>
+          <Menu ref="menu" :v-model="userMenuItems" popup>
             <template #start>
               <div class="p-3 border-bottom">
                 <div class="font-bold">{{ user.name }}</div>
                 <div class="text-sm text-color-secondary">{{ user.email }}</div>
               </div>
             </template>
-          </Menu>
-          
-          <Avatar 
-            :image="user.avatar" 
-            :label="user.initials"
-            shape="circle"
-            class="navbar-avatar"
-            @click="toggleMenu"
-          />
+          </Menu>                    
         </div>
         
         <!-- Кнопки входа/регистрации -->
@@ -147,7 +122,7 @@ const userMenuItems = ref([
   {
     label: 'Выйти',
     icon: 'pi pi-sign-out',
-    command: () => authStore.logout()
+    command: () => authStore.logoutUser()
   }
 ])
 

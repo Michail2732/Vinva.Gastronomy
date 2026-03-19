@@ -6,11 +6,12 @@
     "version": "v1"
   },
   "paths": {
-    "/login": {
+    "/api/Authentication/Login": {
       "post": {
         "tags": [
           "Authentication"
         ],
+        "operationId": "AuthenticationLogin",
         "requestBody": {
           "content": {
             "application/json": {
@@ -34,11 +35,12 @@
         }
       }
     },
-    "/refresh": {
+    "/api/Authentication/RefreshToken": {
       "post": {
         "tags": [
           "Authentication"
         ],
+        "operationId": "AuthenticationRefreshToken",
         "responses": {
           "200": {
             "description": "OK",
@@ -53,11 +55,12 @@
         }
       }
     },
-    "/validate": {
+    "/api/Authentication/ValidateToken": {
       "post": {
         "tags": [
           "Authentication"
         ],
+        "operationId": "AuthenticationValidateToken",
         "requestBody": {
           "content": {
             "application/json": {
@@ -74,11 +77,12 @@
         }
       }
     },
-    "/me": {
+    "/api/Authentication/Me": {
       "get": {
         "tags": [
           "Authentication"
         ],
+        "operationId": "AuthenticationMe",
         "responses": {
           "200": {
             "description": "OK",
@@ -93,11 +97,12 @@
         }
       }
     },
-    "/logout": {
+    "/api/Authentication/Logout": {
       "post": {
         "tags": [
           "Authentication"
         ],
+        "operationId": "AuthenticationLogout",
         "requestBody": {
           "content": {
             "application/json": {
@@ -119,6 +124,7 @@
         "tags": [
           "Category"
         ],
+        "operationId": "CategoryCreate",
         "requestBody": {
           "content": {
             "application/json": {
@@ -147,6 +153,7 @@
         "tags": [
           "Category"
         ],
+        "operationId": "CategoryRemove",
         "requestBody": {
           "content": {
             "application/json": {
@@ -168,6 +175,7 @@
         "tags": [
           "Image"
         ],
+        "operationId": "ImageGetImagesByIds",
         "requestBody": {
           "content": {
             "application/json": {
@@ -196,6 +204,7 @@
         "tags": [
           "Image"
         ],
+        "operationId": "ImageCreateImage",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -269,6 +278,7 @@
         "tags": [
           "Ingredient"
         ],
+        "operationId": "IngredientCreate",
         "requestBody": {
           "content": {
             "application/json": {
@@ -297,6 +307,7 @@
         "tags": [
           "Ingredient"
         ],
+        "operationId": "IngredientGetById",
         "parameters": [
           {
             "name": "ingredientId",
@@ -326,6 +337,7 @@
         "tags": [
           "Ingredient"
         ],
+        "operationId": "IngredientRemove",
         "requestBody": {
           "content": {
             "application/json": {
@@ -347,6 +359,7 @@
         "tags": [
           "Ingredient"
         ],
+        "operationId": "IngredientUpdate",
         "requestBody": {
           "content": {
             "application/json": {
@@ -368,6 +381,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeAddIngredients",
         "requestBody": {
           "content": {
             "application/json": {
@@ -389,6 +403,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeAddCategories",
         "requestBody": {
           "content": {
             "application/json": {
@@ -410,6 +425,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeAddSteps",
         "requestBody": {
           "content": {
             "application/json": {
@@ -431,6 +447,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeCreate",
         "requestBody": {
           "content": {
             "application/json": {
@@ -459,6 +476,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeSearchByCategories",
         "requestBody": {
           "content": {
             "application/json": {
@@ -487,6 +505,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeSearchByIngredients",
         "requestBody": {
           "content": {
             "application/json": {
@@ -515,6 +534,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeSearchByQuery",
         "requestBody": {
           "content": {
             "application/json": {
@@ -543,6 +563,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeRemove",
         "parameters": [
           {
             "name": "recipeId",
@@ -565,6 +586,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeRemoveIngredients",
         "requestBody": {
           "content": {
             "application/json": {
@@ -586,6 +608,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeRemoveCategories",
         "requestBody": {
           "content": {
             "application/json": {
@@ -607,6 +630,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeRemoveSteps",
         "requestBody": {
           "content": {
             "application/json": {
@@ -628,6 +652,7 @@
         "tags": [
           "Recipe"
         ],
+        "operationId": "RecipeReorderSteps",
         "requestBody": {
           "content": {
             "application/json": {
@@ -649,6 +674,7 @@
         "tags": [
           "Registration"
         ],
+        "operationId": "RegistrationRegister",
         "requestBody": {
           "content": {
             "application/json": {
@@ -670,6 +696,7 @@
         "tags": [
           "Registration"
         ],
+        "operationId": "RegistrationRegisterConfirm",
         "parameters": [
           {
             "name": "tokenId",
@@ -914,8 +941,19 @@
         "additionalProperties": false
       },
       "GetCurrentUserQueryResponse": {
+        "required": [
+          "email",
+          "id",
+          "login",
+          "roles",
+          "state"
+        ],
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
           "login": {
             "type": "string",
             "nullable": true
@@ -926,6 +964,13 @@
           },
           "state": {
             "$ref": "#/components/schemas/UserState"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRole"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

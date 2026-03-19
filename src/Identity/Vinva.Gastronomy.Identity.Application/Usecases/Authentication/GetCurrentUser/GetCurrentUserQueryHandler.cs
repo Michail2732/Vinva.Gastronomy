@@ -27,8 +27,10 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurre
 
             return new GetCurrentUserQueryResponse
             {
+                Id = parser.ParseId(claims),
                 Login = parser.ParseLogin(claims),
                 Email = parser.ParseEmail(claims),
+                Roles = parser.ParseRoles(claims),
                 State = parser.ParseState(claims)
             };
 

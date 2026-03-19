@@ -31,6 +31,15 @@ moduleContext.ConfigureSwagger(opt =>
         Version = "v1",
         Description = "Gastronomy API"
     });
+    opt.CustomOperationIds(apiDesc =>
+    {
+        // Берем имя метода (GetRecipes, Login, Logout)
+        var actionName = apiDesc.ActionDescriptor.RouteValues["action"];
+        var controllerName = apiDesc.ActionDescriptor.RouteValues["controller"];
+
+        // Приводим к camelCase (getRecipes, login, logout)
+        return controllerName + actionName;
+    });
 });
 
 moduleLoader.RegisterServices(moduleContext);

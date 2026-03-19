@@ -25,7 +25,7 @@ namespace Vinva.Gastronomy.Media.WebApi.Controllers
         public ImageController(IMediator mediator, IUserContext userContext)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _userContext = userContext ?? throw new ArgumentNullException(nameof(userContext));
+            _userContext = userContext ?? throw new ArgumentNullException(nameof(userContext));            
         }
 
 

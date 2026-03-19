@@ -42,7 +42,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// <remarks>
         ///     Выполняет аутентификацию пользователя по логину и паролю.
         /// </remarks>
-        [HttpPost("/login")]
+        [HttpPost("Login")]
         [AllowAnonymous]
         public async Task<LoginResponceDto> Login([FromBody]LoginRequest request)
         {
@@ -73,7 +73,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// <remarks>
         ///     Обновляет access токен используя refresh токен.
         /// </remarks>
-        [HttpPost("/refresh")]
+        [HttpPost("RefreshToken")]
         public async Task<RefreshTokenResponce> RefreshToken()
         {
             if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken) ||
@@ -95,9 +95,9 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// <remarks>
         ///     Проверяет валидность JWT токена.
         /// </remarks>
-        [HttpPost("/validate")]
+        [HttpPost("ValidateToken")]
         [AllowAnonymous]
-        public async Task ValidateTokenPost([FromBody]ValidateTokenRequest request)
+        public async Task ValidateToken([FromBody]ValidateTokenRequest request)
         {
             await _mediator.Send(request);            
         }        
@@ -108,8 +108,8 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="UnauthorizedException"></exception>
-        [HttpGet("/me")]
-        public async Task<GetCurrentUserQueryResponse> GetCurrentUser()
+        [HttpGet("Me")]
+        public async Task<GetCurrentUserQueryResponse> Me()
         {
             var token = HttpContext.Request.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "");
             if (string.IsNullOrWhiteSpace(token))
@@ -128,7 +128,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("/logout")]
+        [HttpPost("Logout")]
         public async Task Logout([FromBody]LogoutRequest request)
         {            
             await _mediator.Send(request);
