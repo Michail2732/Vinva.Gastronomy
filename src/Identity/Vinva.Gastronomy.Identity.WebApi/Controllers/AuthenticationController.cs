@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Logout;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.RefreshJwtToken;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.ValidateJwtToken;
+using Vinva.Gastronomy.Identity.WebApi.Dtos;
 
 namespace Vinva.Gastronomy.Identity.WebApi.Controllers
 {
@@ -42,10 +44,25 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// </remarks>
         [HttpPost("/login")]
         [AllowAnonymous]
-        public async Task<LoginResponce> Login([FromBody]LoginRequest request)
+        public async Task<LoginResponceDto> Login([FromBody]LoginRequest request)
         {
             var result = await _mediator.Send(request);
-            return result;
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(2),
+                Path = "api/Authentication"
+            };
+            Response.Cookies.Append("refreshToken", result.RefreshToken, cookieOptions);
+            return new LoginResponceDto
+            {
+                AccessToken = result.AccessToken,
+                ExpiresAt = result.ExpiresAt,
+                Login = result.Login,
+                Roles = result.Roles,
+            };
         }
 
         /// <summary>
@@ -57,8 +74,15 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         ///     Обновляет access токен используя refresh токен.
         /// </remarks>
         [HttpPost("/refresh")]
-        public async Task<RefreshTokenResponce> RefreshToken([FromBody]RefreshTokenRequest request)
+        public async Task<RefreshTokenResponce> RefreshToken()
         {
+            if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken) ||
+                string.IsNullOrEmpty(refreshToken))
+                throw new UnauthorizedException();
+            var request = new RefreshTokenRequest
+            {
+                RefreshToken = refreshToken
+            };
             var result = await _mediator.Send(request);
             return result;
         }

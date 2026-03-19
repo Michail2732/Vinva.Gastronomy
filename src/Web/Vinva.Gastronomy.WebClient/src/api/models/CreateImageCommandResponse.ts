@@ -2,8 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type Error = {
-    code?: string | null;
-    description?: string | null;
+export type CreateImageCommandResponse = {
+    imageId: string;
 };
 

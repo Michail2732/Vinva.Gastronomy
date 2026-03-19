@@ -3,11 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { UserRole } from './UserRole';
-export type RefreshTokenResponce = {
+export type LoginResponceDto = {
     accessToken: string | null;
-    refreshToken: string | null;
     expiresAt: string;
     login: string | null;
-    role: UserRole;
+    roles: Array<UserRole> | null;
 };
 

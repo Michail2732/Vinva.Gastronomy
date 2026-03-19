@@ -4,9 +4,8 @@
 /* eslint-disable */
 import type { GetCurrentUserQueryResponse } from '../models/GetCurrentUserQueryResponse';
 import type { LoginRequest } from '../models/LoginRequest';
-import type { LoginResponceResult } from '../models/LoginResponceResult';
+import type { LoginResponceDto } from '../models/LoginResponceDto';
 import type { LogoutRequest } from '../models/LogoutRequest';
-import type { RefreshTokenRequest } from '../models/RefreshTokenRequest';
 import type { RefreshTokenResponce } from '../models/RefreshTokenResponce';
 import type { ValidateTokenRequest } from '../models/ValidateTokenRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -15,12 +14,12 @@ import { request as __request } from '../core/request';
 export class AuthenticationService {
     /**
      * @param requestBody
-     * @returns LoginResponceResult OK
+     * @returns LoginResponceDto OK
      * @throws ApiError
      */
     public static postLogin(
         requestBody?: LoginRequest,
-    ): CancelablePromise<LoginResponceResult> {
+    ): CancelablePromise<LoginResponceDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/login',
@@ -29,18 +28,13 @@ export class AuthenticationService {
         });
     }
     /**
-     * @param requestBody
      * @returns RefreshTokenResponce OK
      * @throws ApiError
      */
-    public static postRefresh(
-        requestBody?: RefreshTokenRequest,
-    ): CancelablePromise<RefreshTokenResponce> {
+    public static postRefresh(): CancelablePromise<RefreshTokenResponce> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/refresh',
-            body: requestBody,
-            mediaType: 'application/json',
         });
     }
     /**

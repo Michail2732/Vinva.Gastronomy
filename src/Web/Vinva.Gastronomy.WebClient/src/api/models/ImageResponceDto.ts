@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type RefreshTokenRequest = {
-    refreshToken?: string | null;
+export type ImageResponceDto = {
+    imageId?: string;
+    url: string | null;
 };
 

@@ -17,16 +17,6 @@
               "schema": {
                 "$ref": "#/components/schemas/LoginRequest"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
             }
           }
         },
@@ -34,19 +24,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResponceResult"
-                }
-              },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoginResponceResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResponceResult"
+                  "$ref": "#/components/schemas/LoginResponceDto"
                 }
               }
             }
@@ -59,40 +39,11 @@
         "tags": [
           "Authentication"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshTokenRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshTokenRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshTokenRequest"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/RefreshTokenResponce"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RefreshTokenResponce"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RefreshTokenResponce"
                 }
@@ -110,16 +61,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ValidateTokenRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ValidateTokenRequest"
-              }
-            },
-            "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/ValidateTokenRequest"
               }
@@ -142,17 +83,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetCurrentUserQueryResponse"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetCurrentUserQueryResponse"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetCurrentUserQueryResponse"
                 }
@@ -170,16 +101,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LogoutRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LogoutRequest"
-              }
-            },
-            "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/LogoutRequest"
               }
@@ -204,16 +125,6 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateCategoryCommand"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCategoryCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCategoryCommand"
-              }
             }
           }
         },
@@ -221,17 +132,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateCategoryResponse"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateCategoryResponse"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CreateCategoryResponse"
                 }
@@ -252,22 +153,113 @@
               "schema": {
                 "$ref": "#/components/schemas/RemoveCategoryCommand"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveCategoryCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveCategoryCommand"
-              }
             }
           }
         },
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Images/GetByIds": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetImagesByIdsQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetImagesByIdsQueryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Images/Create": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "File"
+                ],
+                "type": "object",
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Group": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "File": {
+                  "style": "form"
+                },
+                "Group": {
+                  "style": "form"
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "required": [
+                  "File"
+                ],
+                "type": "object",
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Group": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "File": {
+                  "style": "form"
+                },
+                "Group": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateImageCommandResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -283,16 +275,6 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateIngredientCommand"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateIngredientCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateIngredientCommand"
-              }
             }
           }
         },
@@ -300,17 +282,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateIngredientResponse"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateIngredientResponse"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CreateIngredientResponse"
                 }
@@ -339,17 +311,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetIngredientByIdResponce"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetIngredientByIdResponce"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetIngredientByIdResponce"
                 }
@@ -367,16 +329,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveIngredientCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveIngredientCommand"
-              }
-            },
-            "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/RemoveIngredientCommand"
               }
@@ -401,16 +353,6 @@
               "schema": {
                 "$ref": "#/components/schemas/UpdateIngredientCommand"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateIngredientCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateIngredientCommand"
-              }
             }
           }
         },
@@ -429,16 +371,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddIngredientCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddIngredientCommand"
-              }
-            },
-            "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/AddIngredientCommand"
               }
@@ -463,16 +395,6 @@
               "schema": {
                 "$ref": "#/components/schemas/AddRecipeCategoriesCommand"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddRecipeCategoriesCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddRecipeCategoriesCommand"
-              }
             }
           }
         },
@@ -491,16 +413,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddStepsCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddStepsCommand"
-              }
-            },
-            "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/AddStepsCommand"
               }
@@ -525,16 +437,6 @@
               "schema": {
                 "$ref": "#/components/schemas/CreateRecipeCommand"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateRecipeCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateRecipeCommand"
-              }
             }
           }
         },
@@ -542,17 +444,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateRecipeResponce"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateRecipeResponce"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CreateRecipeResponce"
                 }
@@ -573,16 +465,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetRecipeByCategoryRequest"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetRecipeByCategoryRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetRecipeByCategoryRequest"
-              }
             }
           }
         },
@@ -590,17 +472,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetRecipeByCategoryResponce"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetRecipeByCategoryResponce"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetRecipeByCategoryResponce"
                 }
@@ -621,16 +493,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetRecipeByIngredientsRequest"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetRecipeByIngredientsRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetRecipeByIngredientsRequest"
-              }
             }
           }
         },
@@ -638,17 +500,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetRecipeByIngredientsResponce"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetRecipeByIngredientsResponce"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetRecipeByIngredientsResponce"
                 }
@@ -669,16 +521,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetRecipesByFilterQuery"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetRecipesByFilterQuery"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetRecipesByFilterQuery"
-              }
             }
           }
         },
@@ -686,17 +528,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetRecipesByFilterQueryResponse"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetRecipesByFilterQueryResponse"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetRecipesByFilterQueryResponse"
                 }
@@ -739,16 +571,6 @@
               "schema": {
                 "$ref": "#/components/schemas/RemoveIngredientsCommand"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveIngredientsCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveIngredientsCommand"
-              }
             }
           }
         },
@@ -767,16 +589,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveRecipeCategoryCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveRecipeCategoryCommand"
-              }
-            },
-            "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/RemoveRecipeCategoryCommand"
               }
@@ -801,16 +613,6 @@
               "schema": {
                 "$ref": "#/components/schemas/RemoveStepsCommand"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveStepsCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveStepsCommand"
-              }
             }
           }
         },
@@ -832,16 +634,6 @@
               "schema": {
                 "$ref": "#/components/schemas/ReorderStepsCommand"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReorderStepsCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReorderStepsCommand"
-              }
             }
           }
         },
@@ -860,16 +652,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterCommand"
-              }
-            },
-            "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/RegisterCommand"
               }
@@ -1041,6 +823,19 @@
         },
         "additionalProperties": false
       },
+      "CreateImageCommandResponse": {
+        "required": [
+          "imageId"
+        ],
+        "type": "object",
+        "properties": {
+          "imageId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateIngredientCommand": {
         "type": "object",
         "properties": {
@@ -1118,20 +913,6 @@
         },
         "additionalProperties": false
       },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "GetCurrentUserQueryResponse": {
         "type": "object",
         "properties": {
@@ -1145,6 +926,38 @@
           },
           "state": {
             "$ref": "#/components/schemas/UserState"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetImagesByIdsQuery": {
+        "required": [
+          "imageDtos"
+        ],
+        "type": "object",
+        "properties": {
+          "imageDtos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImageQueryDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetImagesByIdsQueryResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImageResponceDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1259,6 +1072,56 @@
         },
         "additionalProperties": false
       },
+      "ImageQueryDto": {
+        "required": [
+          "format",
+          "height",
+          "imageId",
+          "quality",
+          "width"
+        ],
+        "type": "object",
+        "properties": {
+          "imageId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "width": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "height": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quality": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "format": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ImageResponceDto": {
+        "required": [
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "imageId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "IngredientCategoryDto": {
         "required": [
           "id",
@@ -1368,21 +1231,16 @@
         },
         "additionalProperties": false
       },
-      "LoginResponce": {
+      "LoginResponceDto": {
         "required": [
           "accessToken",
           "expiresAt",
           "login",
-          "refreshToken",
-          "role"
+          "roles"
         ],
         "type": "object",
         "properties": {
           "accessToken": {
-            "type": "string",
-            "nullable": true
-          },
-          "refreshToken": {
             "type": "string",
             "nullable": true
           },
@@ -1394,27 +1252,12 @@
             "type": "string",
             "nullable": true
           },
-          "role": {
-            "$ref": "#/components/schemas/UserRole"
-          }
-        },
-        "additionalProperties": false
-      },
-      "LoginResponceResult": {
-        "type": "object",
-        "properties": {
-          "isSuccess": {
-            "type": "boolean"
-          },
-          "isFailure": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "error": {
-            "$ref": "#/components/schemas/Error"
-          },
-          "value": {
-            "$ref": "#/components/schemas/LoginResponce"
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRole"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1601,23 +1444,13 @@
         },
         "additionalProperties": false
       },
-      "RefreshTokenRequest": {
-        "type": "object",
-        "properties": {
-          "refreshToken": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "RefreshTokenResponce": {
         "required": [
           "accessToken",
           "expiresAt",
           "login",
           "refreshToken",
-          "role"
+          "roles"
         ],
         "type": "object",
         "properties": {
@@ -1637,8 +1470,12 @@
             "type": "string",
             "nullable": true
           },
-          "role": {
-            "$ref": "#/components/schemas/UserRole"
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRole"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
