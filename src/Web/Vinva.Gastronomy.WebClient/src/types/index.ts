@@ -4,10 +4,6 @@ export interface UserLoginReponse
     user: User
 }
 
-export interface User
-
-
-
 
 export class AuthError extends Error
 {
@@ -23,4 +19,9 @@ export interface User {
   email: string  
   roles: string[],
   createdAt: string
+}
+
+export type RecipeCard = {
+    title: string,
+    imageSrc: string,   
 }

@@ -4,6 +4,7 @@ import type { User } from './types'
 import {authenticationLogin, authenticationLogout, authenticationMe, 
   authenticationRefreshToken, authenticationValidateToken, registrationRegister} from '@/api/sdk.gen'
 import router from '@/router'
+import { AuthError } from '@/types'
 
 export const useAuthStore = defineStore('auth', () => {
   // ===== STATE =====
@@ -32,9 +33,10 @@ export const useAuthStore = defineStore('auth', () => {
           }
         }
       )
-      
+      if (!response.data?.accessToken)
+        throw new AuthError("Проблемы c сервером");
       // Сохраняем токен
-      token.value = response.data.accessToken
+      token.value = response.data.accessToken;
       
       // Загружаем пользователя
       await fetchUser()
@@ -65,6 +67,8 @@ export const useAuthStore = defineStore('auth', () => {
     
     try {
       const userData = await authenticationMe()
+      if (!userData.data)
+        throw new AuthError("Проблемы c сервером");
       user.value = 
       {
         id: userData.data.id,
@@ -81,8 +85,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function logoutUser() {
     user.value = null
     token.value = null
-    await authenticationLogout();
-    localStorage.removeItem('token')
+    await authenticationLogout();    
     router.push('/login')
   }
   

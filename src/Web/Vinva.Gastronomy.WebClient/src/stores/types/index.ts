@@ -1,8 +1,8 @@
-import { UserRole } from "@/api/types.gen"
+import type { UserRole } from "@/api/types.gen"
 
 export interface User {
   id: string
-  name: string
-  email: string  
-  roles: Array<UserRole>
+  name: string | null
+  email: string  | null
+  roles: Array<UserRole> | null
 }
