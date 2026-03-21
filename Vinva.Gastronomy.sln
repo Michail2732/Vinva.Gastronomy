@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11520.95 d18.3
+VisualStudioVersion = 18.3.11520.95
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Domain", "src\Recipes\Vinva.Gastronomy.Recipes.Domain\Vinva.Gastronomy.Recipes.Domain.csproj", "{A58DB1A0-659A-41B8-BB40-B05EADDC2D72}"
 EndProject
@@ -12,8 +12,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{079DD670-38EE-44DD-9DDB-C99379CF1AF7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Common", "src\Common\Vinva.Gastronomy.Common\Vinva.Gastronomy.Common.csproj", "{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Common.Infrastructure", "src\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj", "{913C75A2-4C55-45D0-A5D6-D9776ED68C05}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vinva.Gastronomy.Recipes.Persistence", "src\Recipes\Vinva.Gastronomy.Recipes.Persistence\Vinva.Gastronomy.Recipes.Persistence.csproj", "{8A99A16A-6B15-4972-9466-88F83F2C679F}"
 EndProject
@@ -61,10 +59,6 @@ Global
 		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{913C75A2-4C55-45D0-A5D6-D9776ED68C05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{913C75A2-4C55-45D0-A5D6-D9776ED68C05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{913C75A2-4C55-45D0-A5D6-D9776ED68C05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{913C75A2-4C55-45D0-A5D6-D9776ED68C05}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8A99A16A-6B15-4972-9466-88F83F2C679F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8A99A16A-6B15-4972-9466-88F83F2C679F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A99A16A-6B15-4972-9466-88F83F2C679F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -128,7 +122,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A58DB1A0-659A-41B8-BB40-B05EADDC2D72} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
 		{0AD5FC22-C8B4-491D-9E7A-1F24BA9F5AEF} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
-		{913C75A2-4C55-45D0-A5D6-D9776ED68C05} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 		{8A99A16A-6B15-4972-9466-88F83F2C679F} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
 		{83C000C0-A390-4568-A0BC-ED4A167C97B2} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}
 		{69B6AC2E-CBED-4372-9A07-34A5ABFDC8C1} = {2445C71D-B6B2-4B63-854B-641F2E2E78CE}

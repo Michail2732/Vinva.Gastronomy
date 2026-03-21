@@ -9,7 +9,7 @@ import { AuthError } from '@/types'
 export const useAuthStore = defineStore('auth', () => {
   // ===== STATE =====
   const user = ref<User | null>(null)
-  const token = ref<string | null>(localStorage.getItem('token'))
+  const token = ref<string | null>(null)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 

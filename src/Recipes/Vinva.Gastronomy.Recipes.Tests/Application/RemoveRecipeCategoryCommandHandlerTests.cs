@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveCategory;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application

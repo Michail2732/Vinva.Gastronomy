@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Identity.Application.Common.Constants;
 using Vinva.Gastronomy.Identity.Domain.Entities;
+using Vinva.Gastronomy.Identity.Domain.Exceptions;
 using Vinva.Gastronomy.Identity.Domain.Services;
 using Vinva.Gastronomy.Identity.Persistence;
 
@@ -26,7 +27,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
         }
 
         public async Task<LoginResponce> Handle(LoginRequest request, CancellationToken cancellationToken)
-        {                                 
+        {
             var passHash = _passwordHashService.HashPassword(request.Password);
 
             Expression<Func<User, bool>> searchSpec = a => a.Login == request.Login;

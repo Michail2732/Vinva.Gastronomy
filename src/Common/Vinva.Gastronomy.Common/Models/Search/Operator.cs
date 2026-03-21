@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vinva.Gastronomy.Common.Infrastructure.Filters
+namespace Vinva.Gastronomy.Common.Models.Search
 {
     public enum Operator
     {

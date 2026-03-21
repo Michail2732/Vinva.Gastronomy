@@ -12,5 +12,6 @@ namespace Vinva.Gastronomy.Common.Exceptions
 		public DomainException(string? message) : base(message) { }
 		public DomainException(string? message, Exception? inner) : base(message, inner) { }
         public DomainException(Error error, Exception? inner) : base($"[{error.Code}] {error.Description}", inner) { }
+        public DomainException(Type sourceEntity, string message, Exception? inner = null) : base($"[{sourceEntity}] {message}", inner) { }
     }
 }

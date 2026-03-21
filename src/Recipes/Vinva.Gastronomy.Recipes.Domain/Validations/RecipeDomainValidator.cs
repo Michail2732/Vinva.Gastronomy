@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Vinva.Gastronomy.Common.Validations;
+using Vinva.Gastronomy.Common.Constants;
+using Vinva.Gastronomy.Common.Services;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Validations
 {
-    public class RecipeDomainValidator : DescriptiveEntityValidator
+    public class RecipeDomainValidator : ValidationService
     {
-        public const string IngredientMeasure = DescriptiveEntityValidationRegex.AlphanumericWithSpacesDotBrace;
+        public const string IngredientMeasure = ValidationRegexes.AlphanumericWithSpacesDotBrace;
 
         public static bool ValidateIngredientMeasure(string measure)
         {

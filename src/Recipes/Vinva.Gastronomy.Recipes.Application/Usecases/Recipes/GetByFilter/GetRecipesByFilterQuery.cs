@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Vinva.Gastronomy.Common.Infrastructure.Filters;
+using Vinva.Gastronomy.Common.Models.Search;
 
 
 namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByFilter

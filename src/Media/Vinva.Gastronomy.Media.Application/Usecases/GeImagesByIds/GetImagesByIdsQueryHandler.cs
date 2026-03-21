@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Media.Application.Common.Errors;
 using Vinva.Gastronomy.Media.Domain.Entities;
 using Vinva.Gastronomy.Media.Domain.Services;

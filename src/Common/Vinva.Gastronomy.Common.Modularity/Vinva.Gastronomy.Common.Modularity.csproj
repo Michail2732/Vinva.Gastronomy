@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Common\Vinva.Gastronomy.Common.csproj" />
   </ItemGroup>
 

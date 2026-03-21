@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vinva.Gastronomy.Identity.Domain.Exceptions;
 
 namespace Vinva.Gastronomy.Identity.Domain.Services
 {
@@ -16,6 +17,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
         /// </summary>
         /// <param name="password">Исходный пароль</param>
         /// <returns>Хешированный пароль</returns>
+        /// <exception cref="IdentityDomainException">В случае если не удалось сформировать hash</exception>
         string HashPassword(string password);
 
         /// <summary>

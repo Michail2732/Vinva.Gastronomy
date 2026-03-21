@@ -8,5 +8,5 @@ export default defineConfig({
   client: '@hey-api/client-fetch', 
   input: './openapi.json', 
   output: './src/api', 
-  client: 'fetch'  
+  client: 'fetch'
 });

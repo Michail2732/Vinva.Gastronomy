@@ -61,7 +61,7 @@ namespace Vinva.Gastronomy.Common.Entities
                 throw new ArgumentException($"\"{nameof(name)}\" не может быть неопределенным или пустым.", nameof(name));
             }
             if (name.Length > CommonConstants.MaxLengthName)
-                throw new EntityDomainException(GetType(), CommonErrorMessages.NameOverflow(name));
+                throw new DomainException(GetType(), CommonErrorMessages.NameOverflow(name));
             field = name;
         }
 
@@ -72,14 +72,14 @@ namespace Vinva.Gastronomy.Common.Entities
                 throw new ArgumentException($"\"{nameof(description)}\" не может быть неопределенным или пустым.", nameof(description));
             }
             if (description.Length > CommonConstants.MaxLengthDescription)
-                throw new EntityDomainException(GetType(), CommonErrorMessages.DescriptionOverflow(description));
+                throw new DomainException(GetType(), CommonErrorMessages.DescriptionOverflow(description));
             field = description;
         }
 
         protected void SetComment(string? comment, ref string? commentField)
         {
             if (comment?.Length > CommonConstants.MaxLengthComment)
-                throw new EntityDomainException(GetType(), CommonErrorMessages.CommentOverflow(comment));
+                throw new DomainException(GetType(), CommonErrorMessages.CommentOverflow(comment));
             commentField = comment;
         }        
     }

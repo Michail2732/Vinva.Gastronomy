@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Entities;
-using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Identity.Domain.Entities;
 using Vinva.Gastronomy.Identity.Domain.Services;

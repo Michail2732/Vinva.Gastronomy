@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vinva.Gastronomy.Common.Validations;
+using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Media.Domain.Errors;
 using Vinva.Gastronomy.Media.Domain.Exceptions;
 
@@ -20,7 +20,7 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(format);            
             Format = format;
-            if (!DescriptiveEntityValidator.ValidateName(Format))
+            if (!ValidationService.ValidateName(Format))
                 throw new MediaDomainException(MediaErrorMessages.IncorrectImageFormat(Format));
             Width = width;
             Height = height;

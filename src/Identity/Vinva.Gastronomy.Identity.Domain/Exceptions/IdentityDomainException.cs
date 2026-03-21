@@ -7,10 +7,9 @@ using Vinva.Gastronomy.Common.Exceptions;
 
 namespace Vinva.Gastronomy.Identity.Domain.Exceptions
 {
-    public class IdentityDomainException : EntityDomainException
-    {        
-        public IdentityDomainException(Type type) : base(type) { }
-        public IdentityDomainException(Type type, string message) : base(type, message) { }
-        public IdentityDomainException(Type type, string message, Exception inner) : base(type, message, inner) { }
+    public class IdentityDomainException : DomainException
+    {                
+        public IdentityDomainException(string message) : base(message) { }
+        public IdentityDomainException(string message, Exception inner) : base(message, inner) { }        
     }
 }

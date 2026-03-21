@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Identity.Application.Common;
+using Vinva.Gastronomy.Identity.Domain.Exceptions;
 using Vinva.Gastronomy.Identity.Domain.Services;
 using PasswordHasher = BCrypt.Net.BCrypt;
 
@@ -22,10 +23,7 @@ namespace Vinva.Gastronomy.Identity.Application.Services
         public string HashPassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("Пароль не может быть пустым", nameof(password));
-
-            if (!IsValidPassword(password))
-                throw new ArgumentException($"Пароль не соответствует требованиям: {GetPasswordRequirements()}", nameof(password));
+                throw new ArgumentNullException("Пароль не может быть пустым", nameof(password));            
 
             return PasswordHasher.HashPassword(password, _settings.WorkFactor);
         }

@@ -17,7 +17,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
         
         public Guid ParseId(ClaimsPrincipal principal)
         {
-            var idStr = principal.Claims.First(a => a.Type == JwtRegisteredClaimNames.Sub).Value;
+            var idStr = principal.Claims.First(a => a.Type == ClaimTypes.NameIdentifier).Value;
             return Guid.Parse(idStr);
         }
 
@@ -72,7 +72,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
         {
             var claims =  new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new(ClaimTypes.Name, user.Login),
                 new(StateType, user.State.ToString()),
                 new(ClaimTypes.Email, user.Email),                

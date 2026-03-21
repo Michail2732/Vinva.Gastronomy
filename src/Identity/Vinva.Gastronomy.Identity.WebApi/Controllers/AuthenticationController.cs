@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurrentUser;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Logout;

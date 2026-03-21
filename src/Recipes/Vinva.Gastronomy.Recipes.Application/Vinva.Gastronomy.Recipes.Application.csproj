@@ -24,7 +24,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Domain\Vinva.Gastronomy.Recipes.Domain.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Persistence\Vinva.Gastronomy.Recipes.Persistence.csproj" />
   </ItemGroup>

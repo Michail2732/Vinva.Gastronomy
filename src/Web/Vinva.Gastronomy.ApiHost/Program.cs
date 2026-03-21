@@ -53,6 +53,16 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(policy =>
+    {
+        var allowedOrigins = app.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+        ?? throw new Exception("Not found section 'AllowedOrigins' in appsettings.json");
+        policy.WithOrigins(allowedOrigins)
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+
+    });
 }
 
 app.UseHttpsRedirection();

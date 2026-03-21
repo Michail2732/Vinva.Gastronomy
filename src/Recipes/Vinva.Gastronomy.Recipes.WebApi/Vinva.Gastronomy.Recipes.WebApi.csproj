@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Modularity\Vinva.Gastronomy.Common.Modularity.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Application\Vinva.Gastronomy.Recipes.Application.csproj" />
   </ItemGroup>

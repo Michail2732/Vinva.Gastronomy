@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vinva.Gastronomy.Common.Infrastructure.Filters
+namespace Vinva.Gastronomy.Common.Models.Search
 {
     /// <summary>
     /// Построитель запросов поиска для IQueryable

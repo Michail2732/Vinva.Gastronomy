@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Recipes.Application.Common;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddSteps;
 

@@ -5,9 +5,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Vinva.Gastronomy.Common.Utilities
+namespace Vinva.Gastronomy.Common.Services
 {
-    public static class EmailUtility
+    public static class EmailService
     {
         public static bool Check(string email)
         {

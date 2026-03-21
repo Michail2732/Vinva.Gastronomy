@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common;
 using Vinva.Gastronomy.Common.Entities;
-using Vinva.Gastronomy.Common.Utilities;
+using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Identity.Domain.Constants;
 using Vinva.Gastronomy.Identity.Domain.Exceptions;
 
@@ -42,9 +42,8 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
 
         public void ChangeEmail(string newEmail, DateTimeOffset currentTime)        
         {
-            if (!EmailUtility.Check(newEmail))
-                throw new IdentityDomainException(GetType(),
-                    IdentityErrorMessages.NewEmailIsIncorrect(newEmail));
+            if (!EmailService.Check(newEmail))
+                throw new IdentityDomainException(IdentityErrorMessages.NewEmailIsIncorrect(newEmail));
             Email = newEmail;
             LastEmailChangedAt = currentTime;
         }        

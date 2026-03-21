@@ -31,7 +31,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Services
         {
             var context = _httpContextAccess.HttpContext ?? throw new ArgumentException($"{nameof(IHttpContextAccessor.HttpContext)} is null");
             var uriStr = _linkGenerator.GetUriByAction(context, nameof(RegistrationController.RegisterConfirm),
-                "Registration", new { tokenId = tokenId }) ?? throw new IdentityDomainException(GetType(), "Не удалось сформировать ссылку");
+                "Registration", new { tokenId = tokenId }) ?? throw new IdentityDomainException("Не удалось сформировать ссылку регистрации");
             return new Uri(uriStr);
         }
 

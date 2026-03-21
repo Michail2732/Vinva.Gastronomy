@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Vinva.Gastronomy.Common.Infrastructure\Vinva.Gastronomy.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Identity.Domain\Vinva.Gastronomy.Identity.Domain.csproj" />
     <ProjectReference Include="..\Vinva.Gastronomy.Identity.Persistence\Vinva.Gastronomy.Identity.Persistence.csproj" />
   </ItemGroup>

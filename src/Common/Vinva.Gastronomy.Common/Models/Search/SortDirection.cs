@@ -1,4 +1,4 @@
-﻿namespace Vinva.Gastronomy.Common.Infrastructure.Filters
+﻿namespace Vinva.Gastronomy.Common.Models.Search
 {
     public enum SortDirection
     {

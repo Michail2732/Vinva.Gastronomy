@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Vinva.Gastronomy.Common.Exceptions;
-using Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Identity.Application.Common;
 using Vinva.Gastronomy.Identity.Application.Common.Constants;
 using Vinva.Gastronomy.Identity.Domain.Services;
@@ -35,6 +35,9 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
             var user = await _dbContext.Users.FirstOrDefaultAsync(a => a.Email == request.Email, cancellationToken);
             if (user != null)
                 throw new BadRequestException(IdentityApplicationErrors.UserWithSameEmailExists);
+
+            if (!_passwordHashService.IsValidPassword(request.Password))
+                throw new BadRequestException($"Пароль не соответствует требованиям: {_passwordHashService.GetPasswordRequirements()}");
 
             var passwordHash = _passwordHashService.HashPassword(request.Password);
             var token = await _registrationService.GenerateTokenAsync(request.Email, request.Login, passwordHash, cancellationToken);

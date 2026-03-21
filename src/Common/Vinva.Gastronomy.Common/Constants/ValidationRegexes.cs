@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vinva.Gastronomy.Common.Validations
+namespace Vinva.Gastronomy.Common.Constants
 {
-    public class DescriptiveEntityValidationRegex
+    public class ValidationRegexes
     {
         public const string Alphanumeric = @"^[а-яА-Яa-zA-Z0-9]+$";
         public const string AlphanumericWithSpaces = @"^[а-яА-Яa-zA-Z0-9 ]+$";

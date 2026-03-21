@@ -1,7 +1,8 @@
-﻿using Vinva.Gastronomy.Common.Entities;
+﻿using System;
+using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Common.Exceptions;
 
-namespace Vinva.Gastronomy.Common.Infrastructure.Exceptions;
+namespace Vinva.Gastronomy.Common.Exceptions;
 
 public class ConflictException : DomainException
 {
