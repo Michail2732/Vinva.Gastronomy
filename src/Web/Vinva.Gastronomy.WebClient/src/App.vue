@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {client} from '@/api/client.gen'
-import {useAuthStore} from '@/stores/authStore'
+import {useAuthStore} from '@/modules/auth/stores/authStore'
 
 
 

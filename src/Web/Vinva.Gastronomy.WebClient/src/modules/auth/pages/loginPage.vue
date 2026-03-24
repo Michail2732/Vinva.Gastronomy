@@ -20,9 +20,8 @@
     </div>
 </template>
 <script setup lang="ts">
-import {ref, computed} from 'vue';
-import {useAuthStore} from '@/stores/authStore'
-import type {AuthError} from '@/types'
+import {ref} from 'vue';
+import {useAuthStore} from '@/modules/auth/stores/authStore'
 
 const login = ref('')
 const password= ref('')

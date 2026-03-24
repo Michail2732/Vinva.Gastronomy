@@ -17,6 +17,7 @@ import FloatLabel from 'primevue/floatlabel'
 import Rating from 'primevue/rating'
 import Tag from 'primevue/tag'
 import ProgressSpinner from 'primevue/progressspinner'
+import Image from 'primevue/image'
 import Avatar from 'primevue/avatar'
 import Badge from 'primevue/badge'
 import Paginator from 'primevue/paginator'
@@ -50,5 +51,6 @@ export default {
     app.component('Avatar', Avatar)
     app.component('Badge', Badge)
     app.component('Paginator', Paginator)
+    app.component('Image', Image)
   }
 }
