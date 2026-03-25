@@ -1,8 +1,10 @@
 <template >
     <div class="login-form">
         <FloatLabel variant="over" class="input-part">
-            <InputText id="email_lbl" v-model="email" fluid />
-            <label class="label-head" for="email_lbl">Введите логин</label>
+            <InputText id="email_lbl" @input="handleInputEmail" v-model="email" 
+             :invalid="!!emailError" fluid />
+            <label class="label-head" for="email_lbl">Введите email</label>
+            <Message v-if="!emailError" severity="error">{{ emailError }}</Message>
         </FloatLabel>        
         <Button label="Войти" @click="handleSubmit" class="submit-login" />
     </div>
@@ -12,20 +14,13 @@ import {ref, computed} from 'vue'
 
 
 const email = ref('');
-function validateEmail() : boolean
-{
+const emailError = computed(() => {
     const emailRegex =/^[^\s@]+@([^\s@]+\.)+[^\s@]+$/
     if (!email.value || !emailRegex.test(email.value))
     {
-        return false;
-    }    
-    return true;
-}
-
-const emailError = computed(() => {
-    if (!validateEmail())
         return 'Некорректный email';
-    return null;
+    }    
+    return null;        
 });
 
 const emits = defineEmits<{
@@ -33,11 +28,11 @@ const emits = defineEmits<{
 }>();
 
 
-const handleInputEmail = () => validateEmail();
+const handleInputEmail = () => emailError.value;
 
 const handleSubmit = () =>{
 
-    if (validateEmail())
+    if (!emailError)
     {
         emits('submit', email.value);
     }    

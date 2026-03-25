@@ -1,56 +1,139 @@
 <template >
-    <div class="login-form">        
-        <FloatLabel variant="over" class="input-part">            
-            <InputText id="login_lbl"
-                       v-model="login"
-                       fluid />        
-            <label class="label-head"
-                   for="login_lbl">Введите логин</label>
-        </FloatLabel>            
-        <FloatLabel variant="over" class="input-part">            
-            <InputText id="pass_lbl"
-                       v-model="password"
-                       type="password" fluid />
-            <label class="label-head"
-                   for="pass_lbl">Введите пароль</label>
-        </FloatLabel>
-        <Button label="Войти"
-                @click="submitLogin"
-                class="submit-login"/>
-    </div>
+    <div class="auth-layout">        
+        <div class="auth-background"></div>        
+        <div class="auth-container">
+            <!-- Логотип -->
+            <div class="auth-logo">
+                <Image src="/logo.svg" alt="logo" class="logo-img" />
+            </div>
+
+            <!-- Карточка с формой -->
+            <div class="auth-card">
+                <LoginForm @submit="submitLogin"
+                   :authError="authError"/>
+            </div>
+
+            <!-- Ссылка на главную -->
+            <div class="auth-footer">
+                <router-link to="/" class="back-link">
+                    <i class="pi pi-home"></i>
+                    Вернуться на главную
+                </router-link>
+            </div>
+        </div>
+    </div>    
 </template>
 <script setup lang="ts">
 import {ref} from 'vue';
+import { useRouter } from 'vue-router';
+import LoginForm from '../components/loginForm.vue'
 import {useAuthStore} from '@/modules/auth/stores/authStore'
 
-const login = ref('')
-const password= ref('')
-const errorMessage = ref('');
+const router = useRouter();
 const authStore = useAuthStore()
-async function submitLogin()
+const authError = ref('');
+
+async function submitLogin(login: string, password: string)
 {    
-    const isSuccess = await authStore.loginUser(login.value, password.value);
+    const isSuccess = await authStore.loginUser(login, password);
     if (!isSuccess)
-        errorMessage.value = 'Неверные логин или пароль'
+    {
+        authError.value = 'Неверные логин или пароль'
+    }    
+    else{
+        router.push('/Home');
+    }
 }
 
 </script>
-<style lang="scss">    
-    .login-form
-    {
-        font-size: 1.2em;
-        font-family: 'Segoe UI';
-        .input-part
-        {                                    
-            margin: 2rem auto;        
-        }
-        .submit-login
+<style scoped lang="scss">    
+    .auth-layout {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+}
+
+.auth-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;    
+    background-repeat: repeat;
+    opacity: 0.3;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+
+    .auth-logo {        
+        margin-bottom: 2rem;
+        .logo-img :deep(img)
         {
-            max-width: 300px;
-            display: block;
+            max-width: 400px;
             margin: 0 auto;
-            padding-left: 1.5em;
-            padding-right: 1.5em;
+            color: white;
         }
-    }    
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+        .card-content {
+            margin: 0 auto;
+        }
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: opacity 0.2s;
+
+            &:hover {
+                opacity: 0.8;
+            }
+
+            i {
+                font-size: 0.875rem;
+            }
+        }
+    }
+}
+
+
+@media (max-width: 640px) {
+    .auth-container {
+        padding: 1rem;
+    }
+
+    .auth-card {
+        padding: 1.5rem;
+    }
+
+    .auth-logo .logo-link {
+        font-size: 1.25rem;
+
+        .logo-icon {
+            font-size: 1.5rem;
+        }
+    }
+}
 </style>

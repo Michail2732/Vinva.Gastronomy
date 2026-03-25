@@ -1,32 +1,71 @@
-<template>
+<template >
     <div class="login-form">
-        <FloatLabel variant="over" class="input-part">
-            <InputText id="login_lbl" v-model="login" fluid />
-            <label class="label-head" for="login_lbl">Введите логин</label>
+        <Message v-if="authError" severity="error">{{ authError }}</Message>
+        <FloatLabel variant="over" class="input-part">            
+            <InputText id="login_lbl"
+                       v-model="login"                                         
+                       :invalid="loginIsValid"
+                       fluid />        
+            <label class="label-head"
+                   for="login_lbl">Введите логин</label>                        
+        </FloatLabel>            
+        <Message v-if="loginIsValid" severity="error">{{ loginError }}</Message>
+        <FloatLabel variant="over" class="input-part">            
+            <Password id="pass_lbl"
+                       v-model="pass"                                                                   
+                       :invalid="passIsValid" 
+                       fluid/>
+            <label class="label-head"
+                   for="pass_lbl">Введите пароль</label>                        
         </FloatLabel>
-        <FloatLabel variant="over" class="input-part">
-            <InputText id="pass_lbl" v-model="pass" type="password" fluid />
-            <label class="label-head" for="pass_lbl">Введите пароль</label>
-        </FloatLabel>
-        <Button label="Войти" @click="handleSubmit" class="submit-login" />
+        <Message v-if="passIsValid" severity="error">{{ passError }}</Message>
+        <Button label="Войти"
+                :disabled="canSubmit"
+                @click="handleSubmit"
+                class="submit-login"/>
     </div>
 </template>
-
 <script setup lang="ts">
-import { ref } from 'vue'
+    import type { InputText, Password } from 'primevue';
+    import { ref, computed  } from 'vue';    
 
-const login = ref('');
-const pass = ref('');
+    const authError = ref('');
 
-const emits = defineEmits<{
-    submit: [login: string, pass: string];
-    cancel: [];
-}>();
+    const login = ref('');
+    const loginIsValid = ref(true);
+    const loginError = computed(() => {
+        if (!login.value)
+        {
+            loginIsValid.value = false;
+            return 'Необходимо ввести логин';   
+        }        
+        loginIsValid.value = true;
+        return null;
+    });    
 
-const handleSubmit = () => {
-    emits('submit', login.value, pass.value);
-}
+    const pass = ref('');
+    const passIsValid = ref(true);
+    const passError = computed(() => {
+        if (!pass.value)
+        {
+            passIsValid.value = false;
+            return 'Необходимо ввести пароль';   
+        }         
+        passIsValid.value = true;
+        return null;
+    });    
 
+    const defProps = defineProps<{authError: string}>();
+
+    const emits = defineEmits<{
+        submit: [login: string, pass: string]        
+    }>();    
+
+    const canSubmit = computed(() => !loginError && !passError) 
+    const handleSubmit = () => {
+        if (!canSubmit)            
+            emits('submit', login.value, pass.value);
+    }            
 </script>
 <style scoped lang="scss">
     .login-form
@@ -45,5 +84,5 @@ const handleSubmit = () => {
             padding-left: 1.5em;
             padding-right: 1.5em;
         }
-    }   
+    }    
 </style>

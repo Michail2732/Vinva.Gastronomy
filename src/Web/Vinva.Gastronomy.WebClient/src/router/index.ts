@@ -1,18 +1,25 @@
-import AuthLayout from '@/components/layouts/authLayout.vue'
-import AuthPage from '@/modules/auth/pages/loginPage.vue'
+import AppLayout from '@/AppLayout.vue'
+import LoginPage from '@/modules/auth/pages/loginPage.vue'
+import RecipesPage from '@/modules/recipes/pages/recipesPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
     path: '/',    
-    component: AuthLayout,
-    children: [
-      {
-        path: '',
-        component: AuthPage
-      }
-    ]
-  }
+    component: AppLayout,    
+  },
+  {
+    path: '/login',    
+    component: LoginPage,
+  },
+  {
+    path: '/register',    
+    component: LoginPage,
+  },
+  {
+    path: '/recipes',    
+    component: RecipesPage,
+  },
 ];
 
 const router = createRouter({

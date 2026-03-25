@@ -20,7 +20,10 @@ import ProgressSpinner from 'primevue/progressspinner'
 import Image from 'primevue/image'
 import Avatar from 'primevue/avatar'
 import Badge from 'primevue/badge'
+import Menubar from 'primevue/menubar'
 import Paginator from 'primevue/paginator'
+import Dock from 'primevue/dock'
+import Password from 'primevue/password'
 
 export default {
   install(app: App) {
@@ -52,5 +55,8 @@ export default {
     app.component('Badge', Badge)
     app.component('Paginator', Paginator)
     app.component('Image', Image)
+    app.component('Menubar', Menubar)
+    app.component('Dock', Dock)
+    app.component('Password', Password);
   }
 }

@@ -1,9 +1,8 @@
-import type { UserRole, UserState } from "@/api";
+import type { UserRole} from "@/api";
 
 export interface User {
     id: string;
-    login: string | null;
-    email: string | null;
-    state: UserState;
+    name: string | null;
+    email: string | null;    
     roles: Array<UserRole> | null;
 }
