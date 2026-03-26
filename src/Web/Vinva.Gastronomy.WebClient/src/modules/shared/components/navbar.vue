@@ -1,6 +1,13 @@
 <template>
-  <header class="navbar">
-      <Menubar :model="userMenuItems"/>
+  <header class="navbar">      
+      <Menubar :model="userMenuItems">
+        <template #start>
+          <Image src="/logo-short.svg" alt="logo" class="logo-small-img" />
+        </template>
+        <template #end>
+          <Avatar/>
+        </template>
+      </Menubar>
   </header>
 </template>
 
@@ -17,32 +24,19 @@ const authStore = useAuthStore()
 const user = computed(() => authStore.user)
 
 // Меню пользователя
-const userMenuItems = ref([
-  {
-    label: 'Profile',
-    icon: 'pi pi-user',
-    command: () => router.push('/profile')
-  },
+const userMenuItems = ref([  
   {
     label: 'Рецепты',
     icon: 'pi pi-book',
     command: () => router.push('/recipes')
   },
   {
-    label: 'Избранное',
+    label: 'Ингредиенты',
     icon: 'pi pi-heart',
     command: () => router.push('/favorites')
-  },
+  },    
   {
-    separator: true
-  },
-  {
-    label: 'Настройки',
-    icon: 'pi pi-cog',
-    command: () => router.push('/settings')
-  },
-  {
-    label: 'Выйти',
+    label: 'Справка',
     icon: 'pi pi-sign-out',
     command: () => authStore.logoutUser()
   }
@@ -55,5 +49,17 @@ const goToRegister = () => router.push('/register')
 </script>
 
 <style scoped lang="scss">
+  .logo-small-img
+  {
+      display: block;
+      
+  }
+
+  .logo-small-img :deep(img)
+  {
+      display: block;
+      height: 2rem;
+      
+  }
 
 </style>
