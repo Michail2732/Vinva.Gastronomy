@@ -1,0 +1,11 @@
+:root {
+  --font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 
+                 'Helvetica Neue', sans-serif;
+                
+}
+
+// Если нужно применить ко всем элементам
+* {
+  font-family: var(--font-family);
+  font-weight: 400;
+}

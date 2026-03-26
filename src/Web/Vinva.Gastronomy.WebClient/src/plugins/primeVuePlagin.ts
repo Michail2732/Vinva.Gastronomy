@@ -1,5 +1,4 @@
 import { type App } from 'vue'
-
 import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
@@ -22,18 +21,38 @@ import Avatar from 'primevue/avatar'
 import Badge from 'primevue/badge'
 import Menubar from 'primevue/menubar'
 import Paginator from 'primevue/paginator'
+import Message from 'primevue/message'
 import Dock from 'primevue/dock'
 import Password from 'primevue/password'
+import 'primeicons/primeicons.css'
 
 export default {
   install(app: App) {
     app.use(PrimeVue, 
       { 
         ripple: true,
+        unstyled: false,
         theme: {
-          preset: Aura
-        }
-      })
+          preset: Aura,
+          options: 
+          {
+            prefix: 'p',
+            darkModeSelector: 'system',
+            cssLayer: false,
+            variables: 
+            {            
+              fontFamily: '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
+              fontSize: '1rem',
+              fontWeight: '500',              
+              menu: {
+                fontFamily: '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+                fontWeight: '500',
+                fontSize: '1rem'
+              }
+            }
+          }
+      }
+    })
     app.use(ToastService)
     app.use(ConfirmationService)
 
@@ -58,5 +77,6 @@ export default {
     app.component('Menubar', Menubar)
     app.component('Dock', Dock)
     app.component('Password', Password);
+    app.component('Message', Message);
   }
 }

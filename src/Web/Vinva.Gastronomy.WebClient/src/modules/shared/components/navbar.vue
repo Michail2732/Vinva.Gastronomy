@@ -19,7 +19,7 @@ const user = computed(() => authStore.user)
 // Меню пользователя
 const userMenuItems = ref([
   {
-    label: 'Профиль',
+    label: 'Profile',
     icon: 'pi pi-user',
     command: () => router.push('/profile')
   },

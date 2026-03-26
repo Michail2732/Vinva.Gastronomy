@@ -8,10 +8,13 @@
             </div>
 
             <!-- Карточка с формой -->
-            <div class="auth-card">
-                <LoginForm @submit="submitLogin"
-                   :authError="authError"/>
-            </div>
+            <Card class="auth-card">
+                <template #content>                    
+                    <LoginForm @submit="submitLogin"
+                               :isLoginProgress="isloginInProgress"
+                               :authError="authErrors"/>
+                </template>                
+            </Card>
 
             <!-- Ссылка на главную -->
             <div class="auth-footer">
@@ -31,23 +34,35 @@ import {useAuthStore} from '@/modules/auth/stores/authStore'
 
 const router = useRouter();
 const authStore = useAuthStore()
-const authError = ref('');
+const authErrors = ref('');
+const isloginInProgress = ref(false);
 
 async function submitLogin(login: string, password: string)
 {    
-    const isSuccess = await authStore.loginUser(login, password);
-    if (!isSuccess)
+    try 
     {
-        authError.value = 'Неверные логин или пароль'
+        isloginInProgress.value = true;
+        const isSuccess = await authStore.loginUser(login, password);
+        if (!isSuccess)
+        {
+            console.log('auth error');
+            authErrors.value = 'Неверные логин или пароль'
+        }    
+        else
+        {
+            console.log('auth success');
+            router.push('/Home');
+        }        
+    } 
+    finally
+    {
+        isloginInProgress.value = false;
     }    
-    else{
-        router.push('/Home');
-    }
 }
 
 </script>
-<style scoped lang="scss">    
-    .auth-layout {
+<style scoped lang="scss">       
+.auth-layout {
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -83,15 +98,12 @@ async function submitLogin(login: string, password: string)
         }
     }
 
-    .auth-card {
-        background: white;
+    .auth-card 
+    {        
+        min-height: 250px;
         border-radius: 1rem;
-        padding: 2rem;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-        .card-content {
-            margin: 0 auto;
-        }
+        padding: 1rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);        
     }
 
     .auth-footer {
