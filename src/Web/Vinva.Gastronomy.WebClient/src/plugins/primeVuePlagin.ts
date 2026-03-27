@@ -28,31 +28,50 @@ import 'primeicons/primeicons.css'
 
 export default {
   install(app: App) {
-    app.use(PrimeVue, 
-      { 
+    app.use(PrimeVue,
+      {
         ripple: true,
         unstyled: false,
         theme: {
-          preset: Aura,
-          options: 
-          {
-            prefix: 'p',
-            darkModeSelector: 'system',
-            cssLayer: false,
-            variables: 
-            {            
-              fontFamily: '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
-              fontSize: '1rem',
-              fontWeight: '500',              
-              menu: {
-                fontFamily: '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-                fontWeight: '500',
-                fontSize: '1rem'
+          preset: {
+            ...Aura,
+            semantic: {
+              ...Aura.semantic,
+              primary: {
+                50: '#f2f6f2',
+                100: '#e0e8e0',
+                200: '#c1d1c1',
+                300: '#a2baa2',
+                400: '#83a383',
+                500: '#709170',
+                600: '#5a745a',
+                700: '#435743',
+                800: '#2d3a2d',
+                900: '#161d16',
+                950: '#0b0e0b'
+              },
+              colorScheme: {
+                light: {
+                  primary: {
+                    color: '{primary.500}',
+                    contrastColor: '#ffffff',
+                    hoverColor: '{primary.600}',
+                    activeColor: '{primary.700}'
+                  }
+                },
+                dark: {
+                  primary: {
+                    color: '{primary.400}',
+                    contrastColor: '#ffffff',
+                    hoverColor: '{primary.300}',
+                    activeColor: '{primary.200}'
+                  }
+                }
               }
             }
           }
-      }
-    })
+        }
+      })
     app.use(ToastService)
     app.use(ConfirmationService)
 

@@ -67,8 +67,7 @@ async function submitLogin(login: string, password: string)
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+    position: relative;    
 }
 
 .auth-background {
