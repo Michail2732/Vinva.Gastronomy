@@ -6,3 +6,9 @@ export interface User {
     email: string | null;    
     roles: Array<UserRole> | null;
 }
+
+export interface AuthOperationResult
+{
+    isSuccess: boolean;
+    erros: string | null;
+}

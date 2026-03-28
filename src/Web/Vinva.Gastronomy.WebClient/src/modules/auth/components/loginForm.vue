@@ -22,11 +22,13 @@
         </Transition>                   
         <FloatLabel variant="over" class="input-part input-part-pass">            
             <Password id="pass_lbl"
+                      name="pass_"
                       :disabled="isLoginProgress"
                       @value-change="passValidate"
-                      v-model="pass"                                                                   
+                      v-model="pass"
+                      :feedback="false"                                                     
                       :invalid="!passIsValid" 
-                      fluid/>
+                      fluid/>            
             <label class="label-head"
                    for="pass_lbl">Введите пароль</label>                        
         </FloatLabel>
@@ -38,6 +40,10 @@
                 :disabled="!loginIsValid || !passIsValid || isLoginProgress"
                 @click="handleSubmit"
                 class="submit-login"/>
+        <router-link to="/register" class="register-link">
+            <i class="pi pi-user-plus"></i>
+            Зарегистрироваться
+        </router-link>
     </div>
 </template>
 <script setup lang="ts">
@@ -93,9 +99,8 @@
 <style scoped lang="scss">
     .login-form
     {
-        min-height: 200px;
-        font-size: 1.2em;
-        font-family: 'Segoe UI'; 
+        text-align: center;        
+
         .progress-overlay
         {
             position: absolute;
@@ -103,7 +108,7 @@
             display: flex;
             left: 50%;
             top: 50%;   
-            transform: translate(-50%, 50%);                 
+            transform: translate(-50%, 0%);                 
         }       
         .input-part
         {                                    
@@ -126,6 +131,26 @@
             margin: 2rem auto 0 auto;
             padding-left: 1.5em;
             padding-right: 1.5em;
+        }
+
+        .register-link {
+            margin-top: 1rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: opacity 0.2s;
+
+            &:hover {
+                opacity: 0.8;
+            }
+
+            i {
+                font-size: 0.875rem;
+            }
         }
     }    
 </style>

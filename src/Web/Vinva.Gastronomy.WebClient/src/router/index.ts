@@ -1,5 +1,6 @@
 import AppLayout from '@/AppLayout.vue'
 import LoginPage from '@/modules/auth/pages/loginPage.vue'
+import RegisterPage from '@/modules/auth/pages/registerPage.vue'
 import RecipesPage from '@/modules/recipes/pages/recipesPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -18,7 +19,7 @@ const routes = [
   },
   {
     path: '/register',    
-    component: LoginPage,
+    component: RegisterPage,
   },
   {
     path: '/recipes',    

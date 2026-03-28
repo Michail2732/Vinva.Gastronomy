@@ -1,8 +1,9 @@
 <template >
     <div class="login-form">
         <FloatLabel variant="over" class="input-part">
-            <InputText id="email_lbl" @input="handleInputEmail" v-model="email" 
-             :invalid="!!emailError" fluid />
+            <InputText id="email_lbl" @value-change="emailValidate  " 
+                       v-model="email" 
+                :invalid="!isEmailValid" fluid />
             <label class="label-head" for="email_lbl">Введите email</label>
             <Message v-if="!emailError" severity="error">{{ emailError }}</Message>
         </FloatLabel>        
@@ -10,29 +11,42 @@
     </div>
 </template>
 <script setup lang="ts">
-import {ref, computed} from 'vue'
+import {ref} from 'vue'
 
 
 const email = ref('');
-const emailError = computed(() => {
-    const emailRegex =/^[^\s@]+@([^\s@]+\.)+[^\s@]+$/
-    if (!email.value || !emailRegex.test(email.value))
-    {
-        return 'Некорректный email';
-    }    
-    return null;        
-});
+const isEmailValid = ref(true);
+const emailError = ref('');
 
+const emailValidate = () => 
+{
+    const emailRegex =/^[^\s@]+@([^\s@]+\.)+[^\s@]+$/
+    isEmailValid.value = !!email.value || emailRegex.test(email.value);    
+    emailError.value = isEmailValid.value ? '' : 'Некорректный email';        
+    return isEmailValid;
+};    
+
+const props = defineProps({
+        registerErrors: 
+        {
+            type: String,
+            required: false,
+            default: ''
+        },
+        isRegisterInProgress:
+        {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    });
 const emits = defineEmits<{
     submit: [email: string]
 }>();
 
-
-const handleInputEmail = () => emailError.value;
-
 const handleSubmit = () =>{
 
-    if (!emailError)
+    if (emailValidate())
     {
         emits('submit', email.value);
     }    

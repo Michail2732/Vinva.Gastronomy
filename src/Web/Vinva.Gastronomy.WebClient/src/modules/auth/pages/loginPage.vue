@@ -1,6 +1,5 @@
 <template >
     <div class="auth-layout">        
-        <div class="auth-background"></div>        
         <div class="auth-container">
             <!-- Логотип -->
             <div class="auth-logo">
@@ -42,6 +41,7 @@ async function submitLogin(login: string, password: string)
     try 
     {
         isloginInProgress.value = true;
+        authErrors.value = '';
         const isSuccess = await authStore.loginUser(login, password);
         if (!isSuccess)
         {
@@ -70,16 +70,6 @@ async function submitLogin(login: string, password: string)
     position: relative;    
 }
 
-.auth-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;    
-    background-repeat: repeat;
-    opacity: 0.3;
-}
-
 .auth-container {
     width: 100%;
     max-width: 450px;
@@ -102,7 +92,7 @@ async function submitLogin(login: string, password: string)
         min-height: 250px;
         border-radius: 1rem;
         padding: 1rem;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);        
+        box-shadow: 0px 3px 24px 3px rgba(34, 60, 80, 0.2);  
     }
 
     .auth-footer {
@@ -113,7 +103,7 @@ async function submitLogin(login: string, password: string)
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: white;
+            color: var(--text-color);
             text-decoration: none;
             font-size: 0.875rem;
             transition: opacity 0.2s;

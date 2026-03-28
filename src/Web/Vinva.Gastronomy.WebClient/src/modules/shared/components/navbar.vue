@@ -148,14 +148,15 @@ const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
 
-const handleLogout = async () => {
-  await authStore.logoutUser()
-  isMenuOpen.value = false
-  router.push('/')
+const handleLogout = async () => 
+{
+  await authStore.logoutUser();
+  isMenuOpen.value = false;
+  router.push('/');
 }
 
 const goToLogin = () => {
-  router.push('/login')
+  router.push('/login');
 }
 </script>
 
@@ -200,8 +201,9 @@ const goToLogin = () => {
 }
 
 .menubar-item {
+  color: var(--text-color);
   &:deep(.p-button-label) {
-    font-weight: 500;
+    font-weight: 500;    
   }
 }
 
@@ -222,9 +224,7 @@ const goToLogin = () => {
 }
 
 .user-name-chip {
-  &:deep(.p-chip) {
-    background: var(--surface-ground);
-    color: var(--text-color);
+  &:deep(.p-chip) {        
     padding: 0.5rem 0.75rem;
     max-width: 150px;
     
