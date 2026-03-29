@@ -26,7 +26,7 @@
                       :disabled="isLoginProgress"
                       @value-change="passValidate"
                       v-model="pass"
-                      :feedback="false"                                                     
+                      :feedback="false"
                       :invalid="!passIsValid" 
                       fluid/>            
             <label class="label-head"

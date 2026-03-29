@@ -12,7 +12,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
         public DateTimeOffset ExpiresAt { get; private set; }
         public string PasswordHash { get; private set; }        
         public string Login { get; private set; }
-        public string Email { get; private set; }
+        public string Email { get; private set; }        
 
         public RegistrationToken(DateTimeOffset expiresAt,
             string passwordHash, string login, string email)
@@ -26,6 +26,17 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
         public bool IsExpires(TimeProvider timeProvider)
         {
             return timeProvider.GetUtcNow() > ExpiresAt;
+        }
+
+        public void UpdateToken(string passwordHash, DateTimeOffset expiresAt)
+        {
+            if (string.IsNullOrEmpty(passwordHash))
+            {
+                throw new ArgumentException($"'{nameof(passwordHash)}' cannot be null or empty.", nameof(passwordHash));
+            }
+
+            PasswordHash = passwordHash;
+            ExpiresAt = expiresAt;
         }
     }
 }

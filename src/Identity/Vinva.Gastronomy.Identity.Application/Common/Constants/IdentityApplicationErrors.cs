@@ -54,9 +54,9 @@ namespace Vinva.Gastronomy.Identity.Application.Common.Constants
         /// </summary>
         public static Error ValidationFailed => new("Identity.ValidationFailed", "Ошибка валидации");
         /// <summary>
-        /// ПОльзователь с таким Email уже существует
+        /// Пользователь с таким Email уже имеет активный токен регистрации
         /// </summary>
-        public static Error UserWithSameEmailExists => new("Identity.UserWithSameEmailExists", "Пользователь с таким email уже существует");
+        public static Error RegistrationTokenNotExpires => new("Identity.RegistrationTokenWithSameEmailExists", "Пользователь с таким email имеет незавершённый процесс регистрации. Проверьте свою почту");
         /// <summary>
         /// Ошибка при отправке письма для регистрации
         /// </summary>

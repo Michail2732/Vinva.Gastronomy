@@ -13,8 +13,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Services
     public class RegistrationService : IRegistrationService
     {
         private readonly LinkGenerator _linkGenerator;
-        private readonly IHttpContextAccessor _httpContextAccess;
-        private readonly ConcurrentDictionary<Guid, RegistrationToken> _tokens;
+        private readonly IHttpContextAccessor _httpContextAccess;        
         private readonly TimeProvider _timeProvider;
         private readonly TimeSpan _expiresDelta;
 
@@ -22,8 +21,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Services
         {
             _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
             _linkGenerator = linkGenerator ?? throw new ArgumentNullException(nameof(linkGenerator));
-            _httpContextAccess = httpContextAccess ?? throw new ArgumentNullException(nameof(httpContextAccess));
-            _tokens = new ConcurrentDictionary<Guid, RegistrationToken>();
+            _httpContextAccess = httpContextAccess ?? throw new ArgumentNullException(nameof(httpContextAccess));            
             _expiresDelta = TimeSpan.FromMinutes(5);            
         }
 
@@ -39,22 +37,16 @@ namespace Vinva.Gastronomy.Identity.WebApi.Services
         {
             var utcNow = _timeProvider.GetUtcNow();
             var expiresTime = utcNow + _expiresDelta;
-            var regToken = new RegistrationToken(expiresTime, passwordHash, login, email);
-
-            if (!_tokens.TryAdd(regToken.Id, regToken))
-                throw new InvalidOperationException($"Could not add registration token '{regToken}'");
-
+            var regToken = new RegistrationToken(expiresTime, passwordHash, login, email);            
             return Task.FromResult(regToken);
-        }        
+        }
 
-        public Task<RegistrationToken?> PopTokenAsync(Guid id, CancellationToken ct = default)
+        public Task UpdateTokenAsync(RegistrationToken token, string newPasswordHash, CancellationToken ct = default)
         {
             var utcNow = _timeProvider.GetUtcNow();
-
-            if (!_tokens.TryRemove(id, out var token))
-                return Task.FromResult<RegistrationToken?>(null);            
-
-            return Task.FromResult((RegistrationToken?)token);
+            var expiresTime = utcNow + _expiresDelta;
+            token.UpdateToken(newPasswordHash, expiresTime);
+            return Task.CompletedTask;
         }
     }
 }

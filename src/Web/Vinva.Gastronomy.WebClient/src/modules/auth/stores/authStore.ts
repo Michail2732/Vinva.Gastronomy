@@ -56,12 +56,23 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Регистрация
-  async function registerUser(login: string, email: string, password: string ) 
+  async function registerUser(login: string, email: string, password: string ): Promise<AuthOperationResult>
   {
-    try {
-      
-    } catch (error) {
-      
+    try
+    {      
+      const responce = await registrationRegister(
+        {
+          body:
+          {
+            email: email,
+            login: login,
+            password: password
+          }
+        }
+      );
+      return {isSuccess: true, erros: null}
+    } catch (err) {
+      return {isSuccess: false, erros: getErrorMessage(err, 'Ошибка при регистрации')}
     }    
   }
 

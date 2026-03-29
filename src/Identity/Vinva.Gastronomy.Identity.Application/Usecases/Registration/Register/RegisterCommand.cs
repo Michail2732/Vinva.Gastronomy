@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
 {
-    public readonly record struct RegisterCommand : IRequest
+    public readonly record struct RegisterCommand : IRequest<RegisterCommandResponce>
     {        
         public string Password { get; init; }
         public string Login { get; init; }

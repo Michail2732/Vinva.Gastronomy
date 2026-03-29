@@ -21,9 +21,9 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task Register([FromBody]RegisterCommand command)
+        public async Task<RegisterCommandResponce> Register([FromBody]RegisterCommand command)
         {
-            await _mediator.Send(command);
+            return await _mediator.Send(command);
         }
 
         [HttpPost("RegisterConfirm")]

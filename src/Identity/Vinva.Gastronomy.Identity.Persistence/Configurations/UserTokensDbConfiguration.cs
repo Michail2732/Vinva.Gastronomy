@@ -9,6 +9,7 @@ using Vinva.Gastronomy.Identity.Domain.Entities;
 
 namespace Vinva.Gastronomy.Identity.Persistence.Configurations
 {
+
     public class UserTokensDbConfiguration : IEntityTypeConfiguration<UserTokens>
     {
         public void Configure(EntityTypeBuilder<UserTokens> builder)

@@ -42,15 +42,13 @@ async function submitLogin(login: string, password: string)
     {
         isloginInProgress.value = true;
         authErrors.value = '';
-        const isSuccess = await authStore.loginUser(login, password);
-        if (!isSuccess)
-        {
-            console.log('auth error');
-            authErrors.value = 'Неверные логин или пароль'
+        const loginResult = await authStore.loginUser(login, password);
+        if (!loginResult.isSuccess)
+        {            
+            authErrors.value = loginResult.erros ?? 'Неверные логин или пароль';
         }    
         else
-        {
-            console.log('auth success');
+        {            
             router.push('/Home');
         }        
     } 
