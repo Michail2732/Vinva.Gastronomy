@@ -42,10 +42,8 @@ namespace Vinva.Gastronomy.Identity.WebApi.Services
         }
 
         public Task UpdateTokenAsync(RegistrationToken token, string newPasswordHash, CancellationToken ct = default)
-        {
-            var utcNow = _timeProvider.GetUtcNow();
-            var expiresTime = utcNow + _expiresDelta;
-            token.UpdateToken(newPasswordHash, expiresTime);
+        {            
+            token.KeepAlive(newPasswordHash, _expiresDelta, _timeProvider);
             return Task.CompletedTask;
         }
     }

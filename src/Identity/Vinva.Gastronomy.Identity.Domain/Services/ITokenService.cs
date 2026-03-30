@@ -40,13 +40,6 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
         /// </summary>
         /// <param name="token">Токен для валидации</param>
         /// <returns>Информация о пользователе или null если токен невалидный</returns>
-        Task<ClaimsPrincipal?> ValidateTokenAsync(string token, CancellationToken ct = default);
-
-        /// <summary>
-        /// Получение времени истечения токена
-        /// </summary>
-        /// <param name="token">Токен</param>
-        /// <returns>Время истечения</returns>
-        Task<DateTimeOffset> GetTokenExpirationAsync(string token, CancellationToken ct = default);
+        Task<ClaimsPrincipal?> ValidateTokenAsync(string token, CancellationToken ct = default);        
     }
 }

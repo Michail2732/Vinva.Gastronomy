@@ -31,6 +31,9 @@ namespace Vinva.Gastronomy.Identity.Persistence.Configurations
 
             builder.Property(a => a.PasswordHash)
                 .IsRequired();
+
+            builder.Ignore(a => a.IsConfirmCompleate);
+            builder.Ignore(a => a.IsConfirmLetterSent);
         }
     }
 }

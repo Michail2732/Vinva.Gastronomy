@@ -19,40 +19,32 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Logout
 
         public LogoutHandler(IdentityDbContext dbContext, TimeProvider timeProvider)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));            
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         }
 
-        public async Task Handle(LogoutRequest request, CancellationToken cancellationToken)
-        {            
-            var user = await _dbContext.Users.FirstOrDefaultAsync(a => a.Login == request.Login, cancellationToken);
+        public async Task Handle(LogoutRequest request, CancellationToken ct)
+        {
+            var query = from tokenQ in _dbContext.UserTokens
+                        where tokenQ.AccessToken == request.AccessToken
+                        join userQ in _dbContext.Users on tokenQ.UserId equals userQ.Id into userJoin
+                        from userQ in userJoin.DefaultIfEmpty()
+                        select new { Tokens = tokenQ, User = userQ };
+
+            var result = await query.FirstOrDefaultAsync(ct);
+            var tokens = result?.Tokens;
+            var user = result?.User;
+            
+            if (tokens == null)
+                return;            
             if (user == null)
-                throw new UnauthorizedException(IdentityApplicationErrors.InvalidCredentials.Description);
+                throw new Exception($"Token exists, but user not found: userId '{tokens.UserId}'");
 
             user.LastLogoutAt = _timeProvider.GetUtcNow();
-
-            try
-            {
-                using (var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken))
-                {
-                    _dbContext.Users.Update(user);
-
-                    var userToken = await _dbContext.UserTokens.FirstOrDefaultAsync(a => a.UserId == user.Id, cancellationToken);
-
-                    if (userToken == null)
-                        return;
-
-                    userToken.ResetToken();
-                    _dbContext.UserTokens.Update(userToken);
-                    await transaction.CommitAsync(cancellationToken);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (_dbContext.Database.CurrentTransaction != null)
-                    await _dbContext.Database.CurrentTransaction.RollbackAsync();
-                throw;
-            }            
+            _dbContext.Users.Update(user);
+            tokens.ResetToken();
+            _dbContext.UserTokens.Update(tokens);
+            await _dbContext.SaveChangesAsync(ct);            
         }
     }
 }

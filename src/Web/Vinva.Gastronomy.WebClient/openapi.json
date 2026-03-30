@@ -686,7 +686,14 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterCommandResponce"
+                }
+              }
+            }
           }
         }
       }
@@ -1537,6 +1544,16 @@
             "nullable": true
           },
           "email": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterCommandResponce": {
+        "type": "object",
+        "properties": {
+          "details": {
             "type": "string",
             "nullable": true
           }

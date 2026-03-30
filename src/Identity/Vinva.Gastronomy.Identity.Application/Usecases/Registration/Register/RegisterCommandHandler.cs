@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Vinva.Gastronomy.Common.Exceptions;
-using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Identity.Application.Common;
 using Vinva.Gastronomy.Identity.Application.Common.Constants;
 using Vinva.Gastronomy.Identity.Domain.Services;
@@ -35,9 +34,19 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
 
         public async Task<RegisterCommandResponce> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var token = await _dbContext.RegistrationTokens.FirstOrDefaultAsync(a => a.Email == request.Email, cancellationToken);
-            bool isTokenExists = token != null;
-            if (token != null && !token.IsExpires(_timeProvider))
+            var query = from tokenQ in _dbContext.RegistrationTokens
+                        where tokenQ.Email == request.Email
+                        join userQ in _dbContext.Users on tokenQ.Email equals userQ.Email into userJoin
+                        from userQ in userJoin.DefaultIfEmpty()
+                        select new { Token = tokenQ, User = userQ };
+
+            var result = await query.FirstOrDefaultAsync(cancellationToken);
+            var token = result?.Token;
+            var user = result?.User;
+
+            if (user != null)
+                throw new BadRequestException(IdentityApplicationErrors.UserWithSameEmailAlreadyExists);
+            if (token != null && !token.IsExpires(_timeProvider) && token.IsConfirmLetterSent)
                 throw new BadRequestException(IdentityApplicationErrors.RegistrationTokenNotExpires);
             
 
@@ -47,13 +56,18 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
             var passwordHash = _passwordHashService.HashPassword(request.Password);
 
             if (token != null)
-            {
+            {                
                 await _registrationService.UpdateTokenAsync(token, passwordHash);
+                _dbContext.RegistrationTokens.Update(token);
+
             }
             else
             {
                 token = await _registrationService.GenerateTokenAsync(request.Email, request.Login, passwordHash, cancellationToken);
-            }            
+                await _dbContext.RegistrationTokens.AddAsync(token);
+            }
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             var smtpClient = new SmtpClient(_registerConfig.SmtpHost, _registerConfig.SmtpPort)
             {
@@ -64,11 +78,13 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
             };
             
             try
-            {
-                _dbContext.RegistrationTokens.AddAsync();
+            {                
                 var confirmLink = await _registrationService.GenerateRegisterConfirmLinkTokenAsync(token.Id);
                 var message = _registerConfig.GetMailBody(request.Login, confirmLink); 
                 smtpClient.Send(_registerConfig.From, request.Email, _registerConfig.MailSubject, message);
+                token.LetterSent(_timeProvider);
+                _dbContext.RegistrationTokens.Update(token);
+                await _dbContext.SaveChangesAsync(cancellationToken);
             }
             catch (Exception)
             {
@@ -80,7 +96,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
             }
             return new RegisterCommandResponce
             {
-                Details = "Ваша заявка на подтверждение регистрации получена. Для подтверждения регистрации следуйте инструкциям, отправленным в письме."
+                Details = "Регистрация запущена. Для подтверждения регистрации следуйте инструкциям отправленным в письме."
             };
         }
     }

@@ -21,6 +21,7 @@ using Vinva.Gastronomy.Identity.Application.Common;
 using Vinva.Gastronomy.Identity.Application.Services;
 using Vinva.Gastronomy.Identity.Domain.Services;
 using Vinva.Gastronomy.Identity.Persistence;
+using Vinva.Gastronomy.Identity.WebApi.Controllers;
 using Vinva.Gastronomy.Identity.WebApi.Filters;
 using Vinva.Gastronomy.Identity.WebApi.Services;
 
@@ -38,7 +39,7 @@ namespace Vinva.Gastronomy.Identity.WebApi
             {
                 var context = scope.ServiceProvider.GetService<IdentityDbContext>()
                     ?? throw new ArgumentNullException($"Not found {nameof(IdentityDbContext)}");
-                await context!.Database.MigrateAsync();
+                await context!.Database.MigrateAsync(ct);
             }
         }
 
@@ -97,21 +98,29 @@ namespace Vinva.Gastronomy.Identity.WebApi
                         ValidAudience = jwtConfig.Audience,
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.FromMinutes(jwtConfig.ClockSkewMinutes),                        
-                    };                    
+                    };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Cookies[AuthenticationController.ACCESS_TOKEN_KEY];
+                            if (!string.IsNullOrEmpty(accessToken))
+                                context.Token = accessToken;
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             context.ConfigureSwagger(opt =>
             {
                 var sequrityScheme = new OpenApiSecurityScheme
                 {
-                    Description = "Введите 'Bearer' [пробел] и затем ваш JWT токен в поле ниже.\r\n\r\nПример: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT"
-                };
-                opt.AddSecurityDefinition("Bearer", sequrityScheme);
+                    Description = "Cookie based configuration",
+                    Name = AuthenticationController.ACCESS_TOKEN_KEY,
+                    In = ParameterLocation.Cookie,
+                    Type = SecuritySchemeType.ApiKey                    
+                };                
+                opt.AddSecurityDefinition("cookieAuth", sequrityScheme);
 
                 opt.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -121,7 +130,7 @@ namespace Vinva.Gastronomy.Identity.WebApi
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
+                                Id = "cookieAuth"
                             }
                         },
                         Array.Empty<string>()

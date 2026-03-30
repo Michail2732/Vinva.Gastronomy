@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Entities;
+using Vinva.Gastronomy.Identity.Application.Common;
 using Vinva.Gastronomy.Identity.Domain.Entities;
 
 namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
 {
-    public readonly record struct LoginResponce
+    public record LoginResponce : UserInfoDto
     {
         /// <summary>
         /// Токен доступа
@@ -17,18 +18,6 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
         /// <summary>
         /// Токен обновления
         /// </summary>
-        public required string RefreshToken { get; init; }
-        /// <summary>
-        /// Время истечения токена
-        /// </summary>
-        public required DateTimeOffset ExpiresAt { get; init; }        
-        /// <summary>
-        /// Логин пользователя
-        /// </summary>
-        public required string Login { get; init; }
-        /// <summary>
-        /// Роль пользователя
-        /// </summary>
-        public required UserRole[] Roles { get; init; }
+        public required string RefreshToken { get; init; }        
     }
 }

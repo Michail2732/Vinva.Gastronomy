@@ -6,5 +6,6 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurre
     public readonly record struct GetCurrentUserQuery : IRequest<GetCurrentUserQueryResponse>
     {
         public string AccessToken { get; init; }
+        public string RefreshToken { get; init; }
     }
 }

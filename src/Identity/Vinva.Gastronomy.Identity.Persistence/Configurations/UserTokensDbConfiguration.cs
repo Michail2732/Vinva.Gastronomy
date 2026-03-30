@@ -22,10 +22,7 @@ namespace Vinva.Gastronomy.Identity.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(a => a.RefreshToken)
-                .IsRequired();
-
-            builder.Property(a => a.ExpiresAt)
-                .IsRequired();
+                .IsRequired();            
 
             builder.HasIndex(a => a.AccessToken)
                 .IsUnique();

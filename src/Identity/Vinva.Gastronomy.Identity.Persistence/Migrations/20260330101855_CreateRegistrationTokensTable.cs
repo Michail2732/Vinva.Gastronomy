@@ -19,7 +19,9 @@ namespace Vinva.Gastronomy.Identity.Persistence.Migrations
                     ExpiresAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
                     Login = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false)
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    LetterSentTimestap = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    ConfirmCompleateTimestap = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {

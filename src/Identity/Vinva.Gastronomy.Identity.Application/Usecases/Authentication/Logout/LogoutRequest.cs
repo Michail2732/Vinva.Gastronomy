@@ -10,9 +10,13 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Logout
     public readonly record struct LogoutRequest : IRequest
     {
         /// <summary>
-        /// Логин пользователя
+        /// Access токен пользователя
         /// </summary>
-        public string Login { get; init; }
+        public string AccessToken { get; init; }
+        /// <summary>
+        /// Refresh токен пользователя
+        /// </summary>
+        public string RefreshToken { get; init; }
 
     }
 }

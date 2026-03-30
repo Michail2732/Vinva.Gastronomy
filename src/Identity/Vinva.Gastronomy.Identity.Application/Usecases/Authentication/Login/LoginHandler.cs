@@ -40,31 +40,32 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
                 throw new UnauthorizedException(IdentityApplicationErrors.InvalidCredentials.Description);
 
             var accessToken = await _tokenService.GenerateAccessTokenAsync(user);
-            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
-            var expiresAt = await _tokenService.GetTokenExpirationAsync(accessToken);
+            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user);            
 
             user.LastLoginAt = _timeProvider.GetUtcNow();
 
-            UpdateUserTokens(user, accessToken, refreshToken, expiresAt);
+            UpdateUserTokens(user, accessToken, refreshToken);
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return new LoginResponce
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken,
-                ExpiresAt = expiresAt,
+                RefreshToken = refreshToken,                
                 Login = user.Login,
-                Roles = user.Roles
+                Roles = user.Roles,
+                Id = user.Id,
+                Email = user.Email,
+                State = user.State
             };            
         }
 
-        private void UpdateUserTokens(User user, string accessToken, string refreshToken, DateTimeOffset expiresAt)
+        private void UpdateUserTokens(User user, string accessToken, string refreshToken)
         {                        
             if (user.Tokens == null)            
-                user.Tokens = new UserTokens(user.Id, accessToken, refreshToken, expiresAt);            
+                user.Tokens = new UserTokens(user.Id, accessToken, refreshToken);            
             else            
-                user.Tokens.SetNewToken(accessToken, refreshToken, expiresAt);                     
+                user.Tokens.SetNewToken(accessToken, refreshToken);                     
         }
     }
 }

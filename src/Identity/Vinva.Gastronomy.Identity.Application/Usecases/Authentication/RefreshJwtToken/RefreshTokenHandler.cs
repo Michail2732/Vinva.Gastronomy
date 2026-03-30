@@ -27,14 +27,20 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.RefreshJ
             _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));            
         }
 
-        public async Task<RefreshTokenResponce> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
-        {                        
-            var userTokens = await _dbContext.UserTokens.FirstOrDefaultAsync(a => a.RefreshToken == request.RefreshToken, cancellationToken);
+        public async Task<RefreshTokenResponce> Handle(RefreshTokenRequest request, CancellationToken ct)
+        {
+            var query = from tokenQ in _dbContext.UserTokens
+                        where tokenQ.RefreshToken == request.RefreshToken
+                        join userQ in _dbContext.Users on tokenQ.UserId equals userQ.Id into userJoin
+                        from userQ in userJoin.DefaultIfEmpty()
+                        select new { Tokens = tokenQ, User = userQ };
 
-            if (userTokens == null)
-                throw new UnauthorizedException(IdentityApplicationErrors.RefreshTokenInvalid);
+            var result = await query.FirstOrDefaultAsync(ct);
+            var tokens = result?.Tokens;
+            var user = result?.User;
 
-            var user = await _dbContext.Users.FirstOrDefaultAsync(a => a.Id == userTokens.UserId, cancellationToken);
+            if (tokens == null)
+                throw new UnauthorizedException(IdentityApplicationErrors.RefreshTokenInvalid);            
 
             if (user == null)
                 throw new BadRequestException(IdentityApplicationErrors.UserCouldNotFound);
@@ -42,21 +48,22 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.RefreshJ
             if (user.State == UserState.Blocked)
                 throw new BadRequestException(IdentityApplicationErrors.RefreshTokenInvalid);
 
-            var accessToken = await _tokenService.GenerateAccessTokenAsync(user, cancellationToken);
-            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, cancellationToken);
-            var expiresAt = await _tokenService.GetTokenExpirationAsync(accessToken, cancellationToken);
+            var accessToken = await _tokenService.GenerateAccessTokenAsync(user, ct);
+            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, ct);            
 
-            userTokens.SetNewToken(accessToken, refreshToken, expiresAt);
-            _dbContext.UserTokens.Update(userTokens);
+            tokens.SetNewToken(accessToken, refreshToken);
+            _dbContext.UserTokens.Update(tokens);
             await _dbContext.SaveChangesAsync();
 
             return new RefreshTokenResponce
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken,
-                ExpiresAt = expiresAt,
+                RefreshToken = refreshToken,                
                 Login = user.Login,
-                Roles = user.Roles
+                Roles = user.Roles,
+                Email = user.Email,
+                Id = user.Id,
+                State = user.State
             };
         }
     }

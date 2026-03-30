@@ -12,31 +12,26 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
     {
         public Guid UserId { get; private set; }
         public string? AccessToken { get; private set; }
-        public string? RefreshToken { get; private set; }
-        // todo: Походу ненужно 
-        public DateTimeOffset? ExpiresAt { get; private set; }
+        public string? RefreshToken { get; private set; }        
 
 
-        public UserTokens(Guid userId, string accessToken, string refreshToken, DateTimeOffset? expiresAt)
+        public UserTokens(Guid userId, string accessToken, string refreshToken)
         {
             UserId = userId;
             AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
-            RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));
-            ExpiresAt = expiresAt;
+            RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));            
         }
 
-        public void SetNewToken(string accessToken, string refreshToken, DateTimeOffset expiresAt)
+        public void SetNewToken(string accessToken, string refreshToken)
         {
             AccessToken = accessToken;
-            RefreshToken = refreshToken;
-            ExpiresAt = expiresAt;
+            RefreshToken = refreshToken;            
         }
 
         public void ResetToken()
         {
             AccessToken = null;
-            RefreshToken = null;
-            ExpiresAt = null;
+            RefreshToken = null;            
         }
 
 

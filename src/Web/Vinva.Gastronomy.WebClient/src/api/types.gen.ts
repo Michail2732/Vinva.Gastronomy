@@ -226,6 +226,10 @@ export type RegisterCommand = {
     email?: string | null;
 };
 
+export type RegisterCommandResponce = {
+    details?: string | null;
+};
+
 export type RemoveCategoryCommand = {
     categoryId?: string;
 };
@@ -678,8 +682,10 @@ export type RegistrationRegisterResponses = {
     /**
      * OK
      */
-    200: unknown;
+    200: RegisterCommandResponce;
 };
+
+export type RegistrationRegisterResponse = RegistrationRegisterResponses[keyof RegistrationRegisterResponses];
 
 export type RegistrationRegisterConfirmData = {
     body?: never;

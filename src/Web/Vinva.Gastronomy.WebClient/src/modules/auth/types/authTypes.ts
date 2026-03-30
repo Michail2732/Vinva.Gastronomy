@@ -11,4 +11,5 @@ export interface AuthOperationResult
 {
     isSuccess: boolean;
     erros: string | null;
+    successInfo: string | null;
 }

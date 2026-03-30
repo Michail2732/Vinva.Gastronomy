@@ -6,6 +6,7 @@ using Vinva.Gastronomy.Identity.WebApi;
 using Vinva.Gastronomy.Media.WebApi;
 using Vinva.Gastronomy.Recipes.WebApi;
 
+//todo: добавить RateLimit для EndPoint'ов и контроллеров
 var builder = WebApplication.CreateBuilder(args);
 var moduleContext = new WebModuleContext(
     builder.Services,
@@ -33,11 +34,8 @@ moduleContext.ConfigureSwagger(opt =>
     });
     opt.CustomOperationIds(apiDesc =>
     {
-        // Берем имя метода (GetRecipes, Login, Logout)
         var actionName = apiDesc.ActionDescriptor.RouteValues["action"];
         var controllerName = apiDesc.ActionDescriptor.RouteValues["controller"];
-
-        // Приводим к camelCase (getRecipes, login, logout)
         return controllerName + actionName;
     });
 });

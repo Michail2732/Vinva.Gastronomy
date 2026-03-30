@@ -54,9 +54,17 @@ namespace Vinva.Gastronomy.Identity.Application.Common.Constants
         /// </summary>
         public static Error ValidationFailed => new("Identity.ValidationFailed", "Ошибка валидации");
         /// <summary>
+        /// Пользователь с таким Email уже существует
+        /// </summary>
+        public static Error UserWithSameEmailAlreadyExists => new("Identity.UserWithSameEmailAlreadyExists", "Пользователь с таким email уже существует");
+        /// <summary>
         /// Пользователь с таким Email уже имеет активный токен регистрации
         /// </summary>
         public static Error RegistrationTokenNotExpires => new("Identity.RegistrationTokenWithSameEmailExists", "Пользователь с таким email имеет незавершённый процесс регистрации. Проверьте свою почту");
+        /// <summary>
+        /// Токен регистрации истёк
+        /// </summary>
+        public static Error RegistrationTokenIsExpired => new("Identity.RegistrationTokenIsExpired", "Токен регистрации истёк. Пройдите процедуру регистрации заново");
         /// <summary>
         /// Ошибка при отправке письма для регистрации
         /// </summary>
@@ -65,6 +73,10 @@ namespace Vinva.Gastronomy.Identity.Application.Common.Constants
         /// Некорректный токен регистрации
         /// </summary>
         public static Error IncorrectRegisterToken => new("Identity.IncorrectRegisterToken", "Некорректный токен регистрации");
+        /// <summary>
+        /// Регистрация уже завершена
+        /// </summary>        
+        public static string RegistrationTokenAlreadyComplete => $"Регистрация уже завершена";
         /// <summary>
         /// Пользователь не найден
         /// </summary>

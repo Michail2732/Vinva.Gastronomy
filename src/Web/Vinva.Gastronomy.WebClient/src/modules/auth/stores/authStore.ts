@@ -50,7 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
       router.push(redirect || '/')
       
       return {isSuccess: true, erros: null}
-    } catch (err: any) {      
+    } catch (err: any) {
       return {isSuccess: true, erros: getErrorMessage(err, 'Ошибка входа')}
     } 
   }
@@ -70,7 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
           }
         }
       );
-      return {isSuccess: true, erros: null}
+      return {isSuccess: true, erros: null, successInfo: responce.data?.details}
     } catch (err) {
       return {isSuccess: false, erros: getErrorMessage(err, 'Ошибка при регистрации')}
     }    

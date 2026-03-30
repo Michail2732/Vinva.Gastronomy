@@ -12,7 +12,7 @@ using Vinva.Gastronomy.Identity.Persistence;
 namespace Vinva.Gastronomy.Identity.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20260329113124_CreateRegistrationTokensTable")]
+    [Migration("20260330101855_CreateRegistrationTokensTable")]
     partial class CreateRegistrationTokensTable
     {
         /// <inheritdoc />
@@ -31,11 +31,17 @@ namespace Vinva.Gastronomy.Identity.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset?>("ConfirmCompleateTimestap")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("LetterSentTimestap")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Login")
