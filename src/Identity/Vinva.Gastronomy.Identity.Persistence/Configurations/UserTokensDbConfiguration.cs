@@ -18,11 +18,9 @@ namespace Vinva.Gastronomy.Identity.Persistence.Configurations
 
             builder.HasKey(a => a.UserId);
 
-            builder.Property(a => a.AccessToken)
-                .IsRequired();
+            builder.Property(a => a.AccessToken);
 
-            builder.Property(a => a.RefreshToken)
-                .IsRequired();            
+            builder.Property(a => a.RefreshToken);            
 
             builder.HasIndex(a => a.AccessToken)
                 .IsUnique();

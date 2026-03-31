@@ -124,14 +124,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         
         private void SetAccessRefreshToken(string? accessToken, string? refreshToken)
         {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.UtcNow.AddDays(2),
-                Path = "api/Authentication"
-            };
+            var cookieOptions = CreateCookieOptions();
             if (!string.IsNullOrEmpty(accessToken))
                 Response.Cookies.Append(ACCESS_TOKEN_KEY, accessToken, cookieOptions);
             if (!string.IsNullOrEmpty(refreshToken))
@@ -140,10 +133,23 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
 
         private void DeleteAccessRefreshTokens(bool deleteAccess = true, bool deleteRefresh = true)
         {
+            var cookieOptions = CreateCookieOptions();
             if (deleteAccess)
-                Response.Cookies.Delete(ACCESS_TOKEN_KEY);
+                Response.Cookies.Delete(ACCESS_TOKEN_KEY, cookieOptions);
             if (deleteRefresh)
-                Response.Cookies.Delete(REFRESH_TOKEN_KEY);
+                Response.Cookies.Delete(REFRESH_TOKEN_KEY, cookieOptions);
+        }
+
+        private CookieOptions CreateCookieOptions()
+        {
+            return new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(2),
+                Path = "api/Authentication"
+            };
         }
     }
 }
