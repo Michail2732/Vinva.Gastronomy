@@ -146,9 +146,9 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddDays(2),
-                Path = "api/Authentication"
+                Path = "/"
             };
         }
     }

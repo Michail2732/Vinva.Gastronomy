@@ -136,7 +136,7 @@ const userMenuItems = ref([
   }
 ])
 
-const userName = computed(() => authStore.user?.name || authStore.user?.email || 'Пользователь')
+const userName = computed(() => authStore.user?.login || authStore.user?.email || 'Пользователь')
 
 
 const handleItemClick = (item: any) => {

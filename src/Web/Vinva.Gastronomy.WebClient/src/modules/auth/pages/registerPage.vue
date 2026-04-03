@@ -46,7 +46,7 @@ async function submitRegister(email: string, password: string)
         const registerResult = await authStore.registerUser(email, email, password);
         if (!registerResult.isSuccess)
         {            
-            registerErrors.value = registerResult.erros ?? 'Неверные логин или пароль';
+            registerErrors.value = registerResult.error ?? 'Неверные логин или пароль';
         }    
         else
         {

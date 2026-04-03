@@ -73,14 +73,6 @@ export type CreateRecipeResponce = {
     name?: string | null;
 };
 
-export type GetCurrentUserQueryResponse = {
-    id: string;
-    login: string | null;
-    email: string | null;
-    state: UserState;
-    roles: Array<UserRole> | null;
-};
-
 export type GetImagesByIdsQuery = {
     imageDtos: Array<ImageQueryDto> | null;
 };
@@ -162,17 +154,6 @@ export type LoginRequest = {
     password: string | null;
 };
 
-export type LoginResponceDto = {
-    accessToken: string | null;
-    expiresAt: string;
-    login: string | null;
-    roles: Array<UserRole> | null;
-};
-
-export type LogoutRequest = {
-    login?: string | null;
-};
-
 export type Operator = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
 export type RecipeCategoryDto = {
@@ -210,14 +191,6 @@ export type RecipeStepDto = {
     comment?: string | null;
     seqNumber: number;
     photoId?: string | null;
-};
-
-export type RefreshTokenResponce = {
-    accessToken: string | null;
-    refreshToken: string | null;
-    expiresAt: string;
-    login: string | null;
-    roles: Array<UserRole> | null;
 };
 
 export type RegisterCommand = {
@@ -282,13 +255,17 @@ export type UpdateIngredientCommand = {
     recipeId?: string | null;
 };
 
+export type UserInfoDto = {
+    id: string;
+    login: string | null;
+    email: string | null;
+    state: UserState;
+    roles: Array<UserRole> | null;
+};
+
 export type UserRole = 0 | 1 | 2;
 
 export type UserState = 0 | 1 | 2;
-
-export type ValidateTokenRequest = {
-    accessToken?: string | null;
-};
 
 export type AuthenticationLoginData = {
     body?: LoginRequest;
@@ -301,7 +278,7 @@ export type AuthenticationLoginResponses = {
     /**
      * OK
      */
-    200: LoginResponceDto;
+    200: UserInfoDto;
 };
 
 export type AuthenticationLoginResponse = AuthenticationLoginResponses[keyof AuthenticationLoginResponses];
@@ -317,24 +294,10 @@ export type AuthenticationRefreshTokenResponses = {
     /**
      * OK
      */
-    200: RefreshTokenResponce;
+    200: UserInfoDto;
 };
 
 export type AuthenticationRefreshTokenResponse = AuthenticationRefreshTokenResponses[keyof AuthenticationRefreshTokenResponses];
-
-export type AuthenticationValidateTokenData = {
-    body?: ValidateTokenRequest;
-    path?: never;
-    query?: never;
-    url: '/api/Authentication/ValidateToken';
-};
-
-export type AuthenticationValidateTokenResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
 
 export type AuthenticationMeData = {
     body?: never;
@@ -347,13 +310,13 @@ export type AuthenticationMeResponses = {
     /**
      * OK
      */
-    200: GetCurrentUserQueryResponse;
+    200: UserInfoDto;
 };
 
 export type AuthenticationMeResponse = AuthenticationMeResponses[keyof AuthenticationMeResponses];
 
 export type AuthenticationLogoutData = {
-    body?: LogoutRequest;
+    body?: never;
     path?: never;
     query?: never;
     url: '/api/Authentication/Logout';

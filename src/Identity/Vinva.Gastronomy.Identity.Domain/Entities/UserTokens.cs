@@ -15,11 +15,11 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
         public string? RefreshToken { get; private set; }        
 
 
-        public UserTokens(Guid userId, string accessToken, string refreshToken)
+        public UserTokens(Guid userId, string? accessToken, string? refreshToken)
         {
             UserId = userId;
-            AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
-            RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));            
+            AccessToken = accessToken;
+            RefreshToken = refreshToken;
         }
 
         public void SetNewToken(string accessToken, string refreshToken)

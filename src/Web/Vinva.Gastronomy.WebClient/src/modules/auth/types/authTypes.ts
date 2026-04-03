@@ -1,15 +1,16 @@
-import type { UserRole} from "@/api";
+import type { UserRole, UserState} from "@/api/gastronomy_generated";
 
 export interface User {
     id: string;
-    name: string | null;
-    email: string | null;    
+    login: string | null;
+    email: string | null;
+    state: UserState;
     roles: Array<UserRole> | null;
 }
 
 export interface AuthOperationResult
 {
     isSuccess: boolean;
-    erros: string | null;
-    successInfo: string | null;
+    error: string | null;
+    details?: string | null | undefined;
 }

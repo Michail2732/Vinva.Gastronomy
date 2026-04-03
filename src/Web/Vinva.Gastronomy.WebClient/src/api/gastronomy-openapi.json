@@ -27,7 +27,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoginResponceDto"
+                  "$ref": "#/components/schemas/UserInfoDto"
                 }
               }
             }
@@ -47,32 +47,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RefreshTokenResponce"
+                  "$ref": "#/components/schemas/UserInfoDto"
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/Authentication/ValidateToken": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "operationId": "AuthenticationValidateToken",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ValidateTokenRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
           }
         }
       }
@@ -89,7 +67,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCurrentUserQueryResponse"
+                  "$ref": "#/components/schemas/UserInfoDto"
                 }
               }
             }
@@ -103,15 +81,6 @@
           "Authentication"
         ],
         "operationId": "AuthenticationLogout",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LogoutRequest"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "OK"
@@ -947,41 +916,6 @@
         },
         "additionalProperties": false
       },
-      "GetCurrentUserQueryResponse": {
-        "required": [
-          "email",
-          "id",
-          "login",
-          "roles",
-          "state"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "login": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "state": {
-            "$ref": "#/components/schemas/UserState"
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserRole"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "GetImagesByIdsQuery": {
         "required": [
           "imageDtos"
@@ -1283,47 +1217,6 @@
         },
         "additionalProperties": false
       },
-      "LoginResponceDto": {
-        "required": [
-          "accessToken",
-          "expiresAt",
-          "login",
-          "roles"
-        ],
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string",
-            "nullable": true
-          },
-          "expiresAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "login": {
-            "type": "string",
-            "nullable": true
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserRole"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "LogoutRequest": {
-        "type": "object",
-        "properties": {
-          "login": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "Operator": {
         "enum": [
           0,
@@ -1491,42 +1384,6 @@
           "photoId": {
             "type": "string",
             "format": "uuid",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RefreshTokenResponce": {
-        "required": [
-          "accessToken",
-          "expiresAt",
-          "login",
-          "refreshToken",
-          "roles"
-        ],
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string",
-            "nullable": true
-          },
-          "refreshToken": {
-            "type": "string",
-            "nullable": true
-          },
-          "expiresAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "login": {
-            "type": "string",
-            "nullable": true
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserRole"
-            },
             "nullable": true
           }
         },
@@ -1739,6 +1596,41 @@
         },
         "additionalProperties": false
       },
+      "UserInfoDto": {
+        "required": [
+          "email",
+          "id",
+          "login",
+          "roles",
+          "state"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "login": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "$ref": "#/components/schemas/UserState"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRole"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UserRole": {
         "enum": [
           0,
@@ -1756,30 +1648,20 @@
         ],
         "type": "integer",
         "format": "int32"
-      },
-      "ValidateTokenRequest": {
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
       }
     },
     "securitySchemes": {
-      "Bearer": {
+      "cookieAuth": {
         "type": "apiKey",
-        "description": "Введите 'Bearer' [пробел] и затем ваш JWT токен в поле ниже.\r\n\r\nПример: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"",
-        "name": "Authorization",
-        "in": "header"
+        "description": "Cookie based configuration",
+        "name": "accessToken",
+        "in": "cookie"
       }
     }
   },
   "security": [
     {
-      "Bearer": [ ]
+      "cookieAuth": [ ]
     }
   ]
 }

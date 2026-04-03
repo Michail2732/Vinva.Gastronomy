@@ -9,6 +9,23 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
 {
     public class RecipeApplicationMapper
     {
+        public List<CategoryDto> Map(IEnumerable<Category> categories)
+        {
+            return categories.Select(a => new CategoryDto
+            (
+                a.Id,
+                a.Name,
+                a.Description,
+                a.Comment,                
+                a.Type switch
+                {
+                    CategoryType.Ingredient => CategoryDtoType.Ingredient,
+                    CategoryType.Recipe => CategoryDtoType.Recipe,
+                    _ => throw new Exception("Unknown category type")
+                }
+            )).ToList();
+        }
+
         public IngredientDto Map(Ingredient ingredient)
         {
             return new IngredientDto

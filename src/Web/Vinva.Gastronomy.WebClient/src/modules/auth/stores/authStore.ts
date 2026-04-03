@@ -1,21 +1,18 @@
 import {defineStore} from 'pinia'
 import { ref, computed } from 'vue'
 import type { AuthOperationResult, User } from '@/modules/auth/types/authTypes'
-import {authenticationLogin, authenticationLogout, authenticationMe, 
-  authenticationRefreshToken, authenticationValidateToken, registrationRegister} from '@/api/sdk.gen'
+import {authenticationLogin, authenticationLogout, 
+  authenticationMe, registrationRegister} from '@/api/gastronomy_generated/sdk.gen'
 import router from '@/router'
-import { AuthError } from '@/types'
+import type { UserInfoDto } from '@/api/gastronomy_generated/types.gen'
+import type { ApiResult } from '@/api/types'
+import { safeApiCall } from '@/api/utils'
 
 export const useAuthStore = defineStore('auth', () => {
   // ===== STATE =====
-  const user = ref<User | null>(null)
-  const token = ref<string | null>(null)
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
-
+  const user = ref<User | null>(null)    
   // ===== GETTERS =====
-  const isAuthenticated = computed(() => !!token.value && !!user.value)  
-  const userName = computed(() => user.value?.name || '')
+  const isAuthenticated = computed(() => user.value != null)    
 
   // ===== ACTIONS =====
 
@@ -24,9 +21,20 @@ export const useAuthStore = defineStore('auth', () => {
       return  err.response?.data?.message || err.Message || String(err) || defaultMessage;
   }
 
+  function setUser(userInfo: UserInfoDto )
+  {
+    user.value =
+    {
+      id: userInfo.id,
+      email: userInfo.email,
+      login: userInfo.login,
+      roles: userInfo.roles,
+      state: userInfo.state
+    };
+  }
   // Вход
-  async function loginUser(login: string, password: string): Promise<AuthOperationResult> {        
-    try {
+  async function loginUser(login: string, password: string): Promise<ApiResult> {        
+    try {      
       const response = await authenticationLogin(
         {
           body: {
@@ -34,24 +42,16 @@ export const useAuthStore = defineStore('auth', () => {
             password: password
           }
         }
-      )
-      if (!response.data?.accessToken)
-        throw new AuthError("Проблемы c сервером");
-      // Сохраняем токен
-      token.value = response.data.accessToken;
-      
-      // Загружаем пользователя
-      var fetchRes = await fetchUser();
-      if (!fetchRes.isSuccess)
-        throw new AuthError(fetchRes.erros!);
+      )            
+      setUser(response.data!);
       
       // Редирект на главную или на запрошенную страницу
       const redirect = router.currentRoute.value.query.redirect as string
       router.push(redirect || '/')
       
-      return {isSuccess: true, erros: null}
+      return {isSuccess: true}
     } catch (err: any) {
-      return {isSuccess: true, erros: getErrorMessage(err, 'Ошибка входа')}
+      return {isSuccess: true, error: getErrorMessage(err, 'Ошибка входа')}
     } 
   }
 
@@ -70,63 +70,45 @@ export const useAuthStore = defineStore('auth', () => {
           }
         }
       );
-      return {isSuccess: true, erros: null, successInfo: responce.data?.details}
+      return {isSuccess: true, error: null, details: responce.data?.details}
     } catch (err) {
-      return {isSuccess: false, erros: getErrorMessage(err, 'Ошибка при регистрации')}
+      return {isSuccess: false, error: getErrorMessage(err, 'Ошибка при регистрации')}
     }    
   }
 
   // Загрузка пользователя
-  async function fetchUser(): Promise<AuthOperationResult> {
-    if (!token.value) 
-      return {isSuccess: false, erros: 'Пользователь не аутентифицирован'}
-    
+  async function fetchUser(): Promise<AuthOperationResult> {        
     try {
-      const userData = await authenticationMe()
-      if (!userData.data)
-        throw new AuthError("Проблемы c сервером");
-      user.value = 
-      {
-        id: userData.data.id,
-        name: userData.data.login,
-        email: userData.data.email,
-        roles: userData.data.roles
-      }
-      return {isSuccess: true, erros: null}
+      const responce = await authenticationMe()
+      setUser(responce.data!)      
+      return {isSuccess: true, error: null}
     } 
     catch (err: any) {      
         await logoutUser()              
-        return {isSuccess: false, erros: getErrorMessage(err, 'Ошибка получения пользователя')}
+        return {isSuccess: false, error: getErrorMessage(err, 'Ошибка получения пользователя')}
     }
   }
 
   // Выход
-  async function logoutUser(): Promise<AuthOperationResult>  {
-    if (!token.value) 
-      return {isSuccess: true, erros: null};
+  async function logoutUser(): Promise<AuthOperationResult>  {    
     try
-    {
-      user.value = null
-      token.value = null
+    {            
       await authenticationLogout();
+      user.value = null      
       router.push('/login');
-      return {isSuccess: true, erros: null};
+      return {isSuccess: true, error: null};
     } catch (err) {
-      return {isSuccess: false, erros: getErrorMessage(err, 'Ошибка получения пользователя')}
+      return {isSuccess: false, error: getErrorMessage(err, 'Ошибка получения пользователя')}
     }    
   }
   
 
   return {
     // State
-    user,
-    token,
-    isLoading,
-    error,
+    user,    
     
     // Getters
     isAuthenticated,    
-    userName,    
     
     // Actions
     loginUser,

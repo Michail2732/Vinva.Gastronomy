@@ -7,6 +7,7 @@ using Vinva.Gastronomy.Media.WebApi;
 using Vinva.Gastronomy.Recipes.WebApi;
 
 //todo: добавить RateLimit для EndPoint'ов и контроллеров
+//todo: проверить генерируемые EF запросы
 var builder = WebApplication.CreateBuilder(args);
 var moduleContext = new WebModuleContext(
     builder.Services,

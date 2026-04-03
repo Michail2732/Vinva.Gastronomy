@@ -45,7 +45,7 @@ async function submitLogin(login: string, password: string)
         const loginResult = await authStore.loginUser(login, password);
         if (!loginResult.isSuccess)
         {            
-            authErrors.value = loginResult.erros ?? 'Неверные логин или пароль';
+            authErrors.value = loginResult.error ?? 'Неверные логин или пароль';
         }    
         else
         {            

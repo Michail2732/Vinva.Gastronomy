@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Categories.CreateCategory;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Categories.Get;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Categories.RemoveCategory;
 
 namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
@@ -24,6 +25,13 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
         public async Task<CreateCategoryResponse> Create([FromBody] CreateCategoryCommand command)
         {
             var result = await _mediator.Send(command);
+            return result;
+        }
+
+        [HttpPost("Search")]
+        public async Task<SearchCategoriesQueryResponse> Search([FromBody] SearchCategoriesQuery query)
+        {
+            var result = await _mediator.Send(query);
             return result;
         }
 
