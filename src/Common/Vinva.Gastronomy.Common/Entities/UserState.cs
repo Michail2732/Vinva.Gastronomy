@@ -8,8 +8,17 @@ namespace Vinva.Gastronomy.Common.Entities
 {
     public enum UserState
     {
+        /// <summary>
+        /// Active
+        /// </summary>
         Active,
+        /// <summary>
+        /// Blocked
+        /// </summary>
         Blocked,
+        /// <summary>
+        /// Unactive
+        /// </summary>
         Unactive
     }
 }

@@ -49,14 +49,13 @@ async function submitRegister(email: string, password: string)
             registerErrors.value = registerResult.error ?? 'Неверные логин или пароль';
         }    
         else
-        {
-            console.log('auth success');
+        {            
             router.push('/Home');
         }        
     } 
     finally
     {
-        isloginInProgress.value = false;
+        isRegisterInProgress.value = false;
     }    
 }
 </script>

@@ -1,15 +1,23 @@
-import type { RecipeDto } from "@/api/gastronomy_generated";
-import type { ApiOperationResult } from "@/api/types";
+import type { CategoryDto, RecipeDto } from "@/api/gastronomy_generated";
 
-export interface RecipeInfo
-{
-    id: string;
-    name: string;
+export interface RecipeCardViewModel extends RecipeDto
+{    
+    
+};
+
+export interface RecipeDetailsViewModel extends RecipeDto
+{    
     imageSrc: string | undefined;
-    description: string | null;
+    videoSrc: string | undefined;
+};
+
+export interface CategoryViewModel extends CategoryDto
+{
+
 }
 
-export interface RecipeOperationResult extends ApiOperationResult
+export interface CategoryRecipesViewModel
 {
-    recipes: Array<RecipeDto> | null;    
-}
+    recipes: Array<RecipeCardViewModel>;
+    category: string;
+};

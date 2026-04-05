@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "generate-api": "openapi-ts"
+    "generate-api": "openapi-ts -f ./src/api/gastronomy-openapi-ts.config.ts"
   },
   "dependencies": {
     "@primeuix/themes": "^2.0.3",

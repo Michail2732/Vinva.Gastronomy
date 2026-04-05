@@ -1,12 +1,11 @@
 import {defineStore} from 'pinia'
 import { ref, computed } from 'vue'
-import type { AuthOperationResult, User } from '@/modules/auth/types/authTypes'
+import type { User } from '@/modules/auth/types/authTypes'
 import {authenticationLogin, authenticationLogout, 
   authenticationMe, registrationRegister} from '@/api/gastronomy_generated/sdk.gen'
 import router from '@/router'
 import type { UserInfoDto } from '@/api/gastronomy_generated/types.gen'
-import type { ApiResult } from '@/api/types'
-import { safeApiCall } from '@/api/utils'
+import type { ApiDataResult, ApiResult } from '@/api/types'
 
 export const useAuthStore = defineStore('auth', () => {
   // ===== STATE =====
@@ -56,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Регистрация
-  async function registerUser(login: string, email: string, password: string ): Promise<AuthOperationResult>
+  async function registerUser(login: string, email: string, password: string ): Promise<ApiDataResult<string>>
   {
     try
     {      
@@ -70,18 +69,18 @@ export const useAuthStore = defineStore('auth', () => {
           }
         }
       );
-      return {isSuccess: true, error: null, details: responce.data?.details}
+      return {isSuccess: true, data: responce.data?.details || ''}
     } catch (err) {
       return {isSuccess: false, error: getErrorMessage(err, 'Ошибка при регистрации')}
     }    
   }
 
   // Загрузка пользователя
-  async function fetchUser(): Promise<AuthOperationResult> {        
+  async function fetchUser(): Promise<ApiResult> {        
     try {
       const responce = await authenticationMe()
       setUser(responce.data!)      
-      return {isSuccess: true, error: null}
+      return {isSuccess: true}
     } 
     catch (err: any) {      
         await logoutUser()              
@@ -90,13 +89,13 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Выход
-  async function logoutUser(): Promise<AuthOperationResult>  {    
+  async function logoutUser(): Promise<ApiResult>  {    
     try
     {            
       await authenticationLogout();
       user.value = null      
       router.push('/login');
-      return {isSuccess: true, error: null};
+      return {isSuccess: true};
     } catch (err) {
       return {isSuccess: false, error: getErrorMessage(err, 'Ошибка получения пользователя')}
     }    

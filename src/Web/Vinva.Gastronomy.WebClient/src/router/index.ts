@@ -6,13 +6,26 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
-    path: '/',    
-    redirect: '/home',    
-  },
-  {
-    path: '/home',    
-    component: AppLayout,    
-  },
+    path: '/',        
+    component: AppLayout,
+    children:
+    [
+      {
+        path: '',        
+        redirect: '/home',        
+      },
+      {
+        path: '/home',
+        name: 'home',        
+        component: () => import('@/modules/shared/components/appHome.vue')
+      },
+      {
+        path: '/recipes',
+        name: 'recipes',
+        component: RecipesPage,
+      }
+    ]
+  },  
   {
     path: '/login',    
     component: LoginPage,
@@ -20,11 +33,7 @@ const routes = [
   {
     path: '/register',    
     component: RegisterPage,
-  },
-  {
-    path: '/recipes',    
-    component: RecipesPage,
-  },
+  },  
 ];
 
 const router = createRouter({

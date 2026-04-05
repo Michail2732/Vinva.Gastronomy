@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Modularity.Filters;
 using Vinva.Gastronomy.Common.Modularity.MediatR;
@@ -34,7 +35,11 @@ namespace Vinva.Gastronomy.Common.Modularity
             {
                 module.RegisterServices(context);                
             }            
-            var mvcBuilder = context.Services.AddControllers(context.MvcConfigurations);
+            var mvcBuilder = context.Services.AddControllers(context.MvcConfigurations)
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
             context.Services.AddRouting(context.RouteConfigurations);            
             context.Services.AddSwaggerGen(context.SwaggerConfigurations);
             context.Services.AddMediatR(context.MediatRConfigurations);

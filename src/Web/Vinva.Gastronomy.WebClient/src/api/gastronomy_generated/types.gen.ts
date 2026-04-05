@@ -19,7 +19,13 @@ export type AddStepsCommand = {
     steps?: Array<RecipeStepDto> | null;
 };
 
-export type CategoryDtoType = 0 | 1;
+export type CategoryDto = {
+    id?: string;
+    name?: string | null;
+    description?: string | null;
+    comment?: string | null;
+    type?: 'Recipe' | 'Ingredient';
+};
 
 export type ChangeSeqNumberDto = {
     seqNumber1?: number;
@@ -27,9 +33,9 @@ export type ChangeSeqNumberDto = {
 };
 
 export type Condition = {
-    logic: Logic;
+    logic: 'Or' | 'And';
     field: string | null;
-    operator: Operator;
+    operator: 'Less' | 'LessOrEqual' | 'Larger' | 'LargerOrEqual' | 'Equals' | 'NotEquals' | 'StartWith' | 'EndWith' | 'Contains';
     value: unknown;
 };
 
@@ -37,7 +43,7 @@ export type CreateCategoryCommand = {
     name?: string | null;
     description?: string | null;
     comment?: string | null;
-    type?: CategoryDtoType;
+    type?: 'Recipe' | 'Ingredient';
 };
 
 export type CreateCategoryResponse = {
@@ -147,14 +153,10 @@ export type IngredientQuantityDto = {
     quantity: number;
 };
 
-export type Logic = 0 | 1;
-
 export type LoginRequest = {
     login: string | null;
     password: string | null;
 };
-
-export type Operator = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
 export type RecipeCategoryDto = {
     id: string;
@@ -231,6 +233,14 @@ export type ReorderStepsCommand = {
     items?: Array<ChangeSeqNumberDto> | null;
 };
 
+export type SearchCategoriesQuery = {
+    query: SearchQuery;
+};
+
+export type SearchCategoriesQueryResponse = {
+    items: Array<CategoryDto> | null;
+};
+
 export type SearchQuery = {
     take?: number;
     skip?: number;
@@ -238,11 +248,9 @@ export type SearchQuery = {
     conditions?: Array<Condition> | null;
 };
 
-export type SortDirection = 0 | 1;
-
 export type Sorting = {
     property: string | null;
-    direction?: SortDirection;
+    direction?: 'Ascending' | 'Descending';
 };
 
 export type UpdateIngredientCommand = {
@@ -259,13 +267,9 @@ export type UserInfoDto = {
     id: string;
     login: string | null;
     email: string | null;
-    state: UserState;
-    roles: Array<UserRole> | null;
+    state: 'Active' | 'Blocked' | 'Unactive';
+    roles: Array<'Client' | 'Manager' | 'Admin'> | null;
 };
-
-export type UserRole = 0 | 1 | 2;
-
-export type UserState = 0 | 1 | 2;
 
 export type AuthenticationLoginData = {
     body?: LoginRequest;
@@ -344,6 +348,22 @@ export type CategoryCreateResponses = {
 };
 
 export type CategoryCreateResponse = CategoryCreateResponses[keyof CategoryCreateResponses];
+
+export type CategorySearchData = {
+    body?: SearchCategoriesQuery;
+    path?: never;
+    query?: never;
+    url: '/api/Categories/Search';
+};
+
+export type CategorySearchResponses = {
+    /**
+     * OK
+     */
+    200: SearchCategoriesQueryResponse;
+};
+
+export type CategorySearchResponse = CategorySearchResponses[keyof CategorySearchResponses];
 
 export type CategoryRemoveData = {
     body?: RemoveCategoryCommand;

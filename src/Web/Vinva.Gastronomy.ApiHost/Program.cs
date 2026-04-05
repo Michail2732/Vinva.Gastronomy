@@ -13,7 +13,10 @@ var moduleContext = new WebModuleContext(
     builder.Services,
     builder.Configuration,
     builder.Environment);
-
+moduleContext.ConfigureSwagger(options =>
+{
+    options.UseInlineDefinitionsForEnums();
+});
 var moduleLoader = new WebModulesLoader(new List<IWebModule>
 {
     new IdentityWebModule(),

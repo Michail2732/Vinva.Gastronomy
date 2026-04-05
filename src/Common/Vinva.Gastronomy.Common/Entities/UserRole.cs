@@ -8,8 +8,17 @@ namespace Vinva.Gastronomy.Common.Entities
 {
     public enum UserRole
     {
+        /// <summary>
+        /// Client
+        /// </summary>
         Client,
+        /// <summary>
+        /// Manager
+        /// </summary>
         Manager,
+        /// <summary>
+        /// Admin
+        /// </summary>
         Admin,
     }
 }

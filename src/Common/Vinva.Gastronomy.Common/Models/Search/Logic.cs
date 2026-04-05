@@ -8,7 +8,13 @@ namespace Vinva.Gastronomy.Common.Models.Search
 {
     public enum Logic
     {
+        /// <summary>
+        /// Or
+        /// </summary>
         Or,
+        /// <summary>
+        /// And
+        /// </summary>
         And
     }
 }

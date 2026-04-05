@@ -1,38 +1,39 @@
 <template>
     <div>
         <div class="cards-container">
-            <Card v-for="(item, index) in recipes" :key="item.id"
-                  class="recipe-card">
-                <template #content>
-                    <Image :src="item.imageSrc"></Image>
-                </template>
-                <template #title>
-                    {{ item.name }}
-                </template>
-            </Card>            
+            <RecipeCard v-for="(item, index) in recipeCardVms" :key="item.id"
+                  v-model="recipeCardVms[index]"
+                  class="recipe-card">                
+            </RecipeCard>            
         </div>
     </div>    
 </template>
 <script setup lang="ts">
-import type { RecipeInfo } from '../types/recipeTypes';
 import {ref} from 'vue'
+import RecipeCard from '../components/recipeCard.vue'
+import {useRecipesStore} from '../stores/recipesStore'
+import type { CategoryRecipesViewModel, RecipeCardViewModel } from '../types/recipeTypes';
 
-function generateTestRecipeInfo(): Array<RecipeInfo>
+const recipeStore = useRecipesStore(); 
+const recipeCardVms = ref<RecipeCardViewModel[]>();
+
+async function loadData()
 {
-    const resultArray = new Array<RecipeInfo>(100);
-    for (let i = 0; i < 100; i++) 
+    try 
     {
-        resultArray[i] = {
-            id: String(i),
-            name: `Тестовый рецепт ${i}`,
-            imageSrc: undefined,
-            description: `Тестовое описание ${i}`
-        }            
-    }
-    return resultArray;
+        const recipes = await recipeStore.getRecipes();
+        if (!recipes.isSuccess)
+        {
+            alert("Не удалось получить список рецептов");
+            return;
+        }          
+        recipeCardVms.value = recipes.data;
+    } catch (error) {
+        alert(error);
+    }    
 }
 
-const recipes = ref(generateTestRecipeInfo());
+await loadData();
 
 
 </script>

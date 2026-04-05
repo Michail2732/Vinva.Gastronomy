@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AuthenticationLoginData, AuthenticationLoginResponses, AuthenticationLogoutData, AuthenticationLogoutResponses, AuthenticationMeData, AuthenticationMeResponses, AuthenticationRefreshTokenData, AuthenticationRefreshTokenResponses, CategoryCreateData, CategoryCreateResponses, CategoryRemoveData, CategoryRemoveResponses, ImageCreateImageData, ImageCreateImageResponses, ImageGetImagesByIdsData, ImageGetImagesByIdsResponses, IngredientCreateData, IngredientCreateResponses, IngredientGetByIdData, IngredientGetByIdResponses, IngredientRemoveData, IngredientRemoveResponses, IngredientUpdateData, IngredientUpdateResponses, RecipeAddCategoriesData, RecipeAddCategoriesResponses, RecipeAddIngredientsData, RecipeAddIngredientsResponses, RecipeAddStepsData, RecipeAddStepsResponses, RecipeCreateData, RecipeCreateResponses, RecipeRemoveCategoriesData, RecipeRemoveCategoriesResponses, RecipeRemoveData, RecipeRemoveIngredientsData, RecipeRemoveIngredientsResponses, RecipeRemoveResponses, RecipeRemoveStepsData, RecipeRemoveStepsResponses, RecipeReorderStepsData, RecipeReorderStepsResponses, RecipeSearchByCategoriesData, RecipeSearchByCategoriesResponses, RecipeSearchByIngredientsData, RecipeSearchByIngredientsResponses, RecipeSearchByQueryData, RecipeSearchByQueryResponses, RegistrationRegisterConfirmData, RegistrationRegisterConfirmResponses, RegistrationRegisterData, RegistrationRegisterResponses } from './types.gen';
+import type { AuthenticationLoginData, AuthenticationLoginResponses, AuthenticationLogoutData, AuthenticationLogoutResponses, AuthenticationMeData, AuthenticationMeResponses, AuthenticationRefreshTokenData, AuthenticationRefreshTokenResponses, CategoryCreateData, CategoryCreateResponses, CategoryRemoveData, CategoryRemoveResponses, CategorySearchData, CategorySearchResponses, ImageCreateImageData, ImageCreateImageResponses, ImageGetImagesByIdsData, ImageGetImagesByIdsResponses, IngredientCreateData, IngredientCreateResponses, IngredientGetByIdData, IngredientGetByIdResponses, IngredientRemoveData, IngredientRemoveResponses, IngredientUpdateData, IngredientUpdateResponses, RecipeAddCategoriesData, RecipeAddCategoriesResponses, RecipeAddIngredientsData, RecipeAddIngredientsResponses, RecipeAddStepsData, RecipeAddStepsResponses, RecipeCreateData, RecipeCreateResponses, RecipeRemoveCategoriesData, RecipeRemoveCategoriesResponses, RecipeRemoveData, RecipeRemoveIngredientsData, RecipeRemoveIngredientsResponses, RecipeRemoveResponses, RecipeRemoveStepsData, RecipeRemoveStepsResponses, RecipeReorderStepsData, RecipeReorderStepsResponses, RecipeSearchByCategoriesData, RecipeSearchByCategoriesResponses, RecipeSearchByIngredientsData, RecipeSearchByIngredientsResponses, RecipeSearchByQueryData, RecipeSearchByQueryResponses, RegistrationRegisterConfirmData, RegistrationRegisterConfirmResponses, RegistrationRegisterData, RegistrationRegisterResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -69,6 +69,20 @@ export const categoryCreate = <ThrowOnError extends boolean = false>(options?: O
             type: 'apiKey'
         }],
     url: '/api/Categories/Create',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+export const categorySearch = <ThrowOnError extends boolean = false>(options?: Options<CategorySearchData, ThrowOnError>) => (options?.client ?? client).post<CategorySearchResponses, unknown, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: 'accessToken',
+            type: 'apiKey'
+        }],
+    url: '/api/Categories/Search',
     ...options,
     headers: {
         'Content-Type': 'application/json',

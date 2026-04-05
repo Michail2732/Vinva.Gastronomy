@@ -117,6 +117,35 @@
         }
       }
     },
+    "/api/Categories/Search": {
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "operationId": "CategorySearch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchCategoriesQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchCategoriesQueryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Categories/Remove": {
       "delete": {
         "tags": [
@@ -748,13 +777,34 @@
         },
         "additionalProperties": false
       },
-      "CategoryDtoType": {
-        "enum": [
-          0,
-          1
-        ],
-        "type": "integer",
-        "format": "int32"
+      "CategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "enum": [
+              "Recipe",
+              "Ingredient"
+            ],
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       },
       "ChangeSeqNumberDto": {
         "type": "object",
@@ -780,14 +830,29 @@
         "type": "object",
         "properties": {
           "logic": {
-            "$ref": "#/components/schemas/Logic"
+            "enum": [
+              "Or",
+              "And"
+            ],
+            "type": "string"
           },
           "field": {
             "type": "string",
             "nullable": true
           },
           "operator": {
-            "$ref": "#/components/schemas/Operator"
+            "enum": [
+              "Less",
+              "LessOrEqual",
+              "Larger",
+              "LargerOrEqual",
+              "Equals",
+              "NotEquals",
+              "StartWith",
+              "EndWith",
+              "Contains"
+            ],
+            "type": "string"
           },
           "value": {
             "nullable": true
@@ -811,7 +876,11 @@
             "nullable": true
           },
           "type": {
-            "$ref": "#/components/schemas/CategoryDtoType"
+            "enum": [
+              "Recipe",
+              "Ingredient"
+            ],
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -1191,14 +1260,6 @@
         },
         "additionalProperties": false
       },
-      "Logic": {
-        "enum": [
-          0,
-          1
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
       "LoginRequest": {
         "required": [
           "login",
@@ -1216,21 +1277,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "Operator": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8
-        ],
-        "type": "integer",
-        "format": "int32"
       },
       "RecipeCategoryDto": {
         "required": [
@@ -1512,6 +1558,34 @@
         },
         "additionalProperties": false
       },
+      "SearchCategoriesQuery": {
+        "required": [
+          "query"
+        ],
+        "type": "object",
+        "properties": {
+          "query": {
+            "$ref": "#/components/schemas/SearchQuery"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SearchCategoriesQueryResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "SearchQuery": {
         "type": "object",
         "properties": {
@@ -1536,14 +1610,6 @@
         },
         "additionalProperties": false
       },
-      "SortDirection": {
-        "enum": [
-          0,
-          1
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
       "Sorting": {
         "required": [
           "property"
@@ -1555,7 +1621,11 @@
             "nullable": true
           },
           "direction": {
-            "$ref": "#/components/schemas/SortDirection"
+            "enum": [
+              "Ascending",
+              "Descending"
+            ],
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -1619,35 +1689,27 @@
             "nullable": true
           },
           "state": {
-            "$ref": "#/components/schemas/UserState"
+            "enum": [
+              "Active",
+              "Blocked",
+              "Unactive"
+            ],
+            "type": "string"
           },
           "roles": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UserRole"
+              "enum": [
+                "Client",
+                "Manager",
+                "Admin"
+              ],
+              "type": "string"
             },
             "nullable": true
           }
         },
         "additionalProperties": false
-      },
-      "UserRole": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "UserState": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "type": "integer",
-        "format": "int32"
       }
     },
     "securitySchemes": {

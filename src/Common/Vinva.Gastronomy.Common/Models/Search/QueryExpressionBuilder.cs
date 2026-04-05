@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Vinva.Gastronomy.Common.Models.Search
@@ -182,6 +183,23 @@ namespace Vinva.Gastronomy.Common.Models.Search
                 {
                     if (value is string stringValue)
                         return Enum.Parse(targetType, stringValue);
+                    else if (value is JsonElement jsonElement)
+                    {
+                        if (jsonElement.ValueKind == JsonValueKind.String)
+                        {
+                            stringValue = jsonElement.GetString() ?? string.Empty;
+                            if (string.IsNullOrEmpty(stringValue))
+                                throw new ArgumentException($"value of type {targetType} must be not null");
+                            return Enum.Parse(targetType, stringValue);
+                        }
+                        else if (jsonElement.ValueKind == JsonValueKind.Number)
+                        {
+                            var dblValue = jsonElement.GetDouble();
+                            if (dblValue != Math.Truncate(dblValue))
+                                throw new ArgumentException($"value of type {targetType} must integer positive");
+                            return Enum.ToObject(targetType, (int)dblValue);
+                        }
+                    }
 
                     return Enum.ToObject(targetType, value);
                 }
