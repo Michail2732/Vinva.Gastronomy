@@ -14,6 +14,7 @@ using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Logout;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.RefreshJwtToken;
 using Vinva.Gastronomy.Identity.WebApi.Dtos;
+using Vinva.Gastronomy.Identity.WebApi.Services;
 
 namespace Vinva.Gastronomy.Identity.WebApi.Controllers
 {
@@ -25,14 +26,17 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
     [Consumes("application/json")]
     public class AuthenticationController : ControllerBase
     {
+        private readonly AuthCookieOptionsFactory _cookieOptsFactory;
         private readonly IMediator _mediator;
+
         public const string ACCESS_TOKEN_KEY = "accessToken";
         public const string REFRESH_TOKEN_KEY = "refreshToken";
 
 
-        public AuthenticationController(IMediator mediator)
+        public AuthenticationController(IMediator mediator, AuthCookieOptionsFactory cookieOptsFactory)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _cookieOptsFactory = cookieOptsFactory ?? throw new ArgumentNullException(nameof(cookieOptsFactory));
         }
 
 
@@ -124,7 +128,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         
         private void SetAccessRefreshToken(string? accessToken, string? refreshToken)
         {
-            var cookieOptions = CreateCookieOptions();
+            var cookieOptions = _cookieOptsFactory.Create();
             if (!string.IsNullOrEmpty(accessToken))
                 Response.Cookies.Append(ACCESS_TOKEN_KEY, accessToken, cookieOptions);
             if (!string.IsNullOrEmpty(refreshToken))
@@ -133,23 +137,11 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
 
         private void DeleteAccessRefreshTokens(bool deleteAccess = true, bool deleteRefresh = true)
         {
-            var cookieOptions = CreateCookieOptions();
+            var cookieOptions = _cookieOptsFactory.Create();
             if (deleteAccess)
                 Response.Cookies.Delete(ACCESS_TOKEN_KEY, cookieOptions);
             if (deleteRefresh)
                 Response.Cookies.Delete(REFRESH_TOKEN_KEY, cookieOptions);
-        }
-
-        private CookieOptions CreateCookieOptions()
-        {
-            return new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddDays(2),
-                Path = "/"
-            };
-        }
+        }        
     }
 }

@@ -95,7 +95,7 @@ export const useRecipesStore = defineStore('recipes', () =>
     }
 
     return {
-        getRecipeCategories,
+        getRecipeCategories, 
         getRecipes,
         getRecipesByCategories
     }

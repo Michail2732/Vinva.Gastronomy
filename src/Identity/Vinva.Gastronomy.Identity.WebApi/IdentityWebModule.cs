@@ -63,6 +63,7 @@ namespace Vinva.Gastronomy.Identity.WebApi
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IPasswordHashService, PasswordHashService>();
             services.AddSingleton<IRegistrationService, RegistrationService>();
+            services.AddSingleton<AuthCookieOptionsFactory>();            
             services.AddDbContext<IdentityDbContext>(options =>
             {
                 options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnectionString"));

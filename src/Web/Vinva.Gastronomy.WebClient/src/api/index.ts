@@ -12,12 +12,17 @@ async function getErrorMessage(response: Response): Promise<string> {
 
 client.setConfig({
   baseUrl: import.meta.env.VITE_API_URL,
+  credentials: 'include',
   throwOnError: true,
   fetch: async (input, init) =>
     {
         try 
         {
-            const response = await fetch(input, init);
+            const response = await fetch(input, 
+                {
+                    ...init,
+                    credentials: 'include'
+                });
             if (!response.ok) 
             {
                 const message = await getErrorMessage(response);
