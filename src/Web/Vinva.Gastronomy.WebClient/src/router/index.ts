@@ -3,6 +3,15 @@ import LoginPage from '@/modules/auth/pages/loginPage.vue'
 import RegisterPage from '@/modules/auth/pages/registerPage.vue'
 import RecipesPage from '@/modules/recipes/pages/recipesPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/modules/auth/stores/authStore'
+
+function checkAuth(to: any, from: any)
+{
+  const authStore = useAuthStore();
+  if (to.name !== 'login' && !authStore.isAuthenticated)
+    return {name: 'login',
+            query: { redirect: to.fullPath }};  
+}
 
 const routes = [
   {
@@ -23,10 +32,12 @@ const routes = [
         path: '/recipes',
         name: 'recipes',
         component: RecipesPage,
+        beforeEnter: checkAuth        
       }
     ]
   },  
   {
+    name: 'login',
     path: '/login',    
     component: LoginPage,
   },

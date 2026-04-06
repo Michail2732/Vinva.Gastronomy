@@ -27,11 +27,12 @@
 </template>
 <script setup lang="ts">
 import {ref} from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import LoginForm from '../components/loginForm.vue'
 import {useAuthStore} from '@/modules/auth/stores/authStore'
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore()
 const authErrors = ref('');
 const isloginInProgress = ref(false);
@@ -49,7 +50,8 @@ async function submitLogin(login: string, password: string)
         }    
         else
         {            
-            router.push('/Home');
+            const redirectPath = route.query.redirect as string || '/Home';
+            router.push(redirectPath);
         }        
     } 
     finally

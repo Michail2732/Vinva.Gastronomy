@@ -1,11 +1,15 @@
 import { type App } from 'vue'
 import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import Toolbar from 'primevue/toolbar'
 import ConfirmationService from 'primevue/confirmationservice'
 import Aura from '@primeuix/themes/aura'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import DataTable from 'primevue/datatable'
+import SelectButton from 'primevue/selectbutton'
 import Column from 'primevue/column'
 import Card from 'primevue/card'
 import Dialog from 'primevue/dialog'
@@ -94,5 +98,10 @@ export default {
     app.component('Dock', Dock)
     app.component('Password', Password);
     app.component('Message', Message);
+    app.component('SelectButton', SelectButton);
+    app.component('IconField', IconField);
+    app.component('InputIcon', InputIcon);
+    app.component('Toolbar', Toolbar);
+
   }
 }

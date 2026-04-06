@@ -24,8 +24,8 @@ namespace Vinva.Gastronomy.Identity.WebApi.Services
                 return new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = false,
-                    SameSite = SameSiteMode.Lax,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
                     Expires = DateTimeOffset.UtcNow.AddDays(2),
                     Path = "/"
                 };

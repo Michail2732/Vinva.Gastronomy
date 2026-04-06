@@ -1,4 +1,5 @@
 import {client } from './gastronomy_generated/client.gen';
+import {authenticationRefreshToken} from '@/api/gastronomy_generated/sdk.gen'
 import { ApiGastronomyError } from './types';
 
 async function getErrorMessage(response: Response): Promise<string> {
@@ -56,4 +57,18 @@ client.setConfig({
             throw new ApiGastronomyError('An unknown error occurred');
         }        
     },
+});
+
+client.interceptors.response.use(async (responce) =>
+{
+   if (responce.status === 401) 
+   {
+        try {
+            await authenticationRefreshToken();
+            return responce;
+        } catch (error) {
+            window.location.href = '/login'
+        }        
+   }
+   return responce;
 });

@@ -14,6 +14,7 @@ namespace Vinva.Gastronomy.Identity.Application.Common
         public required string Email { get; init; }
         public required UserState State { get; init; }
         public required UserRole[] Roles { get; init; }
+        //public required DateTimeOffset AccessExpiredAt { get; init; }
 
         public UserInfoDto Copy() => new UserInfoDto
         {
