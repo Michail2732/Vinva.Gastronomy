@@ -50,6 +50,19 @@ export default {
                 900: '#1e462e',
                 950: '#163522'
           },
+           secondary: {
+            50: '#f5f0ed',  // очень светлый
+            100: '#e8dfd9',
+            200: '#d1bfb3',
+            300: '#ba9f8d',
+            400: '#a37f67',
+            500: '#74513D',  // ваш основной secondary цвет
+            600: '#684937',
+            700: '#5c4031',
+            800: '#50372b',
+            900: '#442e25',
+            950: '#38251f'   // очень темный
+        },
           colorScheme: {
             light: {
               primary: {
@@ -57,6 +70,12 @@ export default {
                 contrastColor: '#ffffff',
                 hoverColor: '{primary.600}',
                 activeColor: '{primary.700}'
+              },
+              secondary: {
+                  color: '{secondary.500}',
+                  contrastColor: '#ffffff',
+                  hoverColor: '{secondary.600}',
+                  activeColor: '{secondary.700}'
               }
             }
           }

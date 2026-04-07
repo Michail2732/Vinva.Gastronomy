@@ -16,7 +16,11 @@
             </template>             
         </Toolbar>        
         <div class="categories-container">                        
-            <SelectButton v-model="value" :options="options" optionLabel="name" multiple aria-labelledby="multiple" />
+            <SelectButton v-model="selectedCategories" 
+                          :options="categories"                          
+                          optionLabel="name"                          
+                          multiple
+                          aria-labelledby="multiple" />
         </div>                    
         <div class="cards-container">
             <RecipeCard v-for="(item, index) in filtredRecipes" :key="item.id"
@@ -30,45 +34,76 @@
 import {ref, computed} from 'vue'
 import RecipeCard from '../components/recipeCard.vue'
 import {useRecipesStore} from '../stores/recipesStore'
-import type { CategoryRecipesViewModel, RecipeCardViewModel } from '../types/recipeTypes';
+import type { CategoryViewModel, RecipeCardViewModel } from '../types/recipeTypes';
+import { useToast } from 'primevue';
 
-const value = ref(null);
-const options = ref([
-    { name: 'Option 1', value: 1 },
-    { name: 'Option 2', value: 2 },
-    { name: 'Option 3', value: 3 },
-    { name: 'Option 3', value: 3 },
-    { name: 'Option 3', value: 3 },
-    { name: 'Option 3', value: 3 },
-    { name: 'Option 3', value: 3 },
-]);
 
+const toasts = useToast();
+const categories = ref<{name: string, value: CategoryViewModel}[]>();
+const selectedCategories = ref<{name: string, value: CategoryViewModel}[]>([]);
 const recipeStore = useRecipesStore(); 
 const recipeCardVms = ref<RecipeCardViewModel[]>([]);
 const searchStr = ref('');
-const filtredRecipes = computed(() =>{
+const filtredRecipes = computed(() => {
     return recipeCardVms.value.filter(a => 
-        a.name?.toLowerCase().includes(searchStr.value.toLowerCase()))
+    {
+        let result = a.name?.toLowerCase().includes(searchStr.value.toLowerCase());
+        if (selectedCategories.value)
+        {
+            let isMatchRecipe = true;
+            for (const category of selectedCategories.value) 
+            {
+                isMatchRecipe &&= a.categories?.some(b => b.id == category.value.id!) == true;
+            }
+            result &&= isMatchRecipe;
+        }
+        return result;
+    })
 });
 
 function filterRecipes()
 {
-    recipeCardVms.value.filter(a => a.name?.includes(searchStr.value))
+    recipeCardVms.value.filter(a => 
+    {
+        let result = a.name?.toLowerCase().includes(searchStr.value.toLowerCase());
+        if (selectedCategories.value)
+        {
+            let isMatchRecipe = true;
+            for (const category of selectedCategories.value) 
+            {
+                isMatchRecipe &&= a.categories?.some(b => b.id == category.value.id!) == true;
+            }
+            result &&= isMatchRecipe;
+        }
+        return result;
+    })
 }
 
 async function loadData()
 {
     try 
     {
-        const recipes = await recipeStore.getRecipes();
-        if (!recipes.isSuccess)
+        const recipesRes = await recipeStore.getRecipes();        
+        if (!recipesRes.isSuccess)
         {
-            alert("Не удалось получить список рецептов");
+            toasts.add({severity: 'error', summary: 'Ошибка', 
+                detail: "Не удалось получить список рецептов", life: 3500});            
             return;
-        }          
-        recipeCardVms.value = recipes.data;
+        }     
+        const categoriesRes = await recipeStore.getRecipeCategories();
+        if (!categoriesRes.isSuccess)     
+        {
+            toasts.add({severity: 'error', summary: 'Ошибка', 
+                detail: "Не удалось получить список категорий", life: 3500});            
+            return;
+        }
+        recipeCardVms.value = recipesRes.data;
+        categories.value = categoriesRes.data.filter(a => a.name).map(a => 
+        {
+            return {name: a.name!, value: a};
+        });
     } catch (error) {
-        alert(error);
+        toasts.add({severity: 'error', summary: 'Ошибка', detail: error, life: 3500});            
     }    
 }
 
@@ -77,15 +112,52 @@ loadData();
 
 </script>
 <style scoped lang="scss">
+    .categories-container
+    {
+        display: block;
+        margin: 0 auto;
+        width: 70%;
+        max-width: 1000px;
+        :deep(.p-selectbutton)
+        {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;            
+            .p-togglebutton
+            {
+                border-radius: 1rem !important;
+                margin: .4rem;
+            }
+            .p-togglebutton-checked
+            {
+                background-color: var(--p-secondary-400);
+                border-color: var(--p-secondary-400);
+                color: var(--p-secondary-contrast);
+                .p-togglebutton-content
+                {                                        
+                    background: none;                 
+                    .p-togglebutton-label   
+                    {
+                        color: var(--p-secondary-100);
+                    }
+                }
+            }
+        }        
+    }
+
     .recipes-toolbar-container
     {
         margin: 2rem auto 1rem auto;        
-        width: fit-content;
-        .categories-container
+        width: fit-content;        
+        .search-recipe-input
         {
-            display: block;
+            border: 0px;
+            .p-inputtext 
+            {
+                border-radius: 1rem;
+            }
         }
-    }
+    }    
 
     .cards-container
     {        

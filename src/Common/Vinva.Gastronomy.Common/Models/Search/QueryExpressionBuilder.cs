@@ -178,13 +178,19 @@ namespace Vinva.Gastronomy.Common.Models.Search
             // Конвертируем значение
             try
             {
+                // todo: extract from json value 
+                if (value is JsonElement jsonElement)
+                {
+
+                }
+
                 // Для enum
                 if (targetType.IsEnum)
                 {
                     if (value is string stringValue)
                         return Enum.Parse(targetType, stringValue);
                     else if (value is JsonElement jsonElement)
-                    {
+                    {                        
                         if (jsonElement.ValueKind == JsonValueKind.String)
                         {
                             stringValue = jsonElement.GetString() ?? string.Empty;
