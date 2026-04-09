@@ -2,6 +2,7 @@ import AppLayout from '@/AppLayout.vue'
 import LoginPage from '@/modules/auth/pages/loginPage.vue'
 import RegisterPage from '@/modules/auth/pages/registerPage.vue'
 import RecipesPage from '@/modules/recipes/pages/recipesPage.vue'
+import RecipeDetailsPage from '@/modules/recipes/pages/recipeDetailsPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/modules/auth/stores/authStore'
 
@@ -32,6 +33,12 @@ const routes = [
         path: '/recipes',
         name: 'recipes',
         component: RecipesPage,
+        beforeEnter: checkAuth        
+      },
+      {
+        path: '/recipe/:id',
+        name: 'recipe',
+        component: RecipeDetailsPage,
         beforeEnter: checkAuth        
       }
     ]

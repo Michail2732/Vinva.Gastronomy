@@ -14,6 +14,7 @@ import Column from 'primevue/column'
 import Card from 'primevue/card'
 import Dialog from 'primevue/dialog'
 import Toast from 'primevue/toast'
+import Tooltip from 'primevue/tooltip';
 import ConfirmDialog from 'primevue/confirmdialog'
 import MultiSelect from 'primevue/multiselect'
 import FloatLabel from 'primevue/floatlabel'
@@ -21,6 +22,7 @@ import Rating from 'primevue/rating'
 import Tag from 'primevue/tag'
 import ProgressSpinner from 'primevue/progressspinner'
 import Image from 'primevue/image'
+import ToggleButton from 'primevue/togglebutton'
 import Avatar from 'primevue/avatar'
 import Badge from 'primevue/badge'
 import Menubar from 'primevue/menubar'
@@ -30,6 +32,25 @@ import Dock from 'primevue/dock'
 import Password from 'primevue/password'
 import 'primeicons/primeicons.css'
 import { definePreset } from '@primeuix/themes'
+
+export type IconOnlyToogleButtonPt = 
+{
+  root: {
+    style: {
+      width: '2.5rem',
+      height: '2.5rem',
+      padding: '0',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  },
+  label: {
+      style: {
+        display: 'none'
+      }
+    }
+}
 
 export default {
   install(app: App) {
@@ -95,9 +116,10 @@ export default {
     app.use(ToastService)
     app.use(ConfirmationService)
 
-    
+    app.directive('tooltip', Tooltip);
     app.component('Button', Button)
     app.component('InputText', InputText)
+    app.component('ToggleButton', ToggleButton)
     app.component('DataTable', DataTable)
     app.component('Column', Column)
     app.component('Card', Card)
@@ -120,7 +142,6 @@ export default {
     app.component('SelectButton', SelectButton);
     app.component('IconField', IconField);
     app.component('InputIcon', InputIcon);
-    app.component('Toolbar', Toolbar);
-
+    app.component('Toolbar', Toolbar);    
   }
 }

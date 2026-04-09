@@ -5,6 +5,11 @@ export interface RecipeCardViewModel extends RecipeDto
     
 };
 
+export interface RecipeDetailsVieModel extends RecipeDto
+{
+
+}
+
 export interface RecipeDetailsViewModel extends RecipeDto
 {    
     imageSrc: string | undefined;

@@ -6,7 +6,7 @@ import {recipeSearchByCategories,
         categorySearch } from '@/api/gastronomy_generated/sdk.gen'
 import { ApiGastronomyError, type ApiDataResult } from '@/api/types';
 import type { CategoryDto, RecipeDto } from '@/api/gastronomy_generated';
-import type { CategoryRecipesViewModel, CategoryViewModel, RecipeCardViewModel } from '../types/recipeTypes';
+import type { CategoryRecipesViewModel, CategoryViewModel, RecipeCardViewModel, RecipeDetailsVieModel } from '../types/recipeTypes';
 
 export const useRecipesStore = defineStore('recipes', () => 
 {            
@@ -71,6 +71,39 @@ export const useRecipesStore = defineStore('recipes', () =>
         }
     }
 
+    async function getRecipeById(id: string) : Promise<ApiDataResult<RecipeDetailsVieModel>>
+    {
+         try {
+            var responce = await recipeSearchByQuery(
+            {
+                body: {                    
+                    query: 
+                    {
+                        conditions: 
+                        [
+                            {
+                                field: 'Id',
+                                logic: 'Or',
+                                operator: 'Equals',
+                                value: id
+                            }
+                        ]
+                     }                    
+                }
+            });
+            const recipe = responce.data?.recipes?.at(0);
+            if (!recipe)
+                return {isSuccess: false, error: `Не удалось найти рецепт (id = ${id})`};
+            
+            return {isSuccess: true, data: recipe};
+        } catch (error) {
+            if (error instanceof ApiGastronomyError)
+                return {isSuccess: false, error: error.message};
+            else
+                throw error;
+        }
+    }
+
 
     async function getRecipes() : Promise<ApiDataResult<Array<RecipeCardViewModel>>>
     {
@@ -97,6 +130,7 @@ export const useRecipesStore = defineStore('recipes', () =>
     return {
         getRecipeCategories, 
         getRecipes,
+        getRecipeById,
         getRecipesByCategories
     }
 })

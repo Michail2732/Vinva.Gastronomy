@@ -177,35 +177,28 @@ namespace Vinva.Gastronomy.Common.Models.Search
 
             // Конвертируем значение
             try
-            {
-                // todo: extract from json value 
+            {                
                 if (value is JsonElement jsonElement)
                 {
-
+                    value = jsonElement.ValueKind switch
+                    {                        
+                        JsonValueKind.String => jsonElement.GetString() ?? "",
+                        JsonValueKind.Number => jsonElement.GetDouble(),
+                        JsonValueKind.True => jsonElement.GetBoolean(),
+                        JsonValueKind.False => jsonElement.GetBoolean(),
+                        JsonValueKind.Null => throw new ArgumentException("value must be simple json value of json property"),
+                        JsonValueKind.Undefined => throw new ArgumentException("value must be simple json value of json property"),
+                        JsonValueKind.Object => throw new ArgumentException("value must be simple json value of json property"),
+                        JsonValueKind.Array => throw new ArgumentException("value must be simple json value of json property"),
+                        _ => throw new ArgumentException("value must be simple json value of json property")
+                    };
                 }
 
                 // Для enum
                 if (targetType.IsEnum)
                 {
                     if (value is string stringValue)
-                        return Enum.Parse(targetType, stringValue);
-                    else if (value is JsonElement jsonElement)
-                    {                        
-                        if (jsonElement.ValueKind == JsonValueKind.String)
-                        {
-                            stringValue = jsonElement.GetString() ?? string.Empty;
-                            if (string.IsNullOrEmpty(stringValue))
-                                throw new ArgumentException($"value of type {targetType} must be not null");
-                            return Enum.Parse(targetType, stringValue);
-                        }
-                        else if (jsonElement.ValueKind == JsonValueKind.Number)
-                        {
-                            var dblValue = jsonElement.GetDouble();
-                            if (dblValue != Math.Truncate(dblValue))
-                                throw new ArgumentException($"value of type {targetType} must integer positive");
-                            return Enum.ToObject(targetType, (int)dblValue);
-                        }
-                    }
+                        return Enum.Parse(targetType, stringValue);                    
 
                     return Enum.ToObject(targetType, value);
                 }
