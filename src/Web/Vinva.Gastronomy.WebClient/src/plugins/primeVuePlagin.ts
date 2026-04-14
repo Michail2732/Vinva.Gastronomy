@@ -8,6 +8,7 @@ import ConfirmationService from 'primevue/confirmationservice'
 import Aura from '@primeuix/themes/aura'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import Divider from 'primevue/divider'
 import DataTable from 'primevue/datatable'
 import SelectButton from 'primevue/selectbutton'
 import Column from 'primevue/column'
@@ -32,6 +33,7 @@ import Dock from 'primevue/dock'
 import Password from 'primevue/password'
 import 'primeicons/primeicons.css'
 import { definePreset } from '@primeuix/themes'
+import 'primeflex/primeflex.css'
 
 export type IconOnlyToogleButtonPt = 
 {
@@ -116,32 +118,43 @@ export default {
     app.use(ToastService)
     app.use(ConfirmationService)
 
-    app.directive('tooltip', Tooltip);
-    app.component('Button', Button)
-    app.component('InputText', InputText)
-    app.component('ToggleButton', ToggleButton)
-    app.component('DataTable', DataTable)
-    app.component('Column', Column)
-    app.component('Card', Card)
-    app.component('Dialog', Dialog)
-    app.component('Toast', Toast)
-    app.component('ConfirmDialog', ConfirmDialog)
-    app.component('MultiSelect', MultiSelect)
-    app.component('FloatLabel', FloatLabel)
-    app.component('Rating', Rating)
-    app.component('Tag', Tag)
-    app.component('ProgressSpinner', ProgressSpinner)
     app.component('Avatar', Avatar)
-    app.component('Badge', Badge)
-    app.component('Paginator', Paginator)
-    app.component('Image', Image)
-    app.component('Menubar', Menubar)
+
+    app.component('Badge', Badge)    
+    app.component('Button', Button)
+
+    app.component('Card', Card)
+    app.component('Column', Column)
+    app.component('ConfirmDialog', ConfirmDialog)    
+
+    app.component('Divider', Divider)
+    app.component('Dialog', Dialog)
     app.component('Dock', Dock)
-    app.component('Password', Password);
-    app.component('Message', Message);
-    app.component('SelectButton', SelectButton);
+    app.component('DataTable', DataTable)    
+
+    app.component('FloatLabel', FloatLabel)
+
+    app.component('Image', Image)    
     app.component('IconField', IconField);
     app.component('InputIcon', InputIcon);
+    app.component('InputText', InputText)
+    
+    app.component('Message', Message);
+    app.component('MultiSelect', MultiSelect)    
+    app.component('Menubar', Menubar)    
+
+    app.component('Password', Password);
+    app.component('ProgressSpinner', ProgressSpinner)    
+    app.component('Paginator', Paginator)
+
+    app.component('Rating', Rating)
+
+    app.component('SelectButton', SelectButton);    
+
+    app.component('ToggleButton', ToggleButton)    
+    app.component('Toast', Toast)            
+    app.component('Tag', Tag)                
+    app.directive('tooltip', Tooltip);        
     app.component('Toolbar', Toolbar);    
   }
 }

@@ -13,7 +13,9 @@ namespace Vinva.Gastronomy.Recipes.Application.Common
         public required string Name { get; init; }        
 
         public string? Description { get; init; }
-        
+
+        public string? Comment { get; init; }
+
         public Guid? BaseRecipe { get; init; }
 
         public Guid? PhotoId { get; init; }

@@ -203,6 +203,11 @@ namespace Vinva.Gastronomy.Common.Models.Search
                     return Enum.ToObject(targetType, value);
                 }
 
+                if (targetType == typeof(Guid))
+                {
+                    return Guid.Parse(value.ToString()!);
+                }
+
                 // Для примитивных типов
                 return Convert.ChangeType(value, targetType);
             }

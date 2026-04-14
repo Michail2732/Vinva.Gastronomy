@@ -4,6 +4,7 @@ import primeVuePlagin from './plugins/primeVuePlagin';
 import App from './App.vue'
 import router from './router'
 import '@/assets/main.scss'
+import '@/plugins/fontsSettings.ts'
 
 const app = createApp(App)
 

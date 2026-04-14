@@ -64,6 +64,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                 Id = recipe.Id,
                 Name = recipe.Name,
                 Description = recipe.Description,
+                Comment = recipe.Comment,
                 BaseRecipe = recipe.BaseRecipe,
                 CookingComment = recipe.CookingComment,
                 CookingTime = recipe.CookingTime,
@@ -89,7 +90,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                     }).ToArray()
                 }).ToArray(),
                 Steps = recipe.Steps.Select(a => new RecipeStepDto
-                {
+                {                    
                     Description = a.Description,                    
                     Comment = a.Comment,
                     SeqNumber = a.SeqNumber,

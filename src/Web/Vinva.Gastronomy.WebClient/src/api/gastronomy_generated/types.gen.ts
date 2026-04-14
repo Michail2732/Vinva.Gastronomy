@@ -169,6 +169,7 @@ export type RecipeDto = {
     name: string | null;
     description?: string | null;
     baseRecipe?: string | null;
+    comment?: string | null;
     photoId?: string | null;
     videoId?: string | null;
     cookingTime?: string | null;

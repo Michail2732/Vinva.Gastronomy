@@ -6,7 +6,7 @@ import {recipeSearchByCategories,
         categorySearch } from '@/api/gastronomy_generated/sdk.gen'
 import { ApiGastronomyError, type ApiDataResult } from '@/api/types';
 import type { CategoryDto, RecipeDto } from '@/api/gastronomy_generated';
-import type { CategoryRecipesViewModel, CategoryViewModel, RecipeCardViewModel, RecipeDetailsVieModel } from '../types/recipeTypes';
+import type { CategoryRecipesViewModel, CategoryViewModel, RecipeCardViewModel, RecipeDetailsViewModel } from '../types/recipeTypes';
 
 export const useRecipesStore = defineStore('recipes', () => 
 {            
@@ -71,7 +71,7 @@ export const useRecipesStore = defineStore('recipes', () =>
         }
     }
 
-    async function getRecipeById(id: string) : Promise<ApiDataResult<RecipeDetailsVieModel>>
+    async function getRecipeById(id: string) : Promise<ApiDataResult<RecipeDetailsViewModel>>
     {
          try {
             var responce = await recipeSearchByQuery(

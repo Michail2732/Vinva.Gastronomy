@@ -5,15 +5,10 @@ export interface RecipeCardViewModel extends RecipeDto
     
 };
 
-export interface RecipeDetailsVieModel extends RecipeDto
-{
-
-}
 
 export interface RecipeDetailsViewModel extends RecipeDto
 {    
-    imageSrc: string | undefined;
-    videoSrc: string | undefined;
+    
 };
 
 export interface CategoryViewModel extends CategoryDto

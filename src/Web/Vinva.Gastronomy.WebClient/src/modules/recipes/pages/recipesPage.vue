@@ -1,5 +1,6 @@
 <template>
     <div>
+        <Toast/>
         <Toolbar class="recipes-toolbar-container">             
             <template #start>
                 <Button icon="pi pi-filter-fill"
