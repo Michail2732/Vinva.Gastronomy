@@ -8,6 +8,7 @@
             </li>
         </ul>
         <Comment :title="commentTitle"
+                 class="ingredient-comment"
                  :content="ingredientsComment"/>        
     </div>
 </template>
@@ -30,25 +31,31 @@ const props = defineProps<{
     ingredients: RecipeIngredientViewModel[] | null | undefined,
     ingredientsComment?: string | null | undefined
 }>();
-const ingredients = props.ingredients;
-
+const ingredients = ref(props.ingredients);
 </script>
 <style scoped lang="scss">
 @use "../../../assets/variables.scss" as *;
 
 .ingredients-container
 {
+    overflow: hidden;
     font-family: 'Inter';
     background-color: white;
     border-radius: 1.5rem;
     padding: 2rem;    
+    overflow-wrap: break-word;        
+    word-break: break-all;  
 
+    .ingredient-comment
+    {
+        margin-top: 3rem;
+    }
     .ingredient-header-text
     {
         line-height: 2rem;
         letter-spacing: -.01rem;
         font-size: 1.5rem;
-        font-weight: 700;
+        font-weight: 700;        
     }
     .ingredients-list-container
     {
@@ -60,12 +67,12 @@ const ingredients = props.ingredients;
             margin: 1rem 0;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: center;            
             .ingredient-name-text, .ingredient-value-text        
             {
                 line-height: 1.5rem;
                 letter-spacing: 0rem;
-                font-size: 1rem;            
+                font-size: 1rem;                
             }
             .ingredient-name-text
             {
@@ -73,8 +80,7 @@ const ingredients = props.ingredients;
             }
             .ingredient-value-text
             {
-                font-weight: 600;
-                white-space: nowrap;                
+                font-weight: 600;                
             }
         }
     }    

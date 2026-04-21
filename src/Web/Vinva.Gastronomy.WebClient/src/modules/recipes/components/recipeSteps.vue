@@ -11,7 +11,7 @@
             </label>
             <div class="recipe-step-desc-container">
                 <span class="recipe-step-desc">{{ item.description}}</span>
-                <Divider class="recipe-step-desc-devider"/>
+                <br/>                
                 <span class="recipe-step-comment">{{ item.comment}}</span>
             </div>
         </div>                    
@@ -27,15 +27,18 @@ const props = withDefaults(
         steps: () => []
     }
 ) 
-const steps = props.steps;
+const steps = ref(props.steps);
 
 </script>
 <style scoped lang="scss">  
 @use "../../../assets/variables.scss" as *;
 
    .prepare-header-container
-    {
-        margin-top: 3rem;
+    {        
+        :deep(.p-divider-content)
+        {
+            background-color: $violet-100-color;
+        }
         .prapare-header
         {
             background-color: $violet-100-color;
@@ -49,14 +52,16 @@ const steps = props.steps;
     .recipe-step-container
     {
         display: flex;
-        margin: 0 0 2rem 0;            
+        margin: 0 0 2rem 0;     
+        overflow-wrap: break-word;        
+        word-break: break-all;        
         .recipe-step-seq-number
         {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 1.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 1.25rem;
             background-color: $sea-green-800-color;        
-            margin: 0 1rem 0 0;    
+            margin: 0 1rem 0 0;                
             position: relative;    
             span 
             {
@@ -81,13 +86,14 @@ const steps = props.steps;
             }
             .recipe-step-desc
             {
-                line-height: 1.6rem;
+                line-height: 1.5;
                 letter-spacing: 0rem;
                 font-size: 1rem;
             }
             .recipe-step-comment
             {
-                line-height: 1.6rem;
+                color: $dark-400-color;
+                line-height: 1.6;
                 letter-spacing: 0rem;
                 font-size: 1rem;
                 font-style: italic;

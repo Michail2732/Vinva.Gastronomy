@@ -23,11 +23,12 @@
                         <span class="recipe-desc-content">{{ vm?.description ?? 'Нет описания' }}</span>
                         <Comment :title="'ОБЩИЙ КОММЕНТАРИЙ'"
                                  class="recipe-common-comment"
-                                 :content="vm?.comment"/>
+                                 :variant="'neutral'"
+                                 :content="(vm?.comment || 'Нет общего коментария')"/>
                     </div>
                     <div class="recipe-cook-time-container">
                         <span class="cook-time-label">
-                            ОБЩЕЕ ВРЕМЯ
+                            ВРЕМЯ ПРИГОТОВЛЕНИЯ
                         </span>
                         <br/>
                         <span class="cook-time-value">
@@ -45,6 +46,8 @@ import {type RecipeHeaderViewModel} from '../types/recipeTypes'
 import Comment from '@/modules/ui/components/comment.vue';
 
 function timeToMinutes(timeString: string) {
+    if (!timeString)
+        return '';
   const [hours, minutes, seconds] = timeString.split(':');
   return parseInt(hours!) * 60 + parseInt(minutes!) + parseInt(seconds!) / 60;
 }
@@ -60,6 +63,8 @@ const vm = ref(props.recipeHeader);
     .recipe-header-container
     {
         padding: 2rem 0;
+        overflow-wrap: break-word;        
+        word-break: break-all; 
         .recipe-img-container
         {
             .recipe-img
@@ -71,8 +76,8 @@ const vm = ref(props.recipeHeader);
         }
         .recipe-header-col2-container
         {
-            padding: .7rem;
-            display: flex;
+            padding: 1rem;
+            display: flex;            
             flex-direction: column;
             justify-content: center;
             .categories-container

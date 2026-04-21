@@ -10,4 +10,11 @@
 * {
   font-family: var(--font-family);
   font-weight: 400;
+  box-sizing: border-box;
+}
+html, body
+{
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }

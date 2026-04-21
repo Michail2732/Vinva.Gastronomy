@@ -6,12 +6,17 @@ import RecipeDetailsPage from '@/modules/recipes/pages/recipeDetailsPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/modules/auth/stores/authStore'
 
-function checkAuth(to: any, from: any)
+async function checkAuth(to: any, from: any)
 {
   const authStore = useAuthStore();
   if (to.name !== 'login' && !authStore.isAuthenticated)
-    return {name: 'login',
-            query: { redirect: to.fullPath }};  
+  {
+    await authStore.getUser();
+    if (!authStore.isAuthenticated)
+    {
+      return {name: 'login', query: { redirect: to.fullPath }};    
+    }
+  }    
 }
 
 const routes = [

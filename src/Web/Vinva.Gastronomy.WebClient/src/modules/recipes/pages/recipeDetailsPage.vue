@@ -1,22 +1,30 @@
 <template>
    <div class="recipe-details-page-root">
-        <div class="recipe-details-container">
+        <div v-if="recipe" class="recipe-details-container">
             <Toast />
-            <RecipeHeader :recipe-header="recipe"/>
+            <RecipeHeader :recipeHeader="recipe"/>
             <div class="grid">
-                <div class="col-12 md:col-7">                    
-                    <RecipeSteps :steps="recipe?.steps"/>
+                <div class="col-12 lg:col-7 ">                    
+                    <RecipeSteps :steps="recipe?.steps"
+                                 class="recipes-steps"/>
                 </div>
-                <div class="col-12 md:col-5">
+                <div class="col-12 lg:col-5">
                     <RecipeIngredients :ingredients="recipe?.ingredients"
-                                       :ingredients-comment="recipe?.ingredientComment"/>
+                                        class="ingredients"
+                                       :ingredientsComment="recipe?.ingredientComment"/>
                 </div>
             </div>
-            <div class="recipe-comments-container">
-                <Comment :title="'Коментарий к использованию'"
-                         :content="recipe?.usageComment"/>
-                <Comment :title="'Коментарий к хранению'"
-                         :content="recipe?.storageComment"/>                
+            <div class="recipe-comments-container grid">
+                <div class="col-12 md:col-6 lg:col-4">                    
+                        <Comment :title="'Коментарий к использованию'"
+                                 class="recipe-comment"
+                                 :content="recipe?.usageComment"/>
+                </div>                
+                <div class="col-12 md:col-6 lg:col-4">                    
+                        <Comment :title="'Коментарий к хранению'"
+                                 class="recipe-comment"
+                                 :content="recipe?.storageComment"/>                    
+                </div>                             
             </div>
             <div>
 
@@ -77,10 +85,46 @@ watch(
 .recipe-details-page-root
 {
     background-color: vars.$violet-100-color;
+    min-height: 100vh;
+    .recipe-comments-container
+    {        
+        .recipe-comment
+        {                       
+            margin-top: .5rem;              
+            margin-left: .5rem;
+            margin-right: .5rem;
+            background-color: vars.$violet-200-color;
+            border-left: 0;               
+            font-size: 2.3rem;   
+            color: vars.$dark-600-color;
+            :deep(.comment-header-icon)
+            {
+                display: block;
+                margin-bottom: 1rem;
+                color: vars.$sea-green-800-color;
+                font-weight: 700;
+            }
+            :deep(.comment-text)
+            {
+                color: vars.$dark-400-color;
+                font-size: .36em;
+                margin-top: 1.5rem;
+            }
+        }
+    }    
+
     .recipe-details-container
     {     
         max-width: 1200px;
         margin: 0 auto;        
+        .recipes-steps
+        {            
+            margin: 1rem;
+        }
+        .ingredients
+        {            
+            margin: .5rem;
+        }
     }
 }    
 </style>
