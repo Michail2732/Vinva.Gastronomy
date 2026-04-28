@@ -43,11 +43,12 @@ const containerClassObject = computed(() => {
         padding: 1.5rem;
         border-radius: 1rem;        
         font-size: 2rem;
-        overflow-wrap: break-word;        
-        word-break: break-all; 
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: normal;
         .comment-header
         {                 
-            line-height: 0;   
+            line-height: 0.6;   
             .comment-header-icon
             {                
                 margin: 0 .3em 0 0;
@@ -56,8 +57,7 @@ const containerClassObject = computed(() => {
             }
             
             .comment-header-text
-            {
-                line-height: 1;
+            {                
                 letter-spacing: .05em;                
                 font-size: .4em;
                 font-weight: 600;
@@ -66,8 +66,8 @@ const containerClassObject = computed(() => {
         .comment-text
         {
             display: block;
-            margin-top: .7em;
-            line-height: 1;
+            line-height: 1.5;
+            margin-top: .7em;        
             letter-spacing: 0em;
             font-size: .42em;
             font-weight: 300;            

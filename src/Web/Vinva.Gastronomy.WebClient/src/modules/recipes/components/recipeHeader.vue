@@ -89,8 +89,7 @@ const vm = ref(props.recipeHeader);
                     &:first-child
                     {
                         margin: 0 .2rem 0 0;    
-                    }
-                    line-height: 1rem;
+                    }                    
                     letter-spacing: .05rem;
                     font-weight: 600;
                     font-size: .9rem;
@@ -106,7 +105,7 @@ const vm = ref(props.recipeHeader);
                 margin-top: 1rem;
                 .recipe-name-text
                 {
-                    line-height: 3.5rem;
+                    line-height: 2;
                     letter-spacing: -1.2px;
                     font-size: 2.5rem;
                     font-weight: 800;
@@ -119,7 +118,10 @@ const vm = ref(props.recipeHeader);
                 border-radius: 1.5rem;
                 padding: 2rem ;
                 margin-top: 1rem;
-                font-family: 'Inter';                                
+                font-family: 'Inter';
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+                word-break: normal;                                    
                 .recipe-desc-container
                 {                                                                                 
                     font-family: 'Inter';
@@ -133,7 +135,7 @@ const vm = ref(props.recipeHeader);
                     }
                     .recipe-desc-header
                     {
-                        line-height: 1.8rem;
+                        line-height: 1.2;
                         letter-spacing: 0rem;
                         font-size: 1.2rem;
                         font-weight: 600;
@@ -141,7 +143,7 @@ const vm = ref(props.recipeHeader);
                     }
                     .recipe-desc-content
                     {
-                        line-height: 1.8rem;
+                        line-height: 1.8;
                         letter-spacing: 0rem;
                         font-size: 1rem;
                         font-style: italic;
@@ -152,8 +154,7 @@ const vm = ref(props.recipeHeader);
                 {                        
                     display: block;
                     .cook-time-label
-                    {
-                        line-height: 1rem;
+                    {                        
                         letter-spacing: .05rem;
                         font-weight: 500;
                         font-size: .8rem;
@@ -163,7 +164,6 @@ const vm = ref(props.recipeHeader);
                     {
                         text-align: center;
                         color: $sea-green-800-color;                        
-                        line-height: 1.75rem;
                         letter-spacing: 0px;
                         font-weight: 500;
                         font-size: 1.3rem;

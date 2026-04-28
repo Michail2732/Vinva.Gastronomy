@@ -40,9 +40,10 @@ const steps = ref(props.steps);
             background-color: $violet-100-color;
         }
         .prapare-header
-        {
+        {            
+            word-break: break-all;    
             background-color: $violet-100-color;
-            line-height: 2.1rem;
+            line-height: 2.1;
             letter-spacing: -.01rem;
             font-size: 1.8rem;
             font-weight: 800;
@@ -53,20 +54,21 @@ const steps = ref(props.steps);
     {
         display: flex;
         margin: 0 0 2rem 0;     
-        overflow-wrap: break-word;        
-        word-break: break-all;        
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: normal;        
         .recipe-step-seq-number
         {
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 2rem;
+            height: 2rem;
+            min-width: 2rem;
             border-radius: 1.25rem;
             background-color: $sea-green-800-color;        
             margin: 0 1rem 0 0;                
             position: relative;    
             span 
             {
-                color: white;
-                line-height: 1.7rem;
+                color: white;            
                 letter-spacing: 0rem;
                 font-size: 1.1rem;
                 font-weight: 500;
@@ -78,6 +80,7 @@ const steps = ref(props.steps);
         }    
         .recipe-step-desc-container
         {
+            min-width: 0;
             display: inline-block;                
             color: $dark-600-color;
             .recipe-step-desc-devider
