@@ -1,0 +1,24 @@
+services:
+  api:
+    container_name: vinva-gastronomy-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnectionString: Host=db;Port=5432;Database=Gastronomy;Username=postgres;Password=${POSTGRES_PASSWORD}
+    restart: unless-stopped
+
+  nginx:
+    container_name: vinva-gastronomy-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - uploads_data:/usr/share/nginx/uploads:ro
+      - ./_configs/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    restart: unless-stopped
+
+  db:
+    container_name: vinva-gastronomy-postgres
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: unless-stopped

@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.OpenApi.Models;
 using Vinva.Gastronomy.Common.Modularity;
 using Vinva.Gastronomy.Common.Modularity.MediatR;
 using Vinva.Gastronomy.Common.Services;
@@ -50,6 +51,10 @@ builder.Services.AddSingleton(GuidProvider.Instance);
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 if (app.Environment.IsDevelopment())
 {

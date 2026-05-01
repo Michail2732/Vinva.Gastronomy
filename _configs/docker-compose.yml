@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16       
+    environment:
+      POSTGRES_DB: Gastronomy
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}    
+    volumes:      
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d Gastronomy"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ..
+      dockerfile: src/Web/Vinva.Gastronomy.ApiHost/Dockerfile    
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:            
+      ASPNETCORE_URLS: http://+:8080
+      ImagesFileStorageConfig__FilesDirectory: /app/images
+    volumes:
+      - images_data:/app/images    
+
+  nginx:
+    build:
+      context: ..
+      dockerfile: src/Web/Vinva.Gastronomy.WebClient/Dockerfile
+      args:
+        VITE_API_URL: /api   
+    volumes:
+      - images_data:/usr/share/nginx/images:ro
+    depends_on:
+      - api    
+
+volumes:
+  postgres_data:
+  images_data:
+  
+      
