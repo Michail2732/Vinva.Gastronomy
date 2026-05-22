@@ -5,7 +5,7 @@ echo Building Gastronomy develop...
 echo Current directory:
 echo %cd%
 
-docker compose -f ../_configs/docker-compose.yml -f ../_configs/docker-compose.prod.yml up -d --build
+echo Unfortunately, not implemented yet, bro ((((
 
 echo Done!
 pause

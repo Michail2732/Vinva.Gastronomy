@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace Vinva.Gastronomy.Recipes.Application.Common
 {
-    public record IngredientDto
+    public class RecipePropertyDto
     {
-        public required Guid Id { get; init; }
         public required string Name { get; init; }
-        public string? Description { get; init; }        
-        public Guid? PhotoId { get; init; }
-        public Guid? RecipeId { get; init; }        
+        public required List<string> Values { get; init; }        
     }
 }

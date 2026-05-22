@@ -8,8 +8,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence
     public class RecipeDbContext: DbContext
     {
         public DbSet<Recipe> Recipes { get; private init; }
-        public DbSet<RecipeIngredient> RecipeIngredients { get; private init; }
-        public DbSet<Category> Categories { get; private init; }
+        public DbSet<RecipeIngredient> RecipeIngredients { get; private init; }        
         public DbSet<RecipeStep> RecipeSteps { get; private set; }        
         public DbSet<Ingredient> Ingredients { get; private init; }
 
@@ -18,8 +17,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfiguration(new CategoryDbConfiguration());
+        {            
             modelBuilder.ApplyConfiguration(new IngredientDbConfiguration());
             modelBuilder.ApplyConfiguration(new RecipeDbConfiguration());
             modelBuilder.ApplyConfiguration(new RecipeIngredientDbConfiguration());

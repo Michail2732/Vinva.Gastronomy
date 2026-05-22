@@ -34,14 +34,19 @@ namespace Vinva.Gastronomy.Recipes.WebApi
                     var ingredientsCount = context.Ingredients.Count();
                     if (recipeCount == 0 && ingredientsCount == 0)
                     {
-                        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                        var baseDir = AppDomain.CurrentDomain.BaseDirectory;                        
                         var recipesGeneratorSqlPath = Path.Combine(baseDir, "Data/RecipesGenerator.sql");
                         var ingredientsGeneratorSqlPath = Path.Combine(baseDir, "./Data/IngredientsGenerator.sql");
-                        var recipesGeneratorSql = await File.ReadAllTextAsync(recipesGeneratorSqlPath, ct);
-                        var ingredientsGeneratorSql = await File.ReadAllTextAsync(ingredientsGeneratorSqlPath, ct);
-
-                        await context.Database.ExecuteSqlRawAsync(recipesGeneratorSql, ct);
-                        await context.Database.ExecuteSqlRawAsync(ingredientsGeneratorSql, ct);
+                        if (File.Exists(recipesGeneratorSqlPath))
+                        {
+                            var recipesGeneratorSql = await File.ReadAllTextAsync(recipesGeneratorSqlPath, ct);
+                            await context.Database.ExecuteSqlRawAsync(recipesGeneratorSql, ct);
+                        }                            
+                        if (File.Exists(ingredientsGeneratorSqlPath))
+                        {
+                            var ingredientsGeneratorSql = await File.ReadAllTextAsync(ingredientsGeneratorSqlPath, ct);
+                            await context.Database.ExecuteSqlRawAsync(ingredientsGeneratorSql, ct);
+                        }                        
                     }
                 }
             }            
@@ -53,10 +58,10 @@ namespace Vinva.Gastronomy.Recipes.WebApi
 
             context.ConfigureMediatR(opt =>
             {
-                opt.RegisterServicesFromAssemblies(typeof(Application.Common.CategoryDto).Assembly);
+                opt.RegisterServicesFromAssemblies(typeof(Application.Common.IngredientDto).Assembly);
             });
             context.AddApplicationPart(GetType().Assembly);
-            services.AddValidatorsFromAssembly(typeof(Application.Common.CategoryDto).Assembly);
+            services.AddValidatorsFromAssembly(typeof(Application.Common.IngredientDto).Assembly);
             services.AddDbContext<RecipeDbContext>(options =>
             {
                 options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnectionString"));

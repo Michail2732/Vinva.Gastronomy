@@ -15,7 +15,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             {
                 Name = "New Ingredient",
                 Description = "Test ingredient description.",
-                UsageComment = "Store in dry place."
+                Comment = "Store in dry place."
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
@@ -61,14 +61,14 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             {
                 Name = "Simple Ingredient",
                 Description = "No usage comment.",
-                UsageComment = null
+                Comment = null
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
             
             var created = await DbContext.Ingredients.FindAsync(result.IngredientId);
             Assert.That(created, Is.Not.Null);
-            Assert.That(created!.UsageComment, Is.Null);
+            Assert.That(created!.Comment, Is.Null);
         }
     }
 }

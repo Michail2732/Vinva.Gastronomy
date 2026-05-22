@@ -23,12 +23,8 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .IsRequired(false)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Property(a => a.UsageComment)
-                   .HasMaxLength(CommonConstants.MaxLengthComment);
-
-            builder.HasMany(a => a.Categories)
-                   .WithMany()
-                   .UsingEntity(a => a.ToTable("IngredientCategories"));
+            builder.Property(a => a.Comment)
+                   .HasMaxLength(CommonConstants.MaxLengthComment);            
 
             builder.HasQueryFilter(b => !b.IsDeleted);
         }

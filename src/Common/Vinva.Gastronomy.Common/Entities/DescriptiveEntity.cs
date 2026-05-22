@@ -18,19 +18,19 @@ namespace Vinva.Gastronomy.Common.Entities
         public string Name
         {
             get => _name;
-            set => SetName(value, ref _name);
+            set => _name = string.IsNullOrEmpty(value) ? value : throw new ArgumentNullException();
         }
 
         public string Description
         {
             get => _description;
-            set => SetDescription(value, ref _description);
+            set => _description = string.IsNullOrEmpty(value) ? value : throw new ArgumentNullException();
         }
 
         public string? Comment
         {
             get => _comment;
-            set => SetComment(value, ref _comment);
+            set => _comment = value;
         }
 
 
@@ -40,10 +40,10 @@ namespace Vinva.Gastronomy.Common.Entities
 
         protected DescriptiveEntity(string name, string description)
         {
-            _name = "";
-            _description = "";
-            SetName(name, ref _name!);
-            SetDescription(description, ref _description);            
+            ArgumentException.ThrowIfNullOrEmpty(name);
+            ArgumentException.ThrowIfNullOrEmpty(description);
+            _name = name;
+            _description = description;
         }
 
         public abstract override int GetHashCode();
@@ -51,36 +51,6 @@ namespace Vinva.Gastronomy.Common.Entities
         public override bool Equals(object? obj)
         {
             return Equals(obj as IEntity);
-        }
-
-
-        protected void SetName(string name, ref string field)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentException($"\"{nameof(name)}\" не может быть неопределенным или пустым.", nameof(name));
-            }
-            if (name.Length > CommonConstants.MaxLengthName)
-                throw new DomainException(GetType(), CommonErrorMessages.NameOverflow(name));
-            field = name;
-        }
-
-        protected void SetDescription(string description, ref string field)
-        {
-            if (string.IsNullOrEmpty(description))
-            {
-                throw new ArgumentException($"\"{nameof(description)}\" не может быть неопределенным или пустым.", nameof(description));
-            }
-            if (description.Length > CommonConstants.MaxLengthDescription)
-                throw new DomainException(GetType(), CommonErrorMessages.DescriptionOverflow(description));
-            field = description;
-        }
-
-        protected void SetComment(string? comment, ref string? commentField)
-        {
-            if (comment?.Length > CommonConstants.MaxLengthComment)
-                throw new DomainException(GetType(), CommonErrorMessages.CommentOverflow(comment));
-            commentField = comment;
-        }        
+        }       
     }
 }

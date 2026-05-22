@@ -2,18 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vinva.Gastronomy.Common.Entities;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddCategories;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddIngredients;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.AddSteps;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Create;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByCategory;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByFilter;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByIngredients;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Remove;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveCategory;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveIngredients;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.RemoveSteps;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.ReorderSteps;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Update;
 
 namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
 {    
@@ -29,40 +22,14 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
         public RecipeController(IMediator mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        }
-
-        [HttpPatch("AddIngredients")]
-        public async Task AddIngredients([FromBody]AddIngredientCommand command)
-        {
-            await _mediator.Send(command);            
-        }
-
-        [HttpPatch("AddCategories")]
-        public async Task AddCategories([FromBody]AddRecipeCategoriesCommand command)
-        {
-            await _mediator.Send(command);            
-        }
-
-        [HttpPatch("AddSteps")]
-        public async Task AddSteps([FromBody]AddStepsCommand command)
-        {
-            await _mediator.Send(command);            
-        }
+        }        
 
         [HttpPost("Create")]
         public async Task<CreateRecipeResponce> Create([FromBody]CreateRecipeCommand command)
         {
             var result = await _mediator.Send(command);
             return result;
-        }
-
-        [HttpPost("SearchByCategories")]
-        [Authorize(Roles = UserRoles.Client)]
-        public async Task<GetRecipeByCategoryResponce> SearchByCategories([FromBody]GetRecipeByCategoryRequest request)
-        {
-            var result = await _mediator.Send(request);
-            return result;
-        }
+        }        
 
         [HttpPost("SearchByIngredients")]
         [Authorize(Roles = UserRoles.Client)]
@@ -91,28 +58,10 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
             await _mediator.Send(command);            
         }
 
-        [HttpPatch("RemoveIngredients")]        
-        public async Task RemoveIngredients([FromBody]RemoveIngredientsCommand command)
+        [HttpPatch("Update")]        
+        public async Task Update([FromBody]UpdateCommand command)
         {
             await _mediator.Send(command);            
-        }
-
-        [HttpPatch("RemoveCategories")]
-        public async Task RemoveCategories([FromBody]RemoveRecipeCategoryCommand command)
-        {
-            await _mediator.Send(command);            
-        }
-
-        [HttpPatch("RemoveSteps")]
-        public async Task RemoveSteps([FromBody]RemoveStepsCommand command)
-        {
-            await _mediator.Send(command);            
-        }
-
-        [HttpPatch("ReorderSteps")]
-        public async Task ReorderSteps([FromBody]ReorderStepsCommand command)
-        {
-            await _mediator.Send(command);            
-        }        
+        }       
     }
 }

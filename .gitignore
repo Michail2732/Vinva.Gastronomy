@@ -11,6 +11,8 @@
 *.suo
 *.user
 *.sln.docstates
+#ssl certificats
+_configs/certs/*
 
 # Build results
 distr/

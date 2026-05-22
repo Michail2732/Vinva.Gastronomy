@@ -4,28 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
+using Vinva.Gastronomy.Recipes.Domain.Models;
 
 namespace Vinva.Gastronomy.Recipes.Application.Common.Map
 {
     public class RecipeApplicationMapper
-    {
-        public List<CategoryDto> Map(IEnumerable<Category> categories)
-        {
-            return categories.Select(a => new CategoryDto
-            (
-                a.Id,
-                a.Name,
-                a.Description,
-                a.Comment,                
-                a.Type switch
-                {
-                    CategoryType.Ingredient => CategoryDtoType.Ingredient,
-                    CategoryType.Recipe => CategoryDtoType.Recipe,
-                    _ => throw new Exception("Unknown category type")
-                }
-            )).ToList();
-        }
-
+    {        
         public IngredientDto Map(Ingredient ingredient)
         {
             return new IngredientDto
@@ -34,18 +18,39 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                 Name = ingredient.Name,
                 Description = ingredient.Description,
                 PhotoId = ingredient.PhotoId,
-                RecipeId = ingredient.RecipeId,
-                UsageComment = ingredient.UsageComment,
-                Categories = ingredient.Categories?.Select(a =>
-                    new IngredientCategoryDto
-                    {
-                        Id = a.Id,
-                        Name = a.Name,
-                        Description = a.Description,
-                    }).ToArray()
-                    ?? Array.Empty<IngredientCategoryDto>()
+                RecipeId = ingredient.RecipeId                
             };
         }
+
+        public RecipeStep Map(RecipeStepDto stepDto, Guid recipeId)
+        {
+            return new RecipeStep(stepDto.Id, recipeId, stepDto.Description, stepDto.SeqNumber, stepDto.PhotoId)
+            {
+                
+            };
+        }
+
+        public RecipeIngredient Map(RecipeIngredientDto ingredientDto, Guid recipeId)
+        {
+            return new RecipeIngredient(recipeId, ingredientDto.IngredientId
+                , ingredientDto.IngredientName
+                , new IngredientQuantities(ingredientDto.Quantities.Select(a =>
+                     new IngredientQuantity
+                     {
+                         Measure = a.Measure,
+                         Quantity = a.Quantity
+                     }))
+                , ingredientDto.IsRequired
+                , ingredientDto.Comment);            
+        }
+
+        public RecipeProperties Map(IEnumerable<RecipePropertyDto> propDtos)
+        {
+
+            return new RecipeProperties(propDtos.Select(a => new RecipeProperty(a.Name, a.Values)));
+        }
+
+
 
         public List<RecipeDto> Map(IEnumerable<Recipe> recipes)
         {
@@ -55,7 +60,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                 result.Add(Map(recipe));
             }
             return result;
-        }
+        }        
 
         public RecipeDto Map(Recipe recipe)
         {
@@ -69,14 +74,15 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                 CookingComment = recipe.CookingComment,
                 CookingTime = recipe.CookingTime,
                 IngredientComment = recipe.IngredientComment,
-                PhotoId = recipe.PhotoId,
+                TitleImageId = recipe.TitleImageId,
+                OtherImageIds = recipe.OtherImageIds,
                 StorageComment = recipe.StorageComment,
                 UsageComment = recipe.UsageComment,
                 VideoId = recipe.VideoId,
-                Categories = recipe.Categories.Select(a => new RecipeCategoryDto
+                Properties = recipe.Properties.Select(a => new RecipePropertyDto
                 {
-                    Id = a.Id,
                     Name = a.Name,
+                    Values = a.Values
                 }).ToArray(),
                 Ingredients = recipe.Ingredients.Select(a => new RecipeIngredientDto
                 {
@@ -91,6 +97,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                 }).ToArray(),
                 Steps = recipe.Steps.Select(a => new RecipeStepDto
                 {                    
+                    Id = a.Id,
                     Description = a.Description,                    
                     Comment = a.Comment,
                     SeqNumber = a.SeqNumber,

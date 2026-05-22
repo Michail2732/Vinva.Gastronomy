@@ -15,13 +15,4 @@
     <ProjectReference Include="..\Vinva.Gastronomy.Recipes.Application\Vinva.Gastronomy.Recipes.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Data\IngredientsGenerator.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\RecipesGenerator.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

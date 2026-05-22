@@ -1,6 +1,7 @@
+name: vinva-gastronomy-dev
 services:
   db:    
-    container_name: vinva-gastronomy-postgres-dev
+    container_name: db-dev
     environment:      
       POSTGRES_PASSWORD: postgres
     ports:
@@ -9,25 +10,23 @@ services:
       - ../_scripts:/docker-entrypoint-initdb.d
     restart: "no"      
 
-  api:    
-    container_name: vinva-gastronomy-api-dev    
+  api:
+    container_name: api-dev    
     environment:      
       ASPNETCORE_ENVIRONMENT: Development      
       ConnectionStrings__DefaultConnectionString: Host=db;Port=5432;Database=Gastronomy;Username=postgres;Password=postgres
+      ImagesFileStorageConfig__ImageUrlTemplate: /media?{0}
     ports:
-      - "5134:8080"
-    volumes:
-      - ../uploads:/app/uploads
+      - "5134:8080"    
     restart: "no"
 
   nginx:        
-    container_name: vinva-gastronomy-host-dev    
+    container_name: host-dev
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ../_configs/nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro
-      - ../uploads:/usr/share/nginx/uploads:ro
+      - ../_configs/nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro      
       - ../_configs/certs:/etc/nginx/certs:ro
     restart: "no"  
       

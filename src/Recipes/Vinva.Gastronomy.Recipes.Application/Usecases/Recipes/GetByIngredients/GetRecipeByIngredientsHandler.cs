@@ -30,8 +30,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByIngredients
             cancellationToken.ThrowIfCancellationRequested();
             var exprFilter = _filterBuilder.CreateExpression(request);
 
-            var recipes = await _dbContext.Recipes.Include(a => a.Ingredients)
-                                    .Include(a => a.Categories)
+            var recipes = await _dbContext.Recipes.Include(a => a.Ingredients)                                    
                                     .Include(a => a.Steps)
                                     .Where(exprFilter)
                                     .ToListAsync();

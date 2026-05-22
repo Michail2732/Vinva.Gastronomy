@@ -15,8 +15,8 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes
     {
         None = 0,
         Ingredients = 1,
-        Steps = 2,
-        Categories = 4
+        Steps = 2,        
+        All = 3,
     }
 
     public class BaseRecipeHandler
@@ -32,11 +32,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes
             if (includes.HasFlag(RecipeIncludes.Steps))
             {
                 recipeQuery = recipeQuery.Include(a => a.Steps);
-            }
-            if (includes.HasFlag(RecipeIncludes.Categories))
-            {
-                recipeQuery = recipeQuery.Include(a => a.Categories);
-            }
+            }            
 
             var recipe = await recipeQuery.FirstOrDefaultAsync(a => a.Id == id, ct);
 

@@ -25,8 +25,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByFilter
 
             var result = await exprBuilder.BuildQuery(_dbContext.Recipes
                 .Include(a => a.Ingredients)
-                .Include(a => a.Steps)
-                .Include(a => a.Categories), request.Query)
+                .Include(a => a.Steps), request.Query)
                         .ToListAsync(cancellationToken);
 
             return new GetRecipesByFilterQueryResponse

@@ -17,7 +17,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Create
             RuleFor(a => a.Description)
                 .NotEmpty()                                
                 .Must(ValidationService.ValidateDescription)
-                .WithMessage(CommonErrorMessages.IncorrectDescription);
+                .WithMessage(CommonErrorMessages.IncorrectDescription);            
 
             RuleFor(a => a.CookingTime)
                 .NotEmpty()
@@ -34,7 +34,11 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Create
 
             RuleFor(a => a.UsageComment)
                 .Must(a => a == null || ValidationService.ValidateComment(a))
-                .WithMessage(CommonErrorMessages.IncorrectComment);            
+                .WithMessage(CommonErrorMessages.IncorrectComment);
+
+            RuleFor(a => a.UsageComment)
+                .Must(a => a == null || ValidationService.ValidateComment(a))
+                .WithMessage(CommonErrorMessages.IncorrectComment);
         }
     }
 }

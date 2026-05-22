@@ -34,6 +34,9 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
             builder.Property(a => a.UsageComment)
                    .HasMaxLength(CommonConstants.MaxLengthComment);
 
+            builder.Property(a => a.OtherImageIds)
+                   .HasColumnType("uuid[]");
+
             builder.HasOne<Recipe>()
                    .WithMany()                   
                    .HasForeignKey(a => a.BaseRecipe)
@@ -45,11 +48,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 
             builder.HasMany(a => a.Ingredients)
                    .WithOne()
-                   .HasForeignKey(a => a.RecipeId);
-
-            builder.HasMany(a => a.Categories)
-                   .WithMany()
-                   .UsingEntity(a => a.ToTable("RecipeCategories"));
+                   .HasForeignKey(a => a.RecipeId);            
 
             builder.HasQueryFilter(b => !b.IsDeleted);
         }

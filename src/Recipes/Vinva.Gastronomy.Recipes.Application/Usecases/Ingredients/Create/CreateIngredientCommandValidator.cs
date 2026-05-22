@@ -18,7 +18,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Create
                 .Must(RecipeDomainValidator.ValidateDescription)
                 .WithMessage(RecipeDomainErrors.IncorrectDescription);            
 
-            RuleFor(a => a.UsageComment)
+            RuleFor(a => a.Comment)
                 .Must(a => a == null || RecipeDomainValidator.ValidateComment(a))
                 .WithMessage(RecipeDomainErrors.IncorrectComment);
         }

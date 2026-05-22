@@ -18,7 +18,6 @@ namespace Vinva.Gastronomy.Media.Application.Services
     {
         private readonly ImagesFileStorageConfig _configuraiton;
 
-
         public ImagesFileStorage(IOptions<ImagesFileStorageConfig> fileStorageConfiguration)
         {
             _configuraiton = fileStorageConfiguration?.Value ?? throw new ArgumentNullException(nameof(fileStorageConfiguration));
@@ -26,33 +25,30 @@ namespace Vinva.Gastronomy.Media.Application.Services
 
         public Task DeleteAsync(Guid imageId, CancellationToken ct = default)
         {
-            var filePath = Path.Combine(_configuraiton.FilesDirectory, imageId.ToString());
-            File.Delete(filePath);
-            return Task.CompletedTask;
+            throw new NotImplementedException();
         }
 
         public Task<Stream> DownloadAsync(Guid imageId, CancellationToken ct = default)
         {
-            var filePath = Path.Combine(_configuraiton.FilesDirectory, imageId.ToString());
-            return Task.FromResult<Stream>(new FileStream(filePath, FileMode.Open));
+            throw new NotImplementedException();
         }
 
         public Task<string> GetUrlAsync(Guid imageId, ImageInfo path, CancellationToken ct = default)
         {
-            var urlTemplate = new ImageUrlTemplate(_configuraiton.ImagesUrlTemplate);
+            var urlTemplate = new ImageUrlTemplate(_configuraiton.ImageUrlTemplate);
             var url = urlTemplate.CreateUrl(imageId, path);
             return Task.FromResult(url);
         }
 
         public Task<bool> IsExistsAsync(Guid imageId, CancellationToken ct = default)
         {
-            var filePath = Path.Combine(_configuraiton.FilesDirectory, imageId.ToString());
+            var filePath = Path.Combine(_configuraiton.ImagesDirectory, imageId.ToString());
             return Task.FromResult(File.Exists(filePath));
         }
 
         public async Task UploadAsync(Stream itemStream, Guid imageId, CancellationToken ct = default)
         {
-            var newFilePath = Path.Combine(_configuraiton.FilesDirectory, imageId.ToString());
+            var newFilePath = Path.Combine(_configuraiton.ImagesDirectory, imageId.ToString());
             using var newFile = File.OpenWrite(newFilePath);
             await itemStream.CopyToAsync(newFile, ct);
         }

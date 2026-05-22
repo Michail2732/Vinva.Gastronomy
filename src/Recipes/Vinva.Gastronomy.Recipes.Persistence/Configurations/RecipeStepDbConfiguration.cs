@@ -12,7 +12,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
         {            
             builder.ToTable("RecipeSteps");            
 
-            builder.HasKey(a => new { a.RecipeId, a.SeqNumber });
+            builder.HasKey(a => a.Id);
 
             builder.Property(a => a.Description)
                    .HasMaxLength(CommonConstants.MaxLengthDescription)

@@ -43,7 +43,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             var result = await handler.Handle(request, CancellationToken.None);
 
            
-            Assert.That(result.Ingredient.Categories, Is.Not.Null);
+            Assert.That(result.Ingredient, Is.Not.Null);
         }
 
         [Test]

@@ -22,8 +22,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.GetById
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var ingredient = await _dbContext.Ingredients.Include(a => a.Categories)                                    
-                                    .FirstOrDefaultAsync(a => a.Id == request.IngredientId);
+            var ingredient = await _dbContext.Ingredients.FirstOrDefaultAsync(a => a.Id == request.IngredientId);
 
             if (ingredient == null)
                 throw new NotFoundException(RecipesApplicationErrors.IngredientNotFound(request.IngredientId));

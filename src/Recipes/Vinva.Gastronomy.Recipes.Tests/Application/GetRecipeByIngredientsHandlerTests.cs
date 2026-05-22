@@ -208,8 +208,7 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
             {
                 Assert.That(recipe.Id, Is.Not.EqualTo(Guid.Empty));
                 Assert.That(recipe.Name, Is.Not.Null.And.Not.Empty);
-                Assert.That(recipe.Ingredients, Is.Not.Null);
-                Assert.That(recipe.Categories, Is.Not.Null);
+                Assert.That(recipe.Ingredients, Is.Not.Null);                
                 Assert.That(recipe.Steps, Is.Not.Null);
             }
         }

@@ -1,18 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vinva.Gastronomy.Common.Constants;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 using Vinva.Gastronomy.Recipes.Persistence.Converters;
 
 namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 {
-    public class RecipeIngredientDbConfiguration : DescriptiveEntityDbConfiguration<RecipeIngredient>
+    public class RecipeIngredientDbConfiguration : IEntityTypeConfiguration<RecipeIngredient>
     {
-        public override void Configure(EntityTypeBuilder<RecipeIngredient> builder)
-        {
-            base.Configure(builder);
+        public void Configure(EntityTypeBuilder<RecipeIngredient> builder)
+        {            
             builder.ToTable("RecipeIngredients");
 
             builder.HasKey(a => new { a.RecipeId, a.IngredientId });
+
+            builder.Property(a => a.Name)
+                   .HasMaxLength(CommonConstants.MaxLengthName)
+                   .IsRequired();            
+
+            builder.Property(a => a.Comment)
+                   .HasMaxLength(CommonConstants.MaxLengthComment);
 
             builder.HasOne<Recipe>()
                    .WithMany(a => a.Ingredients)

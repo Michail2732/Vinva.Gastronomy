@@ -7,6 +7,6 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Create
     {
         public string Name { get; init; }
         public string Description { get; init; }
-        public string? UsageComment { get; init; }        
+        public string? Comment { get; init; }        
     }
 }

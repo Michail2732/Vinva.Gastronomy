@@ -4,59 +4,46 @@ using System.ComponentModel;
 using System.Linq;
 using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Recipes.Domain.Exceptions;
+using Vinva.Gastronomy.Recipes.Domain.Models;
 using Vinva.Gastronomy.Recipes.Domain.Validations;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
-    [DisplayName("Полная информация о рецепте")]
+    [DisplayName("Рецепт")]
     public class Recipe : DescriptiveSoftDeleteEntityOfT<Guid>, IAggregateRoot
-    {
-        private readonly List<Category> _recipeCategories = new();
+    {        
         private readonly List<RecipeStep> _recipeSteps = new();
         private readonly List<RecipeIngredient> _recipeIngredients = new();
-        private string? cookingComment;
-        private string? ingredientComment;
-        private string? storageComment;
-        private string? usageComment;
+        private RecipeProperties _recipeProperties = RecipeProperties.CreatEmpty();
 
+
+        public Guid? BaseRecipe { get; set; }        
+
+        public Guid? TitleImageId { get; set; }
         
-        public Guid? BaseRecipe { get; private set; }
-
-        public Guid? PhotoId { get; set; }
-
         public Guid? VideoId { get; set; }
 
         public TimeSpan? CookingTime { get; set; }
 
-        public string? CookingComment
-        {
-            get => cookingComment;
-            set => SetComment(value, ref cookingComment);
-        }
+        public string? CookingComment { get; set; }        
 
-        public string? IngredientComment
-        {
-            get => ingredientComment;
-            set => SetComment(value, ref ingredientComment);
-        }
+        public string? IngredientComment { get; set; }
 
-        public string? StorageComment
-        {
-            get => storageComment;
-            set => SetComment(value, ref storageComment);
-        }
+        public string? StorageComment { get; set; }
 
-        public string? UsageComment
-        {
-            get => usageComment;
-            set => SetComment(value, ref usageComment);
-        }
-
-        public IReadOnlyList<Category> Categories => _recipeCategories;
+        public string? UsageComment { get; set; }
 
         public IReadOnlyList<RecipeStep> Steps => _recipeSteps;
 
         public IReadOnlyList<RecipeIngredient> Ingredients => _recipeIngredients;
+
+        public List<Guid> OtherImageIds { get; init; } = new();
+
+        public RecipeProperties Properties
+        {
+            get => _recipeProperties;
+            set => _recipeProperties = value ?? throw new ArgumentNullException();
+        }
 
 
 #pragma warning disable CS8618
@@ -74,67 +61,23 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         }                
         
         
-        public Recipe AddStep(string description, string? comment, Guid? photoId = null)
+        public Recipe AddStep(RecipeStep step)
         {
-            var lastStep = _recipeSteps.LastOrDefault();
-            
-            var newStep = new RecipeStep(Id, description, photoId)
-            {
-                Comment = comment,
-                SeqNumber = (lastStep?.SeqNumber ?? 0) + 1
-            };
-
-            _recipeSteps.Add(newStep);
+            var maxSeqNumber = _recipeSteps.Max(a => a.SeqNumber);            
+            step.SeqNumber = maxSeqNumber+1;
+            step.RecipeId = step.RecipeId;                        
+            _recipeSteps.Add(step);
             return this; 
-        }                    
-
-        public void ChangeStepOrder(int seqNumber1, int seqNumber2)
-        {
-            var step1 = _recipeSteps.FirstOrDefault(a => a.SeqNumber == seqNumber1);
-            var step2 = _recipeSteps.FirstOrDefault(b => b.SeqNumber == seqNumber2);
-
-            if (step1 == null)
-                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeStepNotExists(Id, seqNumber1));
-            if (step2 == null)
-                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeStepNotExists(Id, seqNumber2));
-
-
-            step1.SeqNumber = seqNumber2;
-            step2.SeqNumber = seqNumber1;
         }
 
-        public void RemoveStep(int seqNumber)
+        public void RemoveStep(Guid stepId)
         {
-            var step = _recipeSteps.FirstOrDefault(a => a.SeqNumber == seqNumber);
+            var step = _recipeSteps.FirstOrDefault(a => a.Id == stepId);
             if (step == null)
-                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeStepNotExists(Id, seqNumber));
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeStepNotExists(Id, stepId));
             if (!_recipeSteps.Remove(step))
-                throw new RecipeDomainException(GetType(), RecipeDomainErrors.FailedRemoveStep(Id, seqNumber));
-        }
-
-        public void AddCategory(Category category)
-        {                        
-            if (category.Type != CategoryType.Recipe)
-                throw new RecipeDomainException(GetType(), RecipeDomainErrors.IncorrectTypeOfRecipeCategory(Id, category.Id));
-
-            if (_recipeCategories.Contains(category))
-                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeCategoryAlreadyExists(Id, category.Name));
-
-            _recipeCategories.Add(category);            
-        }
-
-        public void RemoveCategory(Guid categoryId)
-        {
-            var category = _recipeCategories.Find(a => a.Id == categoryId)
-                ?? throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeDoesNotContainsCategory(Id, categoryId));
-            RemoveCategory(category);
-        }
-
-        public void RemoveCategory(Category category)
-        {            
-            if (!_recipeCategories.Remove(category))
-                throw new RecipeDomainException(GetType(), RecipeDomainErrors.FailedRemoveCategoryFromRecipe(Id, category.Id));
-        }
+                throw new RecipeDomainException(GetType(), RecipeDomainErrors.FailedRemoveStep(Id, stepId));
+        }        
 
         public void AddIngredient(RecipeIngredient ingredient)
         {
@@ -151,6 +94,6 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
                 throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeIngredientNotExists(Id, ingredientId));
             if (!_recipeIngredients.Remove(recipeIngredient))
                 throw new RecipeDomainException(GetType(), RecipeDomainErrors.FailedRemoveIngredient(Id, ingredientId));
-        }
+        }        
     }
 }

@@ -16,14 +16,13 @@ namespace Vinva.Gastronomy.Recipes.Application.Constants
         /// <summary>
         /// Рецепт уже содержит категорию
         /// </summary>
-        public static Error RecipeAlreadyContainsCategory(string categoryName) => new("Recipes.RecipeAlreadyContainsCategory", $"Рецепт уже содержит категорию '{categoryName}'");
-        /// <summary>
-        /// Не удалось найти категорию
-        /// </summary>
-        public static Error CategoryNotFound(Guid id) => new("Recipes.CategoryNotFound", $"Не удалось найти категорию '{id}'");
+        public static Error RecipeAlreadyContainsCategory(string categoryName) => new("Recipes.RecipeAlreadyContainsCategory", $"Рецепт уже содержит категорию '{categoryName}'");        
         /// <summary>
         /// Не удалось найти ингредиент по Id 
         /// </summary>
         public static Error IngredientNotFound(Guid id) => new("Recipes.IngredientNotFound", $"Не удалось найти ингредиент '{id}'");
+
+        public static string IncorrectRecipeIngredientDto => $"Некорректно заполнен ингредиент рецепта";
+        public static string IncorrectRecipeStepDto => $"Некорректно заполнен шаг рецепта";
     }
 }
