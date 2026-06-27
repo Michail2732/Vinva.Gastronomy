@@ -6,10 +6,10 @@
             <label for="recipe-name-input">
                 Название
             </label>                        
-        </FloatLabel>      
+        </FloatLabel>               
         <div class="description">
             <label>Описание</label>
-            <Editor id v-model="description"/>
+            <Editor v-model="description"/>
         </div>           
         <div>
             <label>Коментарий</label>
@@ -35,7 +35,7 @@ const comment = ref('')
 </script>
 <style lang="scss">
     .header
-    {
+    {        
         max-width: 1200px;
         margin: 0 auto;
     }
