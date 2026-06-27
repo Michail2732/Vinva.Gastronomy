@@ -21,6 +21,7 @@ import MultiSelect from 'primevue/multiselect'
 import FloatLabel from 'primevue/floatlabel'
 import Rating from 'primevue/rating'
 import Tag from 'primevue/tag'
+import Editor from 'primevue/editor'
 import ProgressSpinner from 'primevue/progressspinner'
 import Image from 'primevue/image'
 import ToggleButton from 'primevue/togglebutton'
@@ -115,22 +116,24 @@ export default {
         }
       }
     )
-    app.use(ToastService)
-    app.use(ConfirmationService)
+    app.use(ToastService);
+    app.use(ConfirmationService);
 
-    app.component('Avatar', Avatar)
+    app.component('Avatar', Avatar);
 
-    app.component('Badge', Badge)    
-    app.component('Button', Button)
+    app.component('Badge', Badge); 
+    app.component('Button', Button);
 
-    app.component('Card', Card)
-    app.component('Column', Column)
-    app.component('ConfirmDialog', ConfirmDialog)    
+    app.component('Card', Card);
+    app.component('Column', Column);
+    app.component('ConfirmDialog', ConfirmDialog);
 
-    app.component('Divider', Divider)
-    app.component('Dialog', Dialog)
-    app.component('Dock', Dock)
-    app.component('DataTable', DataTable)    
+    app.component('Divider', Divider);
+    app.component('Dialog', Dialog);
+    app.component('Dock', Dock);
+    app.component('DataTable', DataTable);
+
+    app.component('Editor', Editor);
 
     app.component('FloatLabel', FloatLabel)
 
@@ -140,21 +143,21 @@ export default {
     app.component('InputText', InputText)
     
     app.component('Message', Message);
-    app.component('MultiSelect', MultiSelect)    
-    app.component('Menubar', Menubar)    
+    app.component('MultiSelect', MultiSelect);  
+    app.component('Menubar', Menubar);
 
     app.component('Password', Password);
-    app.component('ProgressSpinner', ProgressSpinner)    
-    app.component('Paginator', Paginator)
+    app.component('ProgressSpinner', ProgressSpinner);
+    app.component('Paginator', Paginator);
 
-    app.component('Rating', Rating)
+    app.component('Rating', Rating);
 
-    app.component('SelectButton', SelectButton);    
+    app.component('SelectButton', SelectButton);
 
-    app.component('ToggleButton', ToggleButton)    
-    app.component('Toast', Toast)            
-    app.component('Tag', Tag)                
-    app.directive('tooltip', Tooltip);        
-    app.component('Toolbar', Toolbar);    
+    app.component('ToggleButton', ToggleButton);
+    app.component('Toast', Toast);
+    app.component('Tag', Tag);
+    app.directive('tooltip', Tooltip);
+    app.component('Toolbar', Toolbar);
   }
 }

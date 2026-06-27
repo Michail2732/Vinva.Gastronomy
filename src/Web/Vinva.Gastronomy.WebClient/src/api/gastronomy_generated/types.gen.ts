@@ -4,50 +4,11 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}` | (string & {});
 };
 
-export type AddIngredientCommand = {
-    recipeId?: string;
-    ingredients?: Array<RecipeIngredientDto> | null;
-};
-
-export type AddRecipeCategoriesCommand = {
-    recipeId?: string;
-    categoryIds?: Array<string> | null;
-};
-
-export type AddStepsCommand = {
-    recipeId: string;
-    steps?: Array<RecipeStepDto> | null;
-};
-
-export type CategoryDto = {
-    id?: string;
-    name?: string | null;
-    description?: string | null;
-    comment?: string | null;
-    type?: 'Recipe' | 'Ingredient';
-};
-
-export type ChangeSeqNumberDto = {
-    seqNumber1?: number;
-    seqNumber2?: number;
-};
-
 export type Condition = {
     logic: 'Or' | 'And';
     field: string | null;
     operator: 'Less' | 'LessOrEqual' | 'Larger' | 'LargerOrEqual' | 'Equals' | 'NotEquals' | 'StartWith' | 'EndWith' | 'Contains';
     value: unknown;
-};
-
-export type CreateCategoryCommand = {
-    name?: string | null;
-    description?: string | null;
-    comment?: string | null;
-    type?: 'Recipe' | 'Ingredient';
-};
-
-export type CreateCategoryResponse = {
-    categoryId?: string;
 };
 
 export type CreateImageCommandResponse = {
@@ -57,7 +18,7 @@ export type CreateImageCommandResponse = {
 export type CreateIngredientCommand = {
     name?: string | null;
     description?: string | null;
-    usageComment?: string | null;
+    comment?: string | null;
 };
 
 export type CreateIngredientResponse = {
@@ -91,16 +52,6 @@ export type GetIngredientByIdResponce = {
     ingredient?: IngredientDto;
 };
 
-export type GetRecipeByCategoryRequest = {
-    include?: Array<string> | null;
-    exclude?: Array<string> | null;
-    includeLogicAnd?: boolean;
-};
-
-export type GetRecipeByCategoryResponce = {
-    recipes?: Array<RecipeDto> | null;
-};
-
 export type GetRecipeByIngredientsRequest = {
     include?: Array<string> | null;
     exclude?: Array<string> | null;
@@ -132,20 +83,12 @@ export type ImageResponceDto = {
     url: string | null;
 };
 
-export type IngredientCategoryDto = {
-    id: string;
-    name: string | null;
-    description?: string | null;
-};
-
 export type IngredientDto = {
     id: string;
     name: string | null;
     description?: string | null;
-    usageComment?: string | null;
     photoId?: string | null;
     recipeId?: string | null;
-    categories?: Array<IngredientCategoryDto> | null;
 };
 
 export type IngredientQuantityDto = {
@@ -158,42 +101,46 @@ export type LoginRequest = {
     password: string | null;
 };
 
-export type RecipeCategoryDto = {
-    id: string;
-    name: string | null;
-    description?: string | null;
-};
-
 export type RecipeDto = {
     id: string;
     name: string | null;
     description?: string | null;
-    baseRecipe?: string | null;
     comment?: string | null;
-    photoId?: string | null;
+    baseRecipe?: string | null;
+    titleImageId?: string | null;
     videoId?: string | null;
     cookingTime?: string | null;
     cookingComment?: string | null;
     ingredientComment?: string | null;
     storageComment?: string | null;
     usageComment?: string | null;
+    otherImageIds?: Array<string> | null;
     ingredients?: Array<RecipeIngredientDto> | null;
-    categories?: Array<RecipeCategoryDto> | null;
+    properties?: Array<RecipePropertyDto> | null;
     steps?: Array<RecipeStepDto> | null;
 };
 
 export type RecipeIngredientDto = {
     ingredientId: string;
     ingredientName: string | null;
+    comment?: string | null;
     isRequired?: boolean;
     quantities: Array<IngredientQuantityDto> | null;
+    state?: 'None' | 'New' | 'Change' | 'Remove';
+};
+
+export type RecipePropertyDto = {
+    name: string | null;
+    values: Array<string> | null;
 };
 
 export type RecipeStepDto = {
+    id?: string;
     description: string | null;
     comment?: string | null;
     seqNumber: number;
     photoId?: string | null;
+    state?: 'None' | 'New' | 'Change' | 'Remove';
 };
 
 export type RegisterCommand = {
@@ -206,40 +153,8 @@ export type RegisterCommandResponce = {
     details?: string | null;
 };
 
-export type RemoveCategoryCommand = {
-    categoryId?: string;
-};
-
 export type RemoveIngredientCommand = {
     ingredientId?: string;
-};
-
-export type RemoveIngredientsCommand = {
-    recipeId?: string;
-    ingredientIds?: Array<string> | null;
-};
-
-export type RemoveRecipeCategoryCommand = {
-    recipeId?: string;
-    categoryIds?: Array<string> | null;
-};
-
-export type RemoveStepsCommand = {
-    recipeId: string;
-    seqNumbers: Array<number> | null;
-};
-
-export type ReorderStepsCommand = {
-    recipeId?: string;
-    items?: Array<ChangeSeqNumberDto> | null;
-};
-
-export type SearchCategoriesQuery = {
-    query: SearchQuery;
-};
-
-export type SearchCategoriesQueryResponse = {
-    items: Array<CategoryDto> | null;
 };
 
 export type SearchQuery = {
@@ -252,6 +167,22 @@ export type SearchQuery = {
 export type Sorting = {
     property: string | null;
     direction?: 'Ascending' | 'Descending';
+};
+
+export type UpdateCommand = {
+    id: string;
+    name?: string | null;
+    description?: string | null;
+    comment?: string | null;
+    cookingTime?: string | null;
+    baseRecipe?: string | null;
+    storageComment?: string | null;
+    usageComment?: string | null;
+    ingredientComment?: string | null;
+    cookingComment?: string | null;
+    steps?: Array<RecipeStepDto> | null;
+    ingredients?: Array<RecipeIngredientDto> | null;
+    properties?: Array<RecipePropertyDto> | null;
 };
 
 export type UpdateIngredientCommand = {
@@ -328,52 +259,6 @@ export type AuthenticationLogoutData = {
 };
 
 export type AuthenticationLogoutResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
-
-export type CategoryCreateData = {
-    body?: CreateCategoryCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Categories/Create';
-};
-
-export type CategoryCreateResponses = {
-    /**
-     * OK
-     */
-    200: CreateCategoryResponse;
-};
-
-export type CategoryCreateResponse = CategoryCreateResponses[keyof CategoryCreateResponses];
-
-export type CategorySearchData = {
-    body?: SearchCategoriesQuery;
-    path?: never;
-    query?: never;
-    url: '/api/Categories/Search';
-};
-
-export type CategorySearchResponses = {
-    /**
-     * OK
-     */
-    200: SearchCategoriesQueryResponse;
-};
-
-export type CategorySearchResponse = CategorySearchResponses[keyof CategorySearchResponses];
-
-export type CategoryRemoveData = {
-    body?: RemoveCategoryCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Categories/Remove';
-};
-
-export type CategoryRemoveResponses = {
     /**
      * OK
      */
@@ -477,48 +362,6 @@ export type IngredientUpdateResponses = {
     200: unknown;
 };
 
-export type RecipeAddIngredientsData = {
-    body?: AddIngredientCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Recipes/AddIngredients';
-};
-
-export type RecipeAddIngredientsResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
-
-export type RecipeAddCategoriesData = {
-    body?: AddRecipeCategoriesCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Recipes/AddCategories';
-};
-
-export type RecipeAddCategoriesResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
-
-export type RecipeAddStepsData = {
-    body?: AddStepsCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Recipes/AddSteps';
-};
-
-export type RecipeAddStepsResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
-
 export type RecipeCreateData = {
     body?: CreateRecipeCommand;
     path?: never;
@@ -534,22 +377,6 @@ export type RecipeCreateResponses = {
 };
 
 export type RecipeCreateResponse = RecipeCreateResponses[keyof RecipeCreateResponses];
-
-export type RecipeSearchByCategoriesData = {
-    body?: GetRecipeByCategoryRequest;
-    path?: never;
-    query?: never;
-    url: '/api/Recipes/SearchByCategories';
-};
-
-export type RecipeSearchByCategoriesResponses = {
-    /**
-     * OK
-     */
-    200: GetRecipeByCategoryResponce;
-};
-
-export type RecipeSearchByCategoriesResponse = RecipeSearchByCategoriesResponses[keyof RecipeSearchByCategoriesResponses];
 
 export type RecipeSearchByIngredientsData = {
     body?: GetRecipeByIngredientsRequest;
@@ -599,56 +426,14 @@ export type RecipeRemoveResponses = {
     200: unknown;
 };
 
-export type RecipeRemoveIngredientsData = {
-    body?: RemoveIngredientsCommand;
+export type RecipeUpdateData = {
+    body?: UpdateCommand;
     path?: never;
     query?: never;
-    url: '/api/Recipes/RemoveIngredients';
+    url: '/api/Recipes/Update';
 };
 
-export type RecipeRemoveIngredientsResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
-
-export type RecipeRemoveCategoriesData = {
-    body?: RemoveRecipeCategoryCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Recipes/RemoveCategories';
-};
-
-export type RecipeRemoveCategoriesResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
-
-export type RecipeRemoveStepsData = {
-    body?: RemoveStepsCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Recipes/RemoveSteps';
-};
-
-export type RecipeRemoveStepsResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
-
-export type RecipeReorderStepsData = {
-    body?: ReorderStepsCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Recipes/ReorderSteps';
-};
-
-export type RecipeReorderStepsResponses = {
+export type RecipeUpdateResponses = {
     /**
      * OK
      */

@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Identity.Application.Common;
 using Vinva.Gastronomy.Identity.Application.Usecases.Authentication.GetCurrentUser;
@@ -115,7 +117,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
             };
             await _mediator.Send(logoutRequest);
             DeleteAccessRefreshTokens();
-        }
+        }        
 
         private (string AccessToken, string RefreshToken) GetAccessAndRefreshTokens()
         {

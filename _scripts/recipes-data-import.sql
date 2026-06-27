@@ -4,29 +4,43 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
+--
+-- Name: determine_unit_type(text); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.determine_unit_type(ingredient_name text) RETURNS text[]
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    weight_units TEXT[] := ARRAY['г', 'кг'];
+    volume_units TEXT[] := ARRAY['мл', 'л', 'стакан'];
+    piece_units TEXT[] := ARRAY['шт', 'зубчик', 'пучок'];
+    spoon_units TEXT[] := ARRAY['ст.л', 'ч.л'];
+    taste_units TEXT[] := ARRAY['щепотка', 'по вкусу'];
+    all_units TEXT[] := ARRAY['г', 'кг', 'мл', 'л', 'шт', 'ст.л', 'ч.л', 'стакан', 'пучок', 'зубчик', 'щепотка', 'по вкусу'];
+BEGIN
+    IF ingredient_name IN ('Соль', 'Перец черный молотый', 'Мука пшеничная', 'Сахарная пудра', 'Паприка', 'Кокосовая стружка', 'Разрыхлитель', 'Ванильный сахар') THEN
+        RETURN weight_units || spoon_units || taste_units;
+    ELSIF ingredient_name IN ('Молоко', 'Сливки', 'Сметана', 'Соевый соус', 'Оливковое масло', 'Кунжутное масло', 'Кокосовое молоко') THEN
+        RETURN volume_units || spoon_units;
+    ELSIF ingredient_name IN ('Яйца куриные', 'Лук репчатый', 'Чеснок', 'Помидоры', 'Огурцы', 'Лимон', 'Апельсин', 'Банан', 'Авокадо', 'Манго') THEN
+        RETURN piece_units || weight_units;
+    ELSIF ingredient_name IN ('Зелень', 'Лук зеленый', 'Базилик', 'Мята', 'Кинза') THEN
+        RETURN ARRAY['пучок', 'г', 'щепотка'];
+    ELSE
+        RETURN all_units;
+    END IF;
+END;
+$$;
+
+
+ALTER FUNCTION public.determine_unit_type(ingredient_name text) OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- TOC entry 223 (class 1259 OID 16396)
--- Name: Categories; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."Categories" (
-    "Id" uuid NOT NULL,
-    "Type" integer NOT NULL,
-    "Name" character varying(64) NOT NULL,
-    "Description" character varying(256) NOT NULL,
-    "Comment" character varying(512),
-    "IsDeleted" boolean DEFAULT false NOT NULL
-);
-
-
-ALTER TABLE public."Categories" OWNER TO postgres;
-
---
--- TOC entry 232 (class 1259 OID 74803)
 -- Name: Images; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -45,26 +59,11 @@ CREATE TABLE public."Images" (
 ALTER TABLE public."Images" OWNER TO postgres;
 
 --
--- TOC entry 228 (class 1259 OID 16470)
--- Name: IngredientCategories; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."IngredientCategories" (
-    "CategoriesId" uuid NOT NULL,
-    "IngredientId" uuid NOT NULL
-);
-
-
-ALTER TABLE public."IngredientCategories" OWNER TO postgres;
-
---
--- TOC entry 225 (class 1259 OID 16422)
 -- Name: Ingredients; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public."Ingredients" (
     "Id" uuid NOT NULL,
-    "UsageComment" character varying(512),
     "PhotoId" uuid,
     "RecipeId" uuid,
     "Name" character varying(64) NOT NULL,
@@ -77,20 +76,6 @@ CREATE TABLE public."Ingredients" (
 ALTER TABLE public."Ingredients" OWNER TO postgres;
 
 --
--- TOC entry 226 (class 1259 OID 16437)
--- Name: RecipeCategories; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."RecipeCategories" (
-    "CategoriesId" uuid NOT NULL,
-    "RecipeId" uuid NOT NULL
-);
-
-
-ALTER TABLE public."RecipeCategories" OWNER TO postgres;
-
---
--- TOC entry 229 (class 1259 OID 16487)
 -- Name: RecipeIngredients; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -99,7 +84,6 @@ CREATE TABLE public."RecipeIngredients" (
     "IngredientId" uuid NOT NULL,
     "IsRequired" boolean NOT NULL,
     "Name" character varying(64) NOT NULL,
-    "Description" character varying(256) NOT NULL,
     "Comment" character varying(512),
     "Quantities" character varying(128) DEFAULT ''::character varying NOT NULL
 );
@@ -108,8 +92,6 @@ CREATE TABLE public."RecipeIngredients" (
 ALTER TABLE public."RecipeIngredients" OWNER TO postgres;
 
 --
--- TOC entry 4998 (class 0 OID 0)
--- Dependencies: 229
 -- Name: COLUMN "RecipeIngredients"."Quantities"; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -117,7 +99,6 @@ COMMENT ON COLUMN public."RecipeIngredients"."Quantities" IS 'Format: quantity1:
 
 
 --
--- TOC entry 227 (class 1259 OID 16454)
 -- Name: RecipeSteps; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -126,21 +107,21 @@ CREATE TABLE public."RecipeSteps" (
     "SeqNumber" integer NOT NULL,
     "PhotoId" uuid,
     "Description" character varying(256) NOT NULL,
-    "Comment" character varying(512)
+    "Comment" character varying(512),
+    "Id" uuid DEFAULT '00000000-0000-0000-0000-000000000000'::uuid NOT NULL
 );
 
 
 ALTER TABLE public."RecipeSteps" OWNER TO postgres;
 
 --
--- TOC entry 224 (class 1259 OID 16407)
 -- Name: Recipes; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public."Recipes" (
     "Id" uuid NOT NULL,
     "BaseRecipe" uuid,
-    "PhotoId" uuid,
+    "TitleImageId" uuid,
     "VideoId" uuid,
     "CookingTime" interval,
     "CookingComment" character varying(512),
@@ -150,14 +131,15 @@ CREATE TABLE public."Recipes" (
     "Name" character varying(64) NOT NULL,
     "Description" character varying(256) NOT NULL,
     "Comment" character varying(512),
-    "IsDeleted" boolean DEFAULT false NOT NULL
+    "IsDeleted" boolean DEFAULT false NOT NULL,
+    "OtherImageIds" uuid[] DEFAULT ARRAY[]::uuid[] NOT NULL,
+    "Properties" jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
 ALTER TABLE public."Recipes" OWNER TO postgres;
 
 --
--- TOC entry 233 (class 1259 OID 74817)
 -- Name: RegistrationTokens; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -175,7 +157,6 @@ CREATE TABLE public."RegistrationTokens" (
 ALTER TABLE public."RegistrationTokens" OWNER TO postgres;
 
 --
--- TOC entry 231 (class 1259 OID 54100)
 -- Name: UserTokens; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -189,7 +170,6 @@ CREATE TABLE public."UserTokens" (
 ALTER TABLE public."UserTokens" OWNER TO postgres;
 
 --
--- TOC entry 230 (class 1259 OID 54087)
 -- Name: Users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -210,7 +190,6 @@ CREATE TABLE public."Users" (
 ALTER TABLE public."Users" OWNER TO postgres;
 
 --
--- TOC entry 222 (class 1259 OID 16389)
 -- Name: __EFMigrationsHistory; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -222,10 +201,55 @@ CREATE TABLE public."__EFMigrationsHistory" (
 
 ALTER TABLE public."__EFMigrationsHistory" OWNER TO postgres;
 
+--
+-- Data for Name: Images; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Images" ("Id", "Name", "Format", "ContentType", "OwnerId", "Size", "UploadedAt", "Group") FROM stdin;
+\.
+
 
 --
--- TOC entry 4989 (class 0 OID 54100)
--- Dependencies: 231
+-- Data for Name: Ingredients; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Ingredients" ("Id", "PhotoId", "RecipeId", "Name", "Description", "Comment", "IsDeleted") FROM stdin;
+\.
+
+
+--
+-- Data for Name: RecipeIngredients; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."RecipeIngredients" ("RecipeId", "IngredientId", "IsRequired", "Name", "Comment", "Quantities") FROM stdin;
+\.
+
+
+--
+-- Data for Name: RecipeSteps; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."RecipeSteps" ("RecipeId", "SeqNumber", "PhotoId", "Description", "Comment", "Id") FROM stdin;
+\.
+
+
+--
+-- Data for Name: Recipes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Recipes" ("Id", "BaseRecipe", "TitleImageId", "VideoId", "CookingTime", "CookingComment", "IngredientComment", "StorageComment", "UsageComment", "Name", "Description", "Comment", "IsDeleted", "OtherImageIds", "Properties") FROM stdin;
+\.
+
+
+--
+-- Data for Name: RegistrationTokens; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."RegistrationTokens" ("Id", "ExpiresAt", "PasswordHash", "Login", "Email", "LetterSentTimestap", "ConfirmCompleateTimestap") FROM stdin;
+\.
+
+
+--
 -- Data for Name: UserTokens; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -235,8 +259,6 @@ COPY public."UserTokens" ("UserId", "AccessToken", "RefreshToken") FROM stdin;
 
 
 --
--- TOC entry 4988 (class 0 OID 54087)
--- Dependencies: 230
 -- Data for Name: Users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -246,8 +268,6 @@ COPY public."Users" ("Id", "Login", "PasswordHash", "Email", "State", "LastLogin
 
 
 --
--- TOC entry 4980 (class 0 OID 16389)
--- Dependencies: 222
 -- Data for Name: __EFMigrationsHistory; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -266,20 +286,11 @@ COPY public."__EFMigrationsHistory" ("MigrationId", "ProductVersion") FROM stdin
 20260330101855_CreateRegistrationTokensTable	9.0.10
 20260331141400_DeleteExpiresProp	9.0.10
 20260331142018_RemoveNullContraintForTokens	9.0.10
+20260617200737_newVersionEntities	9.0.10
 \.
 
 
 --
--- TOC entry 4791 (class 2606 OID 16406)
--- Name: Categories PK_Categories; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Categories"
-    ADD CONSTRAINT "PK_Categories" PRIMARY KEY ("Id");
-
-
---
--- TOC entry 4820 (class 2606 OID 74816)
 -- Name: Images PK_Images; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -288,16 +299,6 @@ ALTER TABLE ONLY public."Images"
 
 
 --
--- TOC entry 4807 (class 2606 OID 16476)
--- Name: IngredientCategories PK_IngredientCategories; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."IngredientCategories"
-    ADD CONSTRAINT "PK_IngredientCategories" PRIMARY KEY ("CategoriesId", "IngredientId");
-
-
---
--- TOC entry 4799 (class 2606 OID 16431)
 -- Name: Ingredients PK_Ingredients; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -306,16 +307,6 @@ ALTER TABLE ONLY public."Ingredients"
 
 
 --
--- TOC entry 4802 (class 2606 OID 16443)
--- Name: RecipeCategories PK_RecipeCategories; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."RecipeCategories"
-    ADD CONSTRAINT "PK_RecipeCategories" PRIMARY KEY ("CategoriesId", "RecipeId");
-
-
---
--- TOC entry 4810 (class 2606 OID 16499)
 -- Name: RecipeIngredients PK_RecipeIngredients; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -324,16 +315,14 @@ ALTER TABLE ONLY public."RecipeIngredients"
 
 
 --
--- TOC entry 4804 (class 2606 OID 16464)
 -- Name: RecipeSteps PK_RecipeSteps; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."RecipeSteps"
-    ADD CONSTRAINT "PK_RecipeSteps" PRIMARY KEY ("RecipeId", "SeqNumber");
+    ADD CONSTRAINT "PK_RecipeSteps" PRIMARY KEY ("Id");
 
 
 --
--- TOC entry 4795 (class 2606 OID 16416)
 -- Name: Recipes PK_Recipes; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -342,7 +331,6 @@ ALTER TABLE ONLY public."Recipes"
 
 
 --
--- TOC entry 4822 (class 2606 OID 74828)
 -- Name: RegistrationTokens PK_RegistrationTokens; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -351,7 +339,6 @@ ALTER TABLE ONLY public."RegistrationTokens"
 
 
 --
--- TOC entry 4818 (class 2606 OID 54110)
 -- Name: UserTokens PK_UserTokens; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -360,7 +347,6 @@ ALTER TABLE ONLY public."UserTokens"
 
 
 --
--- TOC entry 4814 (class 2606 OID 54099)
 -- Name: Users PK_Users; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -369,7 +355,6 @@ ALTER TABLE ONLY public."Users"
 
 
 --
--- TOC entry 4788 (class 2606 OID 16395)
 -- Name: __EFMigrationsHistory PK__EFMigrationsHistory; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -378,23 +363,6 @@ ALTER TABLE ONLY public."__EFMigrationsHistory"
 
 
 --
--- TOC entry 4789 (class 1259 OID 17586)
--- Name: IX_Categories_Name; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE UNIQUE INDEX "IX_Categories_Name" ON public."Categories" USING btree ("Name");
-
-
---
--- TOC entry 4805 (class 1259 OID 16510)
--- Name: IX_IngredientCategories_IngredientId; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX "IX_IngredientCategories_IngredientId" ON public."IngredientCategories" USING btree ("IngredientId");
-
-
---
--- TOC entry 4796 (class 1259 OID 17585)
 -- Name: IX_Ingredients_Name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -402,7 +370,6 @@ CREATE UNIQUE INDEX "IX_Ingredients_Name" ON public."Ingredients" USING btree ("
 
 
 --
--- TOC entry 4797 (class 1259 OID 16511)
 -- Name: IX_Ingredients_RecipeId; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -410,15 +377,6 @@ CREATE INDEX "IX_Ingredients_RecipeId" ON public."Ingredients" USING btree ("Rec
 
 
 --
--- TOC entry 4800 (class 1259 OID 16512)
--- Name: IX_RecipeCategories_RecipeId; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX "IX_RecipeCategories_RecipeId" ON public."RecipeCategories" USING btree ("RecipeId");
-
-
---
--- TOC entry 4808 (class 1259 OID 16513)
 -- Name: IX_RecipeIngredients_IngredientId; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -426,7 +384,13 @@ CREATE INDEX "IX_RecipeIngredients_IngredientId" ON public."RecipeIngredients" U
 
 
 --
--- TOC entry 4792 (class 1259 OID 49345)
+-- Name: IX_RecipeSteps_RecipeId; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "IX_RecipeSteps_RecipeId" ON public."RecipeSteps" USING btree ("RecipeId");
+
+
+--
 -- Name: IX_Recipes_BaseRecipe; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -434,7 +398,6 @@ CREATE INDEX "IX_Recipes_BaseRecipe" ON public."Recipes" USING btree ("BaseRecip
 
 
 --
--- TOC entry 4793 (class 1259 OID 17583)
 -- Name: IX_Recipes_Name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -442,7 +405,6 @@ CREATE UNIQUE INDEX "IX_Recipes_Name" ON public."Recipes" USING btree ("Name");
 
 
 --
--- TOC entry 4815 (class 1259 OID 54117)
 -- Name: IX_UserTokens_AccessToken; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -450,7 +412,6 @@ CREATE UNIQUE INDEX "IX_UserTokens_AccessToken" ON public."UserTokens" USING btr
 
 
 --
--- TOC entry 4816 (class 1259 OID 54118)
 -- Name: IX_UserTokens_RefreshToken; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -458,7 +419,6 @@ CREATE UNIQUE INDEX "IX_UserTokens_RefreshToken" ON public."UserTokens" USING bt
 
 
 --
--- TOC entry 4811 (class 1259 OID 54119)
 -- Name: IX_Users_Email; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -466,7 +426,6 @@ CREATE UNIQUE INDEX "IX_Users_Email" ON public."Users" USING btree ("Email");
 
 
 --
--- TOC entry 4812 (class 1259 OID 54116)
 -- Name: IX_Users_Login; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -474,25 +433,6 @@ CREATE UNIQUE INDEX "IX_Users_Login" ON public."Users" USING btree ("Login");
 
 
 --
--- TOC entry 4828 (class 2606 OID 16477)
--- Name: IngredientCategories FK_IngredientCategories_Categories_CategoriesId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."IngredientCategories"
-    ADD CONSTRAINT "FK_IngredientCategories_Categories_CategoriesId" FOREIGN KEY ("CategoriesId") REFERENCES public."Categories"("Id") ON DELETE CASCADE;
-
-
---
--- TOC entry 4829 (class 2606 OID 16482)
--- Name: IngredientCategories FK_IngredientCategories_Ingredients_IngredientId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."IngredientCategories"
-    ADD CONSTRAINT "FK_IngredientCategories_Ingredients_IngredientId" FOREIGN KEY ("IngredientId") REFERENCES public."Ingredients"("Id") ON DELETE CASCADE;
-
-
---
--- TOC entry 4824 (class 2606 OID 16432)
 -- Name: Ingredients FK_Ingredients_Recipes_RecipeId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -501,25 +441,6 @@ ALTER TABLE ONLY public."Ingredients"
 
 
 --
--- TOC entry 4825 (class 2606 OID 16444)
--- Name: RecipeCategories FK_RecipeCategories_Categories_CategoriesId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."RecipeCategories"
-    ADD CONSTRAINT "FK_RecipeCategories_Categories_CategoriesId" FOREIGN KEY ("CategoriesId") REFERENCES public."Categories"("Id") ON DELETE CASCADE;
-
-
---
--- TOC entry 4826 (class 2606 OID 16449)
--- Name: RecipeCategories FK_RecipeCategories_Recipes_RecipeId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."RecipeCategories"
-    ADD CONSTRAINT "FK_RecipeCategories_Recipes_RecipeId" FOREIGN KEY ("RecipeId") REFERENCES public."Recipes"("Id") ON DELETE CASCADE;
-
-
---
--- TOC entry 4830 (class 2606 OID 16500)
 -- Name: RecipeIngredients FK_RecipeIngredients_Ingredients_IngredientId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -528,7 +449,6 @@ ALTER TABLE ONLY public."RecipeIngredients"
 
 
 --
--- TOC entry 4831 (class 2606 OID 16505)
 -- Name: RecipeIngredients FK_RecipeIngredients_Recipes_RecipeId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -537,7 +457,6 @@ ALTER TABLE ONLY public."RecipeIngredients"
 
 
 --
--- TOC entry 4827 (class 2606 OID 16465)
 -- Name: RecipeSteps FK_RecipeSteps_Recipes_RecipeId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -546,7 +465,6 @@ ALTER TABLE ONLY public."RecipeSteps"
 
 
 --
--- TOC entry 4823 (class 2606 OID 49346)
 -- Name: Recipes FK_Recipes_Recipes_BaseRecipe; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -555,7 +473,6 @@ ALTER TABLE ONLY public."Recipes"
 
 
 --
--- TOC entry 4832 (class 2606 OID 54111)
 -- Name: UserTokens FK_UserTokens_Users_UserId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -564,210 +481,200 @@ ALTER TABLE ONLY public."UserTokens"
 
 
 
-
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('71b5608c-304b-58f9-b5a8-51d8c4bfcb02',NULL,NULL,NULL,'Агар-агар','Агар-агар','Раздел: Для глазури',false),
-	 ('2b49d103-8220-5a4b-8c67-7c4d5d07bf80',NULL,NULL,NULL,'Аквафаба','Аквафаба','дегидрированная; Раздел: 3 вариант',false),
-	 ('4920840b-dc84-5fa9-a148-9d74e8ff234a',NULL,NULL,NULL,'Ананас','Ананас','Раздел: Ингредиенты для карри',false),
-	 ('1979006a-d7d7-505f-a029-4dea97dff18c',NULL,NULL,NULL,'Апельсиновый сок','Апельсиновый сок','Раздел: Барбекю соус',false),
-	 ('404a9c1f-8fba-5ee7-b828-40256eb53aab',NULL,NULL,NULL,'Базилик сушеный','Базилик сушеный',NULL,false),
-	 ('0020c500-2165-5b16-aba8-775ab26990bd',NULL,NULL,NULL,'Баклажан','Баклажан','Раздел: Ингредиенты для «бекона»',false),
-	 ('19a55aa8-5c1e-51fd-94f0-f69d724dad2e',NULL,NULL,NULL,'Банан','Банан','Раздел: Ингредиенты на 6 кексов',false),
-	 ('c1e42c12-b4a4-5baf-a322-18dba72b4eeb',NULL,NULL,NULL,'Батат запеченный','Батат запеченный',NULL,false),
-	 ('212eb083-c0ee-56fa-a173-762130cdb096',NULL,NULL,NULL,'Блины "шоколадные"','Блины "шоколадные"',NULL,false),
-	 ('54b71c87-9feb-5500-8376-71646a51c747',NULL,NULL,NULL,'Блины','Блины',NULL,false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('be0e5010-6f3d-5b34-8686-3b95354f32cf',NULL,NULL,NULL,'Брокколи','Брокколи','Раздел: Ингредиенты для салата',false),
-	 ('c2201b6d-8bef-535a-8f0e-1487fdef6966',NULL,NULL,NULL,'Брюссельская капуста','Брюссельская капуста','Раздел: Ингредиенты для салата',false),
-	 ('52a9f464-487d-5694-950f-ad8055950445',NULL,NULL,NULL,'Ваниль','Ваниль','у меня порошок из сушёных стручков; экстракт/паста/семена; Раздел: Чизкейк',false),
-	 ('b238e952-6b98-59ed-b16e-607a509ada2e',NULL,NULL,NULL,'Вареная сгущенка','Вареная сгущенка',NULL,false),
-	 ('c28bad38-775f-51c8-9d09-877e3b039384',NULL,NULL,NULL,'Вешенки','Вешенки','или шампиньоны; Раздел: Ингредиенты для начинки с картошкой и грибами',false),
-	 ('12b65300-9582-587b-80fa-30d4e720f95e',NULL,NULL,NULL,'Вода','Вода','Раздел: Для теста; Раздел: Ингредиенты для риса из цветной капусты',false),
-	 ('e01d8bf5-b6bc-54c3-a3d7-9d6ddc746508',NULL,NULL,NULL,'Воздушный амарант','Воздушный амарант',NULL,false),
-	 ('0358f024-c462-55a5-8295-63b999c64af6',NULL,NULL,NULL,'Готовая фасоль','Готовая фасоль',NULL,false),
-	 ('15e4f6d6-7076-55da-be9f-716e7fdc9dcd',NULL,NULL,NULL,'Грецкие орехи','Грецкие орехи',NULL,false),
-	 ('2235fb17-4534-5d00-8535-0c1ca798e9d9',NULL,NULL,NULL,'Грибы','Грибы','Раздел: Для котлет; шампиньоны/вешенки',false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('0a02c657-918d-571d-bcc7-638b4a1dd439',NULL,NULL,NULL,'Для блинов: блины "жюльен"','Для блинов: блины "жюльен"','Раздел: Где ещё использовать',false),
-	 ('f44e3551-3273-5986-a3fc-8f8ef023f827',NULL,NULL,NULL,'Заварная часть','Заварная часть','Раздел: Сметанный крем',false),
-	 ('c372b164-b120-5058-aec0-b9bd6cb0e974',NULL,NULL,NULL,'Зелень','Зелень','укроп, кинза',false),
-	 ('e9ff9e8a-992c-50d5-8adc-e3a8c177c473',NULL,NULL,NULL,'Зелёная стручковая фасоль','Зелёная стручковая фасоль','Раздел: Ингредиенты для салата',false),
-	 ('0ac426d9-0a4f-569c-89f3-e36e89d6c036',NULL,NULL,NULL,'Зелёный горошек','Зелёный горошек',NULL,false),
-	 ('fc025614-2325-583a-96de-e0414ca683f6',NULL,NULL,NULL,'Зира','Зира','кумин; Раздел: Для котлет',false),
-	 ('ff2ccb17-41b5-5d43-b248-96ff694e30a0',NULL,NULL,NULL,'Имбирь','Имбирь','Раздел: Ингредиенты для риса из цветной капусты; Раздел: Ингредиенты для заправки',false),
-	 ('3ef92a25-a13a-5092-ab2e-ca888882145c',NULL,NULL,NULL,'Кабачок','Кабачок','кабачок',false),
-	 ('48c8e9bf-f165-5a36-b310-222557ee72fb',NULL,NULL,NULL,'Капуста белокочанная','Капуста белокочанная',NULL,false),
-	 ('22f9818d-0447-5fb7-b7c9-0c363bc291cd',NULL,NULL,NULL,'Капуста квашеная','Капуста квашеная','Раздел: Ингредиенты для начинки с фаршем из фасоли',false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('5474fb48-c744-54be-907e-eab24e35113a',NULL,NULL,NULL,'Карри','Карри','Раздел: Ингредиенты для риса',false),
-	 ('6b1ad9a9-aca8-5772-ba17-e3cda280ef4f',NULL,NULL,NULL,'Картофель','Картофель','Раздел: Для котлет; Раздел: Ингредиенты для начинки с картошкой и грибами; Раздел: Вариант 2',false),
-	 ('a4cf9371-34fc-5ed9-89eb-89919f1a7ae2',NULL,NULL,NULL,'Картофельное тесто','Картофельное тесто','Раздел: Сборка пиццы',false),
-	 ('6748e8ff-7d0f-5397-82ab-476688288098',NULL,NULL,NULL,'Картофельный крахмал','Картофельный крахмал','Раздел: Ингредиенты на 6 кексов',false),
-	 ('991a021e-f869-533e-9aca-6ce7cb2a56f6',NULL,NULL,NULL,'Кешью','Кешью','сухой; Раздел: Чизкейк',false),
-	 ('7f9c1e58-9d54-5561-a922-c075d743c9d9',NULL,NULL,NULL,'Кинза','Кинза','Раздел: Для котлет',false),
-	 ('13900dce-3e69-555f-b088-0de3c5191a04',NULL,NULL,NULL,'Киноа','Киноа',NULL,false),
-	 ('4c95ad06-5dc8-5aca-95f1-4e5ec6ca6abe',NULL,NULL,NULL,'Клубника','Клубника','Раздел: Клубничная начинка; Раздел: Ингредиенты на 6 кексов',false),
-	 ('9f32f189-d775-5836-a228-8cc178ad6b61',NULL,NULL,NULL,'Клюква вяленая','Клюква вяленая',NULL,false),
-	 ('af17f6a2-686a-5f33-bbcb-7eca5f7e8253',NULL,NULL,NULL,'Кокосовая паста','Кокосовая паста','урбеч',false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('a8f06049-4e76-5faf-b56f-8390febd646a',NULL,NULL,NULL,'Сметана кокосовая','Сметана кокосовая','Раздел: Сметанный крем',false),
-	 ('080247c9-68d3-5101-bb73-c46ae33f9172',NULL,NULL,NULL,'Кокосовая стружка','Кокосовая стружка','чем она жирнее и свежее, тем вкуснее',false),
-	 ('bdb1f62b-9795-5f76-93ed-d821c53847af',NULL,NULL,NULL,'Кокосовое масло','Кокосовое масло','Раздел: Для теста',false),
-	 ('901d9bb5-ee88-5b3b-88c7-8cef61ae9cc7',NULL,NULL,NULL,'Кокосовое молоко','Кокосовое молоко','Раздел: Карамельные яблоки',false),
-	 ('28f6f887-a6bc-5516-8224-9d3e1ab0d1fd',NULL,NULL,NULL,'Кокосовые аминокислоты','Кокосовые аминокислоты','Раздел: Ингредиенты для «бекона»; Раздел: Для котлет',false),
-	 ('3dcb7477-4d6c-5511-a5bd-0e87d40c7258',NULL,NULL,NULL,'Кокосовые сливки','Кокосовые сливки','Раздел: Чизкейк',false),
-	 ('66516ef7-5f43-5dd5-810f-7599a6f5dfaf',NULL,NULL,NULL,'Сахар кокосовый','Сахар кокосовый','Раздел: Карамельные яблоки; Раздел: Клубничная начинка',false),
-	 ('bf5422ac-1f24-5072-a884-a95f187f4125',NULL,NULL,NULL,'Кокосовый урбеч','Кокосовый урбеч','паста',false),
-	 ('55d9459f-854a-5c23-9b9a-c7e483c2ad3c',NULL,NULL,NULL,'Консервированная белая фасоль','Консервированная белая фасоль','Раздел: 1 вариант',false),
-	 ('e339dae4-1a9d-58e4-99a8-ddc9111c5498',NULL,NULL,NULL,'Кориандр молотый','Кориандр молотый',NULL,false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('f686acf2-e4eb-5a42-8406-eec1f40b66bb',NULL,NULL,NULL,'Корица','Корица','Раздел: Карамельные яблоки',false),
-	 ('5810a4fc-11b8-52ab-b0ea-964b8cdd922f',NULL,NULL,NULL,'Крахмал','Крахмал','Раздел: Для теста',false),
-	 ('0f4e75e9-6d57-5882-bdb7-13668f79ea15',NULL,NULL,NULL,'Крахмал тапиоки','Крахмал тапиоки','Раздел: Ингредиенты для кекса',false),
-	 ('e91a3f6f-3727-5704-84f2-52632fe4e5a6',NULL,NULL,NULL,'Ксантановая камедь','Ксантановая камедь',NULL,false),
-	 ('059b624a-58b3-57d4-b265-60297c25b705',NULL,NULL,NULL,'Кумин','Кумин','зира',false),
-	 ('460c3eb1-42a4-51f8-9f19-adc6c7c31d50',NULL,NULL,NULL,'Кунжут','Кунжут','Раздел: Ингредиенты для заправки',false),
-	 ('20bf6981-7489-5bad-950d-061c1bb5c974',NULL,NULL,NULL,'Куркума','Куркума','Раздел: Ингредиенты для риса из цветной капусты',false),
-	 ('936a779e-cd4b-5155-a500-60406cbd0c94',NULL,NULL,NULL,'Кэроб','Кэроб',NULL,false),
-	 ('6e0729ea-b639-5cbf-81bb-62077b288e9a',NULL,NULL,NULL,'Лимонный сок','Лимонный сок','Раздел: Ингредиенты для заправки; Раздел: Вариант 2',false),
-	 ('202b5aa5-f84b-5069-925d-75e1d4689953',NULL,NULL,NULL,'Листы нори','Листы нори','сушёные без масла, нарезать на небольшие прямоугольники',false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('9a346879-8bfd-5ec0-9ece-3fd7d055b41a',NULL,NULL,NULL,'Лук','Лук','Раздел: Для котлет',false),
-	 ('c8403fed-a2c7-5fe7-b6bf-7abc0318a2df',NULL,NULL,NULL,'Лук зелёный','Лук зелёный','Раздел: Ингредиенты для заправки',false),
-	 ('bf06a3d3-930d-53ef-9b07-25e3258628b1',NULL,NULL,NULL,'Лук красный','Лук красный',NULL,false),
-	 ('13b4b933-fc3a-50e0-b7e6-98e7846bdc5a',NULL,NULL,NULL,'Лук сушеный','Лук сушеный','Раздел: Вариант 2',false),
-	 ('32a10b45-e313-5e70-8494-75e4f950046c',NULL,NULL,NULL,'Любые на ваш выбор','Любые на ваш выбор','изюм, вишня, клюква, инжир, курага, чернослив',false),
-	 ('bf8d085d-86d2-5160-b280-3f07544f5528',NULL,NULL,NULL,'Мак','Мак',NULL,false),
-	 ('bdad705e-0503-5cd1-ae9a-1a7c2b042e1b',NULL,NULL,NULL,'Манго','Манго','Раздел: Для глазури',false),
-	 ('0de53086-87c0-5c69-8bbf-76e02e762c75',NULL,NULL,NULL,'Маринад от оливок','Маринад от оливок',NULL,false),
-	 ('6d7c7c6d-484e-5382-93a4-fb11a6297228',NULL,NULL,NULL,'Марципан','Марципан','Раздел: Ингредиенты для кекса',false),
-	 ('57aeb289-29b4-53a8-a2fa-7d829d726779',NULL,NULL,NULL,'Масло виноградной косточки','Масло виноградной косточки',NULL,false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('14bd91a5-5046-5625-b8d6-9092ba5dda87',NULL,NULL,NULL,'Масло растительное','Масло растительное',NULL,false),
-	 ('1c3ae44c-6348-57ed-9ea6-3b0773b3e0ed',NULL,NULL,NULL,'Мешочек для молока','Мешочек для молока','Раздел: Тот же бисквит савоярди, но пропитан ягодным пюре. Крем сделан более нейтральным по вкусу и более светлым - для лучшего сочетания с ягодами. В прослойку добавлен клубничный джем. Можно собрать в виде торта "Фрезье" - с цельными ягодами клубники по периметру и на разрезе - и он без сомнений вызовет восторг у семьи и гостей.',false),
-	 ('62c68ca9-8b5c-56aa-8b73-0afe7d8ceac6',NULL,NULL,NULL,'Миндаль','Миндаль',NULL,false),
-	 ('01ae364e-e413-58aa-bd32-fe30202262ce',NULL,NULL,NULL,'Миндаль жареный в начинку','Миндаль жареный в начинку',NULL,false),
-	 ('742b1e2c-5773-5aaa-b50e-4ab543be0b01',NULL,NULL,NULL,'Миндальная мука','Миндальная мука','Раздел: Для теста',false),
-	 ('b571b6f7-732a-5e48-bc2a-0698b9a88bfb',NULL,NULL,NULL,'Миндальное молоко','Миндальное молоко','Раздел: Заварная часть крема',false),
-	 ('576705f0-eaa9-566f-b59c-85b72ca84ba7',NULL,NULL,NULL,'Миндальные лепестки','Миндальные лепестки',NULL,false),
-	 ('002952e4-01f8-5883-acb7-9a1e3e7c7fa0',NULL,NULL,NULL,'Молоко','Молоко','Раздел: Ингредиенты для кекса',false),
-	 ('2c3c04f0-535b-564a-9561-deba13ded4ae',NULL,NULL,NULL,'Молоко ореховое','Молоко ореховое',NULL,false),
-	 ('da004df1-ec9f-58cd-a1b6-7c4f272fce7a',NULL,NULL,NULL,'Молоко растительное','Молоко растительное','так как в рецепте нет масла, лучше брать более жирное, у меня кокосовое',false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('c0b08006-0854-5fc8-9e94-4c07e59f35d0',NULL,NULL,NULL,'Морковь','Морковь','Раздел: Ингредиенты для кекса',false),
-	 ('190930b0-2b41-554f-b454-0e92b1a8e1fb',NULL,NULL,NULL,'Мука бурого риса','Мука бурого риса',NULL,false),
-	 ('d6a1eeb1-b75b-5365-ac54-dbac72700a31',NULL,NULL,NULL,'Мука зеленой гречки','Мука зеленой гречки','Раздел: Ингредиенты для кекса',false),
-	 ('485c8656-bc51-510e-b851-5c4b7d976a14',NULL,NULL,NULL,'Мука зеленых бананов','Мука зеленых бананов',NULL,false),
-	 ('d854a993-11cf-5ffd-bbca-d1c059ac666f',NULL,NULL,NULL,'Мука нутовая','Мука нутовая',NULL,false),
-	 ('fe445b5d-0f48-52a7-9949-6751f7b5286b',NULL,NULL,NULL,'Мука овсяная','Мука овсяная',NULL,false),
-	 ('83918035-d6e2-5d58-9f5f-e75b7aee1fa9',NULL,NULL,NULL,'Мука пшенная','Мука пшенная',NULL,false),
-	 ('1d5bb7b9-4276-5b02-97b0-9ef7c52e860e',NULL,NULL,NULL,'Мука рисовая','Мука рисовая',NULL,false),
-	 ('e9beccc4-222a-5078-9b90-f6cd1360bd67',NULL,NULL,NULL,'Мука чечевицы','Мука чечевицы',NULL,false),
-	 ('9874594b-71a3-50cc-b314-09e52b719724',NULL,NULL,NULL,'Мускатный орех','Мускатный орех',NULL,false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('8b92da5b-892a-5c28-ae06-182d254687b2',NULL,NULL,NULL,'Мед','Мед',NULL,false),
-	 ('e2c11382-0412-5636-95f9-86c53b83629e',NULL,NULL,NULL,'Начинка','Начинка','сухофрукты, орехи',false),
-	 ('facb1701-378a-5464-8d47-0125500e0f3a',NULL,NULL,NULL,'Начинкажюльен грибной','Начинкажюльен грибной',NULL,false),
-	 ('85759161-d1a1-5eec-af9b-1d341026533d',NULL,NULL,NULL,'Нут','Нут','Раздел: Ингредиенты для карри',false),
-	 ('c9702512-8b24-5ee1-ba35-edd850041a3c',NULL,NULL,NULL,'Овощи по выбору','Овощи по выбору','у меня тыква и цукини; Раздел: Ингредиенты для карри',false),
-	 ('7645fe13-3398-5057-a216-e91cf06ef461',NULL,NULL,NULL,'Овощной бульон','Овощной бульон',NULL,false),
-	 ('8460acd2-6b82-56df-96d3-29a8605a182b',NULL,NULL,NULL,'Овсяные сливки','Овсяные сливки',NULL,false),
-	 ('23773894-cdfb-5005-b5a6-0c76a5bf02f6',NULL,NULL,NULL,'Овсяные хлопья','Овсяные хлопья',NULL,false),
-	 ('a436c550-c6e6-5049-9319-3ede60d718cb',NULL,NULL,NULL,'Овсяные хлопья без глютена','Овсяные хлопья без глютена',NULL,false),
-	 ('477a150b-c7d7-5845-84e6-6ef853dca327',NULL,NULL,NULL,'Огурцы','Огурцы','Раздел: Ингредиенты для салата',false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('352d8afb-0f97-5de2-a460-968e36ecf244',NULL,NULL,NULL,'Оливки','Оливки',NULL,false),
-	 ('22e69402-41ae-5cd0-87ec-e68447cc11e5',NULL,NULL,NULL,'Орегано','Орегано','Раздел: Ингредиенты для соуса',false),
-	 ('97beb515-943d-5a8b-9100-2f7a2471ba87',NULL,NULL,NULL,'Орехи','Орехи',NULL,false),
-	 ('ed426749-cf2d-555d-ac6a-eea3365deae5',NULL,NULL,NULL,'Орехи грецкие','Орехи грецкие','или любые по вкусу',false),
-	 ('2fc83e21-d021-5646-acf2-74e7f1745fad',NULL,NULL,NULL,'Острый перец','Острый перец','Раздел: Ингредиенты для «бекона»',false),
-	 ('928ef100-3feb-5e17-9351-d5a42f58aaed',NULL,NULL,NULL,'Пажитник молотый','Пажитник молотый','по желанию; Раздел: Ингредиенты для начинки с фаршем из фасоли',false),
-	 ('c2144e2f-7e15-5b03-bb98-5a2c88e1ad9a',NULL,NULL,NULL,'Паприка','Паприка','Раздел: Вариант 2',false),
-	 ('389cb4b0-c501-5f31-a2ca-9c0c5d1d2f8d',NULL,NULL,NULL,'Паприка копченая','Паприка копченая','натурального копчения; Раздел: Барбекю соус',false),
-	 ('53c35600-d58b-51bb-b65b-8998aab99d22',NULL,NULL,NULL,'Паста ореховая','Паста ореховая','фундук, миндаль, кешью, подсолнечник, кокосовая паста и т.д.',false),
-	 ('6ecb4c22-d683-525f-9bd5-1a4564818887',NULL,NULL,NULL,'Томатная паста','Томатная паста','Раздел: Ингредиенты для начинки с фаршем из фасоли; Раздел: Барбекю соус',false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('b07f8f1d-df35-58c0-b3a0-dc827192505f',NULL,NULL,NULL,'Пекинская капуста','Пекинская капуста',NULL,false),
-	 ('f2e9c448-c9cf-5f14-9a95-91235d826ab3',NULL,NULL,NULL,'Пергамент для выпечки','Пергамент для выпечки','Раздел: Тот же бисквит савоярди, но пропитан ягодным пюре. Крем сделан более нейтральным по вкусу и более светлым - для лучшего сочетания с ягодами. В прослойку добавлен клубничный джем. Можно собрать в виде торта "Фрезье" - с цельными ягодами клубники по периметру и на разрезе - и он без сомнений вызовет восторг у семьи и гостей.',false),
-	 ('02922fee-9ec2-56b8-8491-3d36eaca7335',NULL,NULL,NULL,'Перец белый','Перец белый',NULL,false),
-	 ('e1647ace-cb1e-5c7c-8ed7-a6f47f95b2ad',NULL,NULL,NULL,'Перец сладкий','Перец сладкий',NULL,false),
-	 ('3b57745e-ccdb-5972-ac50-7f5247e08655',NULL,NULL,NULL,'Перец сладкий запеченный','Перец сладкий запеченный',NULL,false),
-	 ('67816b8d-b42a-5d1d-b5be-144282df4927',NULL,NULL,NULL,'Перец чили свежий','Перец чили свежий','по желанию',false),
-	 ('4e5188eb-ac95-502a-81cf-8a4a7973d1d6',NULL,NULL,NULL,'Перец черный','Перец черный','Раздел: Ингредиенты для начинки с картошкой и грибами',false),
-	 ('93e3f557-a326-5b31-9bcf-2b6a1c9ca04a',NULL,NULL,NULL,'Перец черный молотый','Перец черный молотый','Раздел: Ингредиенты для начинки с фаршем из фасоли',false),
-	 ('ecf08b78-17c0-503b-9ef7-26108fb75e91',NULL,NULL,NULL,'Петрушка','Петрушка',NULL,false),
-	 ('7c3f5db2-fc29-5e9a-a248-c20ea9fbd9fc',NULL,NULL,NULL,'Помидор','Помидор','очищенные/протёртые',false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('6b4ba6e3-74e2-54a9-8879-edf13451b244',NULL,NULL,NULL,'Помидоры черри','Помидоры черри',NULL,false),
-	 ('a72af268-3dd8-58d1-be0b-42bcfd48ef6b',NULL,NULL,NULL,'Протертые томаты','Протертые томаты',NULL,false),
-	 ('5c3e9db6-3f89-535f-9035-8e2b04ec6ce0',NULL,NULL,NULL,'Пряности','Пряности','Раздел: Ингредиенты для кекса',false),
-	 ('b887a3d4-5bd4-5746-9ecc-92553a79663b',NULL,NULL,NULL,'Псиллиум','Псиллиум','цельный',false),
-	 ('36aee9fe-196d-5b77-9b60-1a100466e652',NULL,NULL,NULL,'Псиллиум цельный','Псиллиум цельный',NULL,false),
-	 ('1999e680-7ac5-5285-b615-94b4ad501e77',NULL,NULL,NULL,'Псиллиум шелуха','Псиллиум шелуха',NULL,false),
-	 ('3a1cd39e-cec7-543b-9759-bde7daec371d',NULL,NULL,NULL,'Пшено','Пшено','Раздел: Для котлет',false),
-	 ('c608611c-22bd-5e37-a603-afa0f6525a5f',NULL,NULL,NULL,'Яблочное пюре','Яблочное пюре','Раздел: Для теста; Раздел: Барбекю соус; готовое или самодельное из запечённых зелёных яблок',false),
-	 ('cb3b977b-e4c9-53fa-9383-1b716de9d08c',NULL,NULL,NULL,'Разрыхлитель','Разрыхлитель','Раздел: Ингредиенты для кекса',false),
-	 ('6a3a0636-a3c4-5eed-95a5-2593d2dffeca',NULL,NULL,NULL,'Рис','Рис','Раздел: Ингредиенты для риса',false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('40fcbd45-bae4-54f3-8d9c-595d86745f43',NULL,NULL,NULL,'Рисовая бумага','Рисовая бумага',NULL,false),
-	 ('db6ef57e-caee-5092-8010-e04ef42a904c',NULL,NULL,NULL,'Рукола','Рукола',NULL,false),
-	 ('1022bab1-90d2-57be-add0-cd9aa9d0a423',NULL,NULL,NULL,'Салат фриллис','Салат фриллис','Раздел: Ингредиенты для салата',false),
-	 ('a58bff9f-b034-53c9-9a5b-2932e7f61d26',NULL,NULL,NULL,'Сахар','Сахар','Раздел: Ингредиенты для кекса',false),
-	 ('a9b0e13a-3138-5a17-a37b-e09bed645d1e',NULL,NULL,NULL,'Сахар панела','Сахар панела','Раздел: Для теста',false),
-	 ('9fbb86ee-092d-5fa9-b4dc-e845e3019b89',NULL,NULL,NULL,'Сахар тростниковый','Сахар тростниковый',NULL,false),
-	 ('d56b7753-5bb3-5465-9b6b-d5a9a964688b',NULL,NULL,NULL,'Свекла','Свекла',NULL,false),
-	 ('a5593de5-0438-5a7d-9c70-cd49195facf4',NULL,NULL,NULL,'Семена амаранта','Семена амаранта','или киноа',false),
-	 ('6a4daef6-0e4c-5b49-ac40-c882869fbf13',NULL,NULL,NULL,'Семена горчицы','Семена горчицы','Раздел: Барбекю соус',false),
-	 ('ee3cce66-8244-5982-ad5d-a8b5eaedac23',NULL,NULL,NULL,'Семена льна','Семена льна',NULL,false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('87ebb42f-67b1-5e5e-9ae5-151955c6d64b',NULL,NULL,NULL,'Сироп','Сироп',NULL,false),
-	 ('65c5a320-8738-50ac-b17a-5c203b6ac1c1',NULL,NULL,NULL,'Сироп топинамбура','Сироп топинамбура','Раздел: Чизкейк',false),
-	 ('487a8345-e9e6-582c-8bd3-f4b0ad244cd6',NULL,NULL,NULL,'Сметанный крем','Сметанный крем',NULL,false),
-	 ('312cb550-e8a8-5271-89c3-06d8ed9359cb',NULL,NULL,NULL,'Сода','Сода','Раздел: Ингредиенты для кекса',false),
-	 ('fa35a350-38aa-51ec-9185-46bcc2c07bb8',NULL,NULL,NULL,'Сок гранатовый','Сок гранатовый',NULL,false),
-	 ('f43099f3-ac3a-53ba-8084-8bca3e764dd0',NULL,NULL,NULL,'Сок и цедра','Сок и цедра',NULL,false),
-	 ('a7b21dea-293a-5652-96b4-72716b5ee432',NULL,NULL,NULL,'Сок из-под сухофруктов','Сок из-под сухофруктов','Раздел: Ингредиенты для кекса',false),
-	 ('914e0df9-971c-51e3-a314-5031c16cea03',NULL,NULL,NULL,'Соль','Соль','для оттенения сладости; Раздел: Барбекю соус',false),
-	 ('f8715b4e-305d-5318-953f-ac8cc71d77c1',NULL,NULL,NULL,'Соль по вкусу','Соль по вкусу','Раздел: Ингредиенты для карри',false),
-	 ('1c73179c-f246-56f5-84b3-a7f222449b7d',NULL,NULL,NULL,'Соль, перец','Соль, перец',NULL,false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('430094cf-2d4a-5e17-b18c-5b2edde4c715',NULL,NULL,NULL,'Соус барбекю','Соус барбекю','Раздел: Для котлет',false),
-	 ('2c8db663-98b8-59ae-83e9-376408cb5347',NULL,NULL,NULL,'Спаржа','Спаржа','Раздел: Ингредиенты для салата',false),
-	 ('69e5987e-6cbd-5583-b42d-d2f86710fe22',NULL,NULL,NULL,'Специи','Специи','острый перец или чёрный перец',false),
-	 ('c4c520bd-d2db-53a9-874b-989ce03ec69f',NULL,NULL,NULL,'Сухофрукты','Сухофрукты','Раздел: Ингредиенты для кекса',false),
-	 ('1ae1e4d0-4d21-5a16-b62f-2c0aab59e785',NULL,NULL,NULL,'Сушеные травы','Сушеные травы','орегано или смесь итальянских трав',false),
-	 ('8eb1095b-6eac-5c60-baa7-53e95bf88beb',NULL,NULL,NULL,'Сырный соус из картошки','Сырный соус из картошки',NULL,false),
-	 ('a6c35db6-8b66-50c2-8e79-f6aec67143fa',NULL,NULL,NULL,'Тапиоковый крахмал','Тапиоковый крахмал','Раздел: Чизкейк',false),
-	 ('55e34641-ed9b-5ae9-9872-7eb2d758c9f2',NULL,NULL,NULL,'Творожный сыр','Творожный сыр',NULL,false),
-	 ('c9775cc5-7f53-5501-bea9-9909fd23259a',NULL,NULL,NULL,'Твердый сыр','Твердый сыр',NULL,false),
-	 ('cebf6875-7da4-5c8f-8e55-f0b8b990cf21',NULL,NULL,NULL,'Тимьян','Тимьян',NULL,false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('cddc2c2b-88b8-5c54-8e35-d4168a0af694',NULL,NULL,NULL,'Тмин','Тмин',NULL,false),
-	 ('5273c607-82de-578c-a21e-83153982f22e',NULL,NULL,NULL,'Травы','Травы','орегано, итальянская смесь',false),
-	 ('56195042-f16f-5822-a651-62d43d3fee37',NULL,NULL,NULL,'Травы итальянские','Травы итальянские','готовая смесь или отдельно базилик, розмарин, орегано, тимьян',false),
-	 ('d59627c3-a64c-5c10-acc4-3e702de6706a',NULL,NULL,NULL,'Тыква','Тыква',NULL,false),
-	 ('a111617d-d2b4-51d9-adf5-8d74d7a85a41',NULL,NULL,NULL,'Тыквенное пюре','Тыквенное пюре',NULL,false),
-	 ('95258fee-371a-561b-9762-92f831d44a36',NULL,NULL,NULL,'Фасоль красная','Фасоль красная','Раздел: Для котлет',false),
-	 ('a128b1f3-0b92-50a8-8b66-3b69bc7cc6ca',NULL,NULL,NULL,'Фасоль красная готовая','Фасоль красная готовая','Раздел: Ингредиенты для начинки с фаршем из фасоли',false),
-	 ('e833d9f3-06a2-5989-a583-e325837945b5',NULL,NULL,NULL,'Форма для сборки торта','Форма для сборки торта','Раздел: Тот же бисквит савоярди, но пропитан ягодным пюре. Крем сделан более нейтральным по вкусу и более светлым - для лучшего сочетания с ягодами. В прослойку добавлен клубничный джем. Можно собрать в виде торта "Фрезье" - с цельными ягодами клубники по периметру и на разрезе - и он без сомнений вызовет восторг у семьи и гостей.',false),
-	 ('f4cd40bd-ce2a-546d-890e-251275ad1828',NULL,NULL,NULL,'Фруктовое','Фруктовое','яблочное, банановое, тыквенное',false),
-	 ('9722b993-1d2a-5a85-b88a-7662e86bc7b9',NULL,NULL,NULL,'Хлопья','Хлопья',NULL,false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('74dba30b-7495-5133-b3b6-efc8865da891',NULL,NULL,NULL,'Хмели-сунели','Хмели-сунели','Раздел: Ингредиенты для начинки с фаршем из фасоли',false),
-	 ('3ee68412-100f-5fae-a89a-a416fa5f1beb',NULL,NULL,NULL,'Цветная капуста','Цветная капуста','Раздел: Вариант 2',false),
-	 ('e0e8a13c-abfd-55b0-9199-41c301eb5f6d',NULL,NULL,NULL,'Цедра апельсина','Цедра апельсина',NULL,false),
-	 ('ac2b5831-f80b-56ce-bb00-014f1a40bf76',NULL,NULL,NULL,'Цедра апельсина и лимона','Цедра апельсина и лимона','по желанию, для ещё большей ароматности; Раздел: Ингредиенты для кекса',false),
-	 ('a30ae4ef-07f9-502f-ad14-c1ed5ca5042b',NULL,NULL,NULL,'Цедра лимона','Цедра лимона',NULL,false),
-	 ('64a97ac3-4cdf-5198-ba0e-e33ff161050a',NULL,NULL,NULL,'Цукаты апельсиновые','Цукаты апельсиновые',NULL,false),
-	 ('a7536601-aa13-59ab-ac5b-0f2f04e9050f',NULL,NULL,NULL,'Чеснок','Чеснок','Раздел: Для котлет',false),
-	 ('4ed1a2d5-6ff6-5273-a230-0905784ab869',NULL,NULL,NULL,'Чеснок сушеный','Чеснок сушеный','Раздел: Барбекю соус',false),
-	 ('23c3e842-e0e2-5e15-887f-c38f188a2fe7',NULL,NULL,NULL,'Чечевица красная','Чечевица красная',NULL,false),
-	 ('a62b2882-7b48-5fb7-9fdc-86c21a327fba',NULL,NULL,NULL,'Черная смородина','Черная смородина',NULL,false);
-INSERT INTO public."Ingredients" ("Id","UsageComment","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
-	 ('d7946e27-c902-5271-8e8b-78a80714b651',NULL,NULL,NULL,'Черный перец','Черный перец',NULL,false),
-	 ('d4495cb8-729c-51ed-bfbd-985a867bb2a9',NULL,NULL,NULL,'Шампиньоны','Шампиньоны','Раздел: Ингредиенты для «бекона»',false),
-	 ('0a463f3f-f8fa-5dd3-9f28-d39b08d2373e',NULL,NULL,NULL,'Шпинат','Шпинат',NULL,false),
-	 ('c2af850e-9593-5627-acc6-92eed80dd7eb',NULL,NULL,NULL,'Яблоко','Яблоко','Раздел: Карамельные яблоки',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('71b5608c-304b-58f9-b5a8-51d8c4bfcb02',NULL,NULL,'Агар-агар','Агар-агар','Раздел: Для глазури',false),
+	 ('2b49d103-8220-5a4b-8c67-7c4d5d07bf80',NULL,NULL,'Аквафаба','Аквафаба','дегидрированная; Раздел: 3 вариант',false),
+	 ('4920840b-dc84-5fa9-a148-9d74e8ff234a',NULL,NULL,'Ананас','Ананас','Раздел: Ингредиенты для карри',false),
+	 ('1979006a-d7d7-505f-a029-4dea97dff18c',NULL,NULL,'Апельсиновый сок','Апельсиновый сок','Раздел: Барбекю соус',false),
+	 ('404a9c1f-8fba-5ee7-b828-40256eb53aab',NULL,NULL,'Базилик сушеный','Базилик сушеный',NULL,false),
+	 ('0020c500-2165-5b16-aba8-775ab26990bd',NULL,NULL,'Баклажан','Баклажан','Раздел: Ингредиенты для «бекона»',false),
+	 ('19a55aa8-5c1e-51fd-94f0-f69d724dad2e',NULL,NULL,'Банан','Банан','Раздел: Ингредиенты на 6 кексов',false),
+	 ('c1e42c12-b4a4-5baf-a322-18dba72b4eeb',NULL,NULL,'Батат запеченный','Батат запеченный',NULL,false),
+	 ('212eb083-c0ee-56fa-a173-762130cdb096',NULL,NULL,'Блины "шоколадные"','Блины "шоколадные"',NULL,false),
+	 ('54b71c87-9feb-5500-8376-71646a51c747',NULL,NULL,'Блины','Блины',NULL,false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('be0e5010-6f3d-5b34-8686-3b95354f32cf',NULL,NULL,'Брокколи','Брокколи','Раздел: Ингредиенты для салата',false),
+	 ('c2201b6d-8bef-535a-8f0e-1487fdef6966',NULL,NULL,'Брюссельская капуста','Брюссельская капуста','Раздел: Ингредиенты для салата',false),
+	 ('52a9f464-487d-5694-950f-ad8055950445',NULL,NULL,'Ваниль','Ваниль','у меня порошок из сушёных стручков; экстракт/паста/семена; Раздел: Чизкейк',false),
+	 ('b238e952-6b98-59ed-b16e-607a509ada2e',NULL,NULL,'Вареная сгущенка','Вареная сгущенка',NULL,false),
+	 ('c28bad38-775f-51c8-9d09-877e3b039384',NULL,NULL,'Вешенки','Вешенки','или шампиньоны; Раздел: Ингредиенты для начинки с картошкой и грибами',false),
+	 ('12b65300-9582-587b-80fa-30d4e720f95e',NULL,NULL,'Вода','Вода','Раздел: Для теста; Раздел: Ингредиенты для риса из цветной капусты',false),
+	 ('e01d8bf5-b6bc-54c3-a3d7-9d6ddc746508',NULL,NULL,'Воздушный амарант','Воздушный амарант',NULL,false),
+	 ('0358f024-c462-55a5-8295-63b999c64af6',NULL,NULL,'Готовая фасоль','Готовая фасоль',NULL,false),
+	 ('15e4f6d6-7076-55da-be9f-716e7fdc9dcd',NULL,NULL,'Грецкие орехи','Грецкие орехи',NULL,false),
+	 ('2235fb17-4534-5d00-8535-0c1ca798e9d9',NULL,NULL,'Грибы','Грибы','Раздел: Для котлет; шампиньоны/вешенки',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('0a02c657-918d-571d-bcc7-638b4a1dd439',NULL,NULL,'Для блинов: блины "жюльен"','Для блинов: блины "жюльен"','Раздел: Где ещё использовать',false),
+	 ('f44e3551-3273-5986-a3fc-8f8ef023f827',NULL,NULL,'Заварная часть','Заварная часть','Раздел: Сметанный крем',false),
+	 ('c372b164-b120-5058-aec0-b9bd6cb0e974',NULL,NULL,'Зелень','Зелень','укроп, кинза',false),
+	 ('e9ff9e8a-992c-50d5-8adc-e3a8c177c473',NULL,NULL,'Зелёная стручковая фасоль','Зелёная стручковая фасоль','Раздел: Ингредиенты для салата',false),
+	 ('0ac426d9-0a4f-569c-89f3-e36e89d6c036',NULL,NULL,'Зелёный горошек','Зелёный горошек',NULL,false),
+	 ('fc025614-2325-583a-96de-e0414ca683f6',NULL,NULL,'Зира','Зира','кумин; Раздел: Для котлет',false),
+	 ('ff2ccb17-41b5-5d43-b248-96ff694e30a0',NULL,NULL,'Имбирь','Имбирь','Раздел: Ингредиенты для риса из цветной капусты; Раздел: Ингредиенты для заправки',false),
+	 ('3ef92a25-a13a-5092-ab2e-ca888882145c',NULL,NULL,'Кабачок','Кабачок','кабачок',false),
+	 ('48c8e9bf-f165-5a36-b310-222557ee72fb',NULL,NULL,'Капуста белокочанная','Капуста белокочанная',NULL,false),
+	 ('22f9818d-0447-5fb7-b7c9-0c363bc291cd',NULL,NULL,'Капуста квашеная','Капуста квашеная','Раздел: Ингредиенты для начинки с фаршем из фасоли',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('5474fb48-c744-54be-907e-eab24e35113a',NULL,NULL,'Карри','Карри','Раздел: Ингредиенты для риса',false),
+	 ('6b1ad9a9-aca8-5772-ba17-e3cda280ef4f',NULL,NULL,'Картофель','Картофель','Раздел: Для котлет; Раздел: Ингредиенты для начинки с картошкой и грибами; Раздел: Вариант 2',false),
+	 ('a4cf9371-34fc-5ed9-89eb-89919f1a7ae2',NULL,NULL,'Картофельное тесто','Картофельное тесто','Раздел: Сборка пиццы',false),
+	 ('6748e8ff-7d0f-5397-82ab-476688288098',NULL,NULL,'Картофельный крахмал','Картофельный крахмал','Раздел: Ингредиенты на 6 кексов',false),
+	 ('991a021e-f869-533e-9aca-6ce7cb2a56f6',NULL,NULL,'Кешью','Кешью','сухой; Раздел: Чизкейк',false),
+	 ('7f9c1e58-9d54-5561-a922-c075d743c9d9',NULL,NULL,'Кинза','Кинза','Раздел: Для котлет',false),
+	 ('13900dce-3e69-555f-b088-0de3c5191a04',NULL,NULL,'Киноа','Киноа',NULL,false),
+	 ('4c95ad06-5dc8-5aca-95f1-4e5ec6ca6abe',NULL,NULL,'Клубника','Клубника','Раздел: Клубничная начинка; Раздел: Ингредиенты на 6 кексов',false),
+	 ('9f32f189-d775-5836-a228-8cc178ad6b61',NULL,NULL,'Клюква вяленая','Клюква вяленая',NULL,false),
+	 ('af17f6a2-686a-5f33-bbcb-7eca5f7e8253',NULL,NULL,'Кокосовая паста','Кокосовая паста','урбеч',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('a8f06049-4e76-5faf-b56f-8390febd646a',NULL,NULL,'Сметана кокосовая','Сметана кокосовая','Раздел: Сметанный крем',false),
+	 ('080247c9-68d3-5101-bb73-c46ae33f9172',NULL,NULL,'Кокосовая стружка','Кокосовая стружка','чем она жирнее и свежее, тем вкуснее',false),
+	 ('bdb1f62b-9795-5f76-93ed-d821c53847af',NULL,NULL,'Кокосовое масло','Кокосовое масло','Раздел: Для теста',false),
+	 ('901d9bb5-ee88-5b3b-88c7-8cef61ae9cc7',NULL,NULL,'Кокосовое молоко','Кокосовое молоко','Раздел: Карамельные яблоки',false),
+	 ('28f6f887-a6bc-5516-8224-9d3e1ab0d1fd',NULL,NULL,'Кокосовые аминокислоты','Кокосовые аминокислоты','Раздел: Ингредиенты для «бекона»; Раздел: Для котлет',false),
+	 ('3dcb7477-4d6c-5511-a5bd-0e87d40c7258',NULL,NULL,'Кокосовые сливки','Кокосовые сливки','Раздел: Чизкейк',false),
+	 ('66516ef7-5f43-5dd5-810f-7599a6f5dfaf',NULL,NULL,'Сахар кокосовый','Сахар кокосовый','Раздел: Карамельные яблоки; Раздел: Клубничная начинка',false),
+	 ('bf5422ac-1f24-5072-a884-a95f187f4125',NULL,NULL,'Кокосовый урбеч','Кокосовый урбеч','паста',false),
+	 ('55d9459f-854a-5c23-9b9a-c7e483c2ad3c',NULL,NULL,'Консервированная белая фасоль','Консервированная белая фасоль','Раздел: 1 вариант',false),
+	 ('e339dae4-1a9d-58e4-99a8-ddc9111c5498',NULL,NULL,'Кориандр молотый','Кориандр молотый',NULL,false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('f686acf2-e4eb-5a42-8406-eec1f40b66bb',NULL,NULL,'Корица','Корица','Раздел: Карамельные яблоки',false),
+	 ('5810a4fc-11b8-52ab-b0ea-964b8cdd922f',NULL,NULL,'Крахмал','Крахмал','Раздел: Для теста',false),
+	 ('0f4e75e9-6d57-5882-bdb7-13668f79ea15',NULL,NULL,'Крахмал тапиоки','Крахмал тапиоки','Раздел: Ингредиенты для кекса',false),
+	 ('e91a3f6f-3727-5704-84f2-52632fe4e5a6',NULL,NULL,'Ксантановая камедь','Ксантановая камедь',NULL,false),
+	 ('059b624a-58b3-57d4-b265-60297c25b705',NULL,NULL,'Кумин','Кумин','зира',false),
+	 ('460c3eb1-42a4-51f8-9f19-adc6c7c31d50',NULL,NULL,'Кунжут','Кунжут','Раздел: Ингредиенты для заправки',false),
+	 ('20bf6981-7489-5bad-950d-061c1bb5c974',NULL,NULL,'Куркума','Куркума','Раздел: Ингредиенты для риса из цветной капусты',false),
+	 ('936a779e-cd4b-5155-a500-60406cbd0c94',NULL,NULL,'Кэроб','Кэроб',NULL,false),
+	 ('6e0729ea-b639-5cbf-81bb-62077b288e9a',NULL,NULL,'Лимонный сок','Лимонный сок','Раздел: Ингредиенты для заправки; Раздел: Вариант 2',false),
+	 ('202b5aa5-f84b-5069-925d-75e1d4689953',NULL,NULL,'Листы нори','Листы нори','сушёные без масла, нарезать на небольшие прямоугольники',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('9a346879-8bfd-5ec0-9ece-3fd7d055b41a',NULL,NULL,'Лук','Лук','Раздел: Для котлет',false),
+	 ('c8403fed-a2c7-5fe7-b6bf-7abc0318a2df',NULL,NULL,'Лук зелёный','Лук зелёный','Раздел: Ингредиенты для заправки',false),
+	 ('bf06a3d3-930d-53ef-9b07-25e3258628b1',NULL,NULL,'Лук красный','Лук красный',NULL,false),
+	 ('13b4b933-fc3a-50e0-b7e6-98e7846bdc5a',NULL,NULL,'Лук сушеный','Лук сушеный','Раздел: Вариант 2',false),
+	 ('32a10b45-e313-5e70-8494-75e4f950046c',NULL,NULL,'Любые на ваш выбор','Любые на ваш выбор','изюм, вишня, клюква, инжир, курага, чернослив',false),
+	 ('bf8d085d-86d2-5160-b280-3f07544f5528',NULL,NULL,'Мак','Мак',NULL,false),
+	 ('bdad705e-0503-5cd1-ae9a-1a7c2b042e1b',NULL,NULL,'Манго','Манго','Раздел: Для глазури',false),
+	 ('0de53086-87c0-5c69-8bbf-76e02e762c75',NULL,NULL,'Маринад от оливок','Маринад от оливок',NULL,false),
+	 ('6d7c7c6d-484e-5382-93a4-fb11a6297228',NULL,NULL,'Марципан','Марципан','Раздел: Ингредиенты для кекса',false),
+	 ('57aeb289-29b4-53a8-a2fa-7d829d726779',NULL,NULL,'Масло виноградной косточки','Масло виноградной косточки',NULL,false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('14bd91a5-5046-5625-b8d6-9092ba5dda87',NULL,NULL,'Масло растительное','Масло растительное',NULL,false),	 
+	 ('62c68ca9-8b5c-56aa-8b73-0afe7d8ceac6',NULL,NULL,'Миндаль','Миндаль',NULL,false),
+	 ('01ae364e-e413-58aa-bd32-fe30202262ce',NULL,NULL,'Миндаль жареный в начинку','Миндаль жареный в начинку',NULL,false),
+	 ('742b1e2c-5773-5aaa-b50e-4ab543be0b01',NULL,NULL,'Миндальная мука','Миндальная мука','Раздел: Для теста',false),
+	 ('b571b6f7-732a-5e48-bc2a-0698b9a88bfb',NULL,NULL,'Миндальное молоко','Миндальное молоко','Раздел: Заварная часть крема',false),
+	 ('576705f0-eaa9-566f-b59c-85b72ca84ba7',NULL,NULL,'Миндальные лепестки','Миндальные лепестки',NULL,false),
+	 ('002952e4-01f8-5883-acb7-9a1e3e7c7fa0',NULL,NULL,'Молоко','Молоко','Раздел: Ингредиенты для кекса',false),
+	 ('2c3c04f0-535b-564a-9561-deba13ded4ae',NULL,NULL,'Молоко ореховое','Молоко ореховое',NULL,false),
+	 ('da004df1-ec9f-58cd-a1b6-7c4f272fce7a',NULL,NULL,'Молоко растительное','Молоко растительное','так как в рецепте нет масла, лучше брать более жирное, у меня кокосовое',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('c0b08006-0854-5fc8-9e94-4c07e59f35d0',NULL,NULL,'Морковь','Морковь','Раздел: Ингредиенты для кекса',false),
+	 ('190930b0-2b41-554f-b454-0e92b1a8e1fb',NULL,NULL,'Мука бурого риса','Мука бурого риса',NULL,false),
+	 ('d6a1eeb1-b75b-5365-ac54-dbac72700a31',NULL,NULL,'Мука зеленой гречки','Мука зеленой гречки','Раздел: Ингредиенты для кекса',false),
+	 ('485c8656-bc51-510e-b851-5c4b7d976a14',NULL,NULL,'Мука зеленых бананов','Мука зеленых бананов',NULL,false),
+	 ('d854a993-11cf-5ffd-bbca-d1c059ac666f',NULL,NULL,'Мука нутовая','Мука нутовая',NULL,false),
+	 ('fe445b5d-0f48-52a7-9949-6751f7b5286b',NULL,NULL,'Мука овсяная','Мука овсяная',NULL,false),
+	 ('83918035-d6e2-5d58-9f5f-e75b7aee1fa9',NULL,NULL,'Мука пшенная','Мука пшенная',NULL,false),
+	 ('1d5bb7b9-4276-5b02-97b0-9ef7c52e860e',NULL,NULL,'Мука рисовая','Мука рисовая',NULL,false),
+	 ('e9beccc4-222a-5078-9b90-f6cd1360bd67',NULL,NULL,'Мука чечевицы','Мука чечевицы',NULL,false),
+	 ('9874594b-71a3-50cc-b314-09e52b719724',NULL,NULL,'Мускатный орех','Мускатный орех',NULL,false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('8b92da5b-892a-5c28-ae06-182d254687b2',NULL,NULL,'Мед','Мед',NULL,false),	 
+	 ('85759161-d1a1-5eec-af9b-1d341026533d',NULL,NULL,'Нут','Нут','Раздел: Ингредиенты для карри',false),	 
+	 ('7645fe13-3398-5057-a216-e91cf06ef461',NULL,NULL,'Овощной бульон','Овощной бульон',NULL,false),
+	 ('8460acd2-6b82-56df-96d3-29a8605a182b',NULL,NULL,'Овсяные сливки','Овсяные сливки',NULL,false),
+	 ('23773894-cdfb-5005-b5a6-0c76a5bf02f6',NULL,NULL,'Овсяные хлопья','Овсяные хлопья',NULL,false),
+	 ('a436c550-c6e6-5049-9319-3ede60d718cb',NULL,NULL,'Овсяные хлопья без глютена','Овсяные хлопья без глютена',NULL,false),
+	 ('477a150b-c7d7-5845-84e6-6ef853dca327',NULL,NULL,'Огурцы','Огурцы','Раздел: Ингредиенты для салата',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('352d8afb-0f97-5de2-a460-968e36ecf244',NULL,NULL,'Оливки','Оливки',NULL,false),
+	 ('22e69402-41ae-5cd0-87ec-e68447cc11e5',NULL,NULL,'Орегано','Орегано','Раздел: Ингредиенты для соуса',false),
+	 ('97beb515-943d-5a8b-9100-2f7a2471ba87',NULL,NULL,'Орехи','Орехи',NULL,false),
+	 ('ed426749-cf2d-555d-ac6a-eea3365deae5',NULL,NULL,'Орехи грецкие','Орехи грецкие','или любые по вкусу',false),
+	 ('2fc83e21-d021-5646-acf2-74e7f1745fad',NULL,NULL,'Острый перец','Острый перец','Раздел: Ингредиенты для «бекона»',false),
+	 ('928ef100-3feb-5e17-9351-d5a42f58aaed',NULL,NULL,'Пажитник молотый','Пажитник молотый','по желанию; Раздел: Ингредиенты для начинки с фаршем из фасоли',false),
+	 ('c2144e2f-7e15-5b03-bb98-5a2c88e1ad9a',NULL,NULL,'Паприка','Паприка','Раздел: Вариант 2',false),
+	 ('389cb4b0-c501-5f31-a2ca-9c0c5d1d2f8d',NULL,NULL,'Паприка копченая','Паприка копченая','натурального копчения; Раздел: Барбекю соус',false),
+	 ('53c35600-d58b-51bb-b65b-8998aab99d22',NULL,NULL,'Паста ореховая','Паста ореховая','фундук, миндаль, кешью, подсолнечник, кокосовая паста и т.д.',false),
+	 ('6ecb4c22-d683-525f-9bd5-1a4564818887',NULL,NULL,'Томатная паста','Томатная паста','Раздел: Ингредиенты для начинки с фаршем из фасоли; Раздел: Барбекю соус',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('b07f8f1d-df35-58c0-b3a0-dc827192505f',NULL,NULL,'Пекинская капуста','Пекинская капуста',NULL,false),	 
+	 ('02922fee-9ec2-56b8-8491-3d36eaca7335',NULL,NULL,'Перец белый','Перец белый',NULL,false),
+	 ('e1647ace-cb1e-5c7c-8ed7-a6f47f95b2ad',NULL,NULL,'Перец сладкий','Перец сладкий',NULL,false),
+	 ('3b57745e-ccdb-5972-ac50-7f5247e08655',NULL,NULL,'Перец сладкий запеченный','Перец сладкий запеченный',NULL,false),
+	 ('67816b8d-b42a-5d1d-b5be-144282df4927',NULL,NULL,'Перец чили свежий','Перец чили свежий','по желанию',false),
+	 ('4e5188eb-ac95-502a-81cf-8a4a7973d1d6',NULL,NULL,'Перец черный','Перец черный','Раздел: Ингредиенты для начинки с картошкой и грибами',false),
+	 ('93e3f557-a326-5b31-9bcf-2b6a1c9ca04a',NULL,NULL,'Перец черный молотый','Перец черный молотый','Раздел: Ингредиенты для начинки с фаршем из фасоли',false),
+	 ('ecf08b78-17c0-503b-9ef7-26108fb75e91',NULL,NULL,'Петрушка','Петрушка',NULL,false),
+	 ('7c3f5db2-fc29-5e9a-a248-c20ea9fbd9fc',NULL,NULL,'Помидор','Помидор','очищенные/протёртые',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('6b4ba6e3-74e2-54a9-8879-edf13451b244',NULL,NULL,'Помидоры черри','Помидоры черри',NULL,false),
+	 ('a72af268-3dd8-58d1-be0b-42bcfd48ef6b',NULL,NULL,'Протертые томаты','Протертые томаты',NULL,false),
+	 ('5c3e9db6-3f89-535f-9035-8e2b04ec6ce0',NULL,NULL,'Пряности','Пряности','Раздел: Ингредиенты для кекса',false),
+	 ('b887a3d4-5bd4-5746-9ecc-92553a79663b',NULL,NULL,'Псиллиум','Псиллиум','цельный',false),
+	 ('36aee9fe-196d-5b77-9b60-1a100466e652',NULL,NULL,'Псиллиум цельный','Псиллиум цельный',NULL,false),
+	 ('1999e680-7ac5-5285-b615-94b4ad501e77',NULL,NULL,'Псиллиум шелуха','Псиллиум шелуха',NULL,false),
+	 ('3a1cd39e-cec7-543b-9759-bde7daec371d',NULL,NULL,'Пшено','Пшено','Раздел: Для котлет',false),	 
+	 ('cb3b977b-e4c9-53fa-9383-1b716de9d08c',NULL,NULL,'Разрыхлитель','Разрыхлитель','Раздел: Ингредиенты для кекса',false),
+	 ('6a3a0636-a3c4-5eed-95a5-2593d2dffeca',NULL,NULL,'Рис','Рис','Раздел: Ингредиенты для риса',false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('40fcbd45-bae4-54f3-8d9c-595d86745f43',NULL,NULL,'Рисовая бумага','Рисовая бумага',NULL,false),
+	 ('db6ef57e-caee-5092-8010-e04ef42a904c',NULL,NULL,'Рукола','Рукола',NULL,false),
+	 ('1022bab1-90d2-57be-add0-cd9aa9d0a423',NULL,NULL,'Салат фриллис','Салат фриллис','Раздел: Ингредиенты для салата',false),
+	 ('a58bff9f-b034-53c9-9a5b-2932e7f61d26',NULL,NULL,'Сахар','Сахар','Раздел: Ингредиенты для кекса',false),
+	 ('a9b0e13a-3138-5a17-a37b-e09bed645d1e',NULL,NULL,'Сахар панела','Сахар панела','Раздел: Для теста',false),
+	 ('9fbb86ee-092d-5fa9-b4dc-e845e3019b89',NULL,NULL,'Сахар тростниковый','Сахар тростниковый',NULL,false),
+	 ('d56b7753-5bb3-5465-9b6b-d5a9a964688b',NULL,NULL,'Свекла','Свекла',NULL,false),
+	 ('a5593de5-0438-5a7d-9c70-cd49195facf4',NULL,NULL,'Семена амаранта','Семена амаранта','или киноа',false),
+	 ('6a4daef6-0e4c-5b49-ac40-c882869fbf13',NULL,NULL,'Семена горчицы','Семена горчицы','Раздел: Барбекю соус',false),
+	 ('ee3cce66-8244-5982-ad5d-a8b5eaedac23',NULL,NULL,'Семена льна','Семена льна',NULL,false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('87ebb42f-67b1-5e5e-9ae5-151955c6d64b',NULL,NULL,'Сироп','Сироп',NULL,false),
+	 ('65c5a320-8738-50ac-b17a-5c203b6ac1c1',NULL,NULL,'Сироп топинамбура','Сироп топинамбура','Раздел: Чизкейк',false),
+	 ('487a8345-e9e6-582c-8bd3-f4b0ad244cd6',NULL,NULL,'Сметанный крем','Сметанный крем',NULL,false),
+	 ('312cb550-e8a8-5271-89c3-06d8ed9359cb',NULL,NULL,'Сода','Сода','Раздел: Ингредиенты для кекса',false),
+	 ('fa35a350-38aa-51ec-9185-46bcc2c07bb8',NULL,NULL,'Сок гранатовый','Сок гранатовый',NULL,false),
+	 ('f43099f3-ac3a-53ba-8084-8bca3e764dd0',NULL,NULL,'Сок и цедра','Сок и цедра',NULL,false),
+	 ('a7b21dea-293a-5652-96b4-72716b5ee432',NULL,NULL,'Сок из-под сухофруктов','Сок из-под сухофруктов','Раздел: Ингредиенты для кекса',false),
+	 ('914e0df9-971c-51e3-a314-5031c16cea03',NULL,NULL,'Соль','Соль','для оттенения сладости; Раздел: Барбекю соус',false),
+	 ('f8715b4e-305d-5318-953f-ac8cc71d77c1',NULL,NULL,'Соль по вкусу','Соль по вкусу','Раздел: Ингредиенты для карри',false),
+	 ('1c73179c-f246-56f5-84b3-a7f222449b7d',NULL,NULL,'Соль, перец','Соль, перец',NULL,false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('430094cf-2d4a-5e17-b18c-5b2edde4c715',NULL,NULL,'Соус барбекю','Соус барбекю','Раздел: Для котлет',false),
+	 ('2c8db663-98b8-59ae-83e9-376408cb5347',NULL,NULL,'Спаржа','Спаржа','Раздел: Ингредиенты для салата',false),
+	 ('69e5987e-6cbd-5583-b42d-d2f86710fe22',NULL,NULL,'Специи','Специи','острый перец или чёрный перец',false),
+	 ('c4c520bd-d2db-53a9-874b-989ce03ec69f',NULL,NULL,'Сухофрукты','Сухофрукты','Раздел: Ингредиенты для кекса',false),
+	 ('1ae1e4d0-4d21-5a16-b62f-2c0aab59e785',NULL,NULL,'Сушеные травы','Сушеные травы','орегано или смесь итальянских трав',false),
+	 ('8eb1095b-6eac-5c60-baa7-53e95bf88beb',NULL,NULL,'Сырный соус из картошки','Сырный соус из картошки',NULL,false),
+	 ('a6c35db6-8b66-50c2-8e79-f6aec67143fa',NULL,NULL,'Тапиоковый крахмал','Тапиоковый крахмал','Раздел: Чизкейк',false),
+	 ('55e34641-ed9b-5ae9-9872-7eb2d758c9f2',NULL,NULL,'Творожный сыр','Творожный сыр',NULL,false),
+	 ('c9775cc5-7f53-5501-bea9-9909fd23259a',NULL,NULL,'Твердый сыр','Твердый сыр',NULL,false),
+	 ('cebf6875-7da4-5c8f-8e55-f0b8b990cf21',NULL,NULL,'Тимьян','Тимьян',NULL,false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('cddc2c2b-88b8-5c54-8e35-d4168a0af694',NULL,NULL,'Тмин','Тмин',NULL,false),
+	 ('5273c607-82de-578c-a21e-83153982f22e',NULL,NULL,'Травы','Травы','орегано, итальянская смесь',false),
+	 ('56195042-f16f-5822-a651-62d43d3fee37',NULL,NULL,'Травы итальянские','Травы итальянские','готовая смесь или отдельно базилик, розмарин, орегано, тимьян',false),
+	 ('d59627c3-a64c-5c10-acc4-3e702de6706a',NULL,NULL,'Тыква','Тыква',NULL,false),
+	 ('a111617d-d2b4-51d9-adf5-8d74d7a85a41',NULL,NULL,'Тыквенное пюре','Тыквенное пюре',NULL,false),
+	 ('95258fee-371a-561b-9762-92f831d44a36',NULL,NULL,'Фасоль красная','Фасоль красная','Раздел: Для котлет',false),	 
+	 ('f4cd40bd-ce2a-546d-890e-251275ad1828',NULL,NULL,'Фруктовое','Фруктовое','яблочное, банановое, тыквенное',false),
+	 ('9722b993-1d2a-5a85-b88a-7662e86bc7b9',NULL,NULL,'Хлопья','Хлопья',NULL,false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('74dba30b-7495-5133-b3b6-efc8865da891',NULL,NULL,'Хмели-сунели','Хмели-сунели','Раздел: Ингредиенты для начинки с фаршем из фасоли',false),
+	 ('3ee68412-100f-5fae-a89a-a416fa5f1beb',NULL,NULL,'Цветная капуста','Цветная капуста','Раздел: Вариант 2',false),
+	 ('e0e8a13c-abfd-55b0-9199-41c301eb5f6d',NULL,NULL,'Цедра апельсина','Цедра апельсина',NULL,false),	 
+	 ('a30ae4ef-07f9-502f-ad14-c1ed5ca5042b',NULL,NULL,'Цедра лимона','Цедра лимона',NULL,false),
+	 ('64a97ac3-4cdf-5198-ba0e-e33ff161050a',NULL,NULL,'Цукаты апельсиновые','Цукаты апельсиновые',NULL,false),
+	 ('a7536601-aa13-59ab-ac5b-0f2f04e9050f',NULL,NULL,'Чеснок','Чеснок','Раздел: Для котлет',false),
+	 ('4ed1a2d5-6ff6-5273-a230-0905784ab869',NULL,NULL,'Чеснок сушеный','Чеснок сушеный','Раздел: Барбекю соус',false),
+	 ('23c3e842-e0e2-5e15-887f-c38f188a2fe7',NULL,NULL,'Чечевица красная','Чечевица красная',NULL,false),
+	 ('a62b2882-7b48-5fb7-9fdc-86c21a327fba',NULL,NULL,'Черная смородина','Черная смородина',NULL,false);
+INSERT INTO public."Ingredients" ("Id","PhotoId","RecipeId","Name","Description","Comment","IsDeleted") VALUES
+	 ('d7946e27-c902-5271-8e8b-78a80714b651',NULL,NULL,'Черный перец','Черный перец',NULL,false),
+	 ('d4495cb8-729c-51ed-bfbd-985a867bb2a9',NULL,NULL,'Шампиньоны','Шампиньоны','Раздел: Ингредиенты для «бекона»',false),
+	 ('0a463f3f-f8fa-5dd3-9f28-d39b08d2373e',NULL,NULL,'Шпинат','Шпинат',NULL,false),
+	 ('c2af850e-9593-5627-acc6-92eed80dd7eb',NULL,NULL,'Яблоко','Яблоко','Раздел: Карамельные яблоки',false);
 INSERT INTO public."Recipes" ("Id","BaseRecipe","PhotoId","VideoId","CookingTime","CookingComment","IngredientComment","StorageComment","UsageComment","Name","Description","Comment","IsDeleted") VALUES
 	 ('95c477b5-b4c3-5f98-8219-25c043c64a63',NULL,NULL,NULL,'00:45:00',NULL,'Паста ореховая,Сухофрукты,Сушённые ягоды,Корица,Кардомон,Имбирь,Гвоздика,Орехи,Семена,Кокосовая стружка,Воздушный амарант,Киноа,Фруктовое пюре,Овощное пюре; можно добавлять и комбинировать по вкусу','Хранить в закрытой банке/контейнере до 1 месяца; Хранить в закрытой банке/контейнере до 1 месяца','есть с растительным молоком / йогуртом / творожком / банановым молоком / мороженым; топпинг к смузи-боулам; добавка к фруктовым салатам; запекать с ней фрукты (яблоки, груши, персики, абрикосы, сливы) и ягоды; добавлять в батончики и конфеты','Гранола','крупы,подсластитель,жиры опциональны',NULL,false),
 	 ('a0c83758-63a4-584c-bcb3-8f12803a1b2e',NULL,NULL,NULL,'00:20:00',NULL,NULL,NULL,'Посыпать смузи-боулы и каши; Добавлять в домашние конфеты и батончики; Смешивать с гранолой; Украшать десерты; Использовать как хрустящий элемент в салатах','Воздушный амарант','крупы','"Попкорн" из амаранта, который можно использовать как составляющую десертов и несладких блюд, как декор',false),

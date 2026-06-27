@@ -47,7 +47,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinva.Gastronomy.Media.WebA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_scripts", "_scripts", "{32D3A27C-7290-4F18-A3C6-5D5E6B464A5C}"
 	ProjectSection(SolutionItems) = preProject
-		_scripts\recipes-data-import.sql = _scripts\recipes-data-import.sql
 		_scripts\start-docker.develop.bat = _scripts\start-docker.develop.bat
 		_scripts\start-docker.prod.bat = _scripts\start-docker.prod.bat
 	EndProjectSection

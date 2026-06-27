@@ -24,14 +24,7 @@
                     </IconField>                    
                 </div>                
             </template>             
-        </Toolbar>        
-        <div class="categories-container" v-if="showCategories">
-            <SelectButton v-model="selectedCategories" 
-                          :options="categories"                          
-                          optionLabel="name"                          
-                          multiple
-                          aria-labelledby="multiple" />
-        </div>                    
+        </Toolbar>                
         <div class="cards-container">
             <RecipeCard v-for="(item, index) in filtredRecipes" :key="item.id"
                         @click="goToRecipe(filtredRecipes[index]?.id!)"
@@ -46,31 +39,20 @@ import {ref, computed} from 'vue'
 import {useRouter} from 'vue-router'
 import RecipeCard from '../components/recipeCard.vue'
 import {useRecipesStore} from '../stores/recipesStore'
-import type { CategoryViewModel, RecipeCardViewModel } from '../types/recipeTypes';
+import type { RecipeCardViewModel } from '../types/recipeTypes';
 import IconToggleButton from '@/modules/ui/components/iconToggleButton.vue'
 import { useToast } from 'primevue';
 
 const router = useRouter();
 const toasts = useToast();
 const showCategories = ref(true);
-const categories = ref<{name: string, value: CategoryViewModel}[]>();
-const selectedCategories = ref<{name: string, value: CategoryViewModel}[]>([]);
 const recipeStore = useRecipesStore(); 
 const recipeCardVms = ref<RecipeCardViewModel[]>([]);
 const searchStr = ref('');
 const filtredRecipes = computed(() => {
     return recipeCardVms.value.filter(a => 
     {
-        let result = a.name?.toLowerCase().includes(searchStr.value.toLowerCase());
-        if (selectedCategories.value)
-        {
-            let isMatchRecipe = true;
-            for (const category of selectedCategories.value) 
-            {
-                isMatchRecipe &&= a.categories?.some(b => b.id == category.value.id!) == true;
-            }
-            result &&= isMatchRecipe;
-        }
+        let result = a.name?.toLowerCase().includes(searchStr.value.toLowerCase());        
         return result;
     })
 });
@@ -79,16 +61,7 @@ function filterRecipes()
 {
     recipeCardVms.value.filter(a => 
     {
-        let result = a.name?.toLowerCase().includes(searchStr.value.toLowerCase());
-        if (selectedCategories.value)
-        {
-            let isMatchRecipe = true;
-            for (const category of selectedCategories.value) 
-            {
-                isMatchRecipe &&= a.categories?.some(b => b.id == category.value.id!) == true;
-            }
-            result &&= isMatchRecipe;
-        }
+        let result = a.name?.toLowerCase().includes(searchStr.value.toLowerCase());        
         return result;
     })
 }
@@ -108,19 +81,8 @@ async function loadData()
             toasts.add({severity: 'error', summary: 'Ошибка', 
                 detail: "Не удалось получить список рецептов", life: 3500});            
             return;
-        }     
-        const categoriesRes = await recipeStore.getRecipeCategories();
-        if (!categoriesRes.isSuccess)     
-        {
-            toasts.add({severity: 'error', summary: 'Ошибка', 
-                detail: "Не удалось получить список категорий", life: 3500});            
-            return;
-        }
-        recipeCardVms.value = recipesRes.data;
-        categories.value = categoriesRes.data.filter(a => a.name).map(a => 
-        {
-            return {name: a.name!, value: a};
-        });
+        }             
+        recipeCardVms.value = recipesRes.data;        
     } catch (error) {
         toasts.add({severity: 'error', summary: 'Ошибка', detail: error, life: 3500});            
     }    

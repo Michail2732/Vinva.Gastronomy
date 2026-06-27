@@ -3,6 +3,7 @@ import LoginPage from '@/modules/auth/pages/loginPage.vue'
 import RegisterPage from '@/modules/auth/pages/registerPage.vue'
 import RecipesPage from '@/modules/recipes/pages/recipesPage.vue'
 import RecipeDetailsPage from '@/modules/recipes/pages/recipeDetailsPage.vue'
+import RecipeDetailsEditPage from '@/modules/recipes/pages/recipeDetailsEditPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/modules/auth/stores/authStore'
 
@@ -44,6 +45,12 @@ const routes = [
         path: '/recipe/:id',
         name: 'recipe',
         component: RecipeDetailsPage,
+        beforeEnter: checkAuth        
+      },
+      {
+        path: '/edit/',
+        name: 'editRecipe',
+        component: RecipeDetailsEditPage,
         beforeEnter: checkAuth        
       }
     ]

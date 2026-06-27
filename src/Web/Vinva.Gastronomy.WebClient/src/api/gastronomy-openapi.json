@@ -88,86 +88,6 @@
         }
       }
     },
-    "/api/Categories/Create": {
-      "post": {
-        "tags": [
-          "Category"
-        ],
-        "operationId": "CategoryCreate",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCategoryCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateCategoryResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Categories/Search": {
-      "post": {
-        "tags": [
-          "Category"
-        ],
-        "operationId": "CategorySearch",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SearchCategoriesQuery"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SearchCategoriesQueryResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Categories/Remove": {
-      "delete": {
-        "tags": [
-          "Category"
-        ],
-        "operationId": "CategoryRemove",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveCategoryCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Images/GetByIds": {
       "post": {
         "tags": [
@@ -374,72 +294,6 @@
         }
       }
     },
-    "/api/Recipes/AddIngredients": {
-      "patch": {
-        "tags": [
-          "Recipe"
-        ],
-        "operationId": "RecipeAddIngredients",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddIngredientCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Recipes/AddCategories": {
-      "patch": {
-        "tags": [
-          "Recipe"
-        ],
-        "operationId": "RecipeAddCategories",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddRecipeCategoriesCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Recipes/AddSteps": {
-      "patch": {
-        "tags": [
-          "Recipe"
-        ],
-        "operationId": "RecipeAddSteps",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddStepsCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Recipes/Create": {
       "post": {
         "tags": [
@@ -462,35 +316,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CreateRecipeResponce"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Recipes/SearchByCategories": {
-      "post": {
-        "tags": [
-          "Recipe"
-        ],
-        "operationId": "RecipeSearchByCategories",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetRecipeByCategoryRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetRecipeByCategoryResponce"
                 }
               }
             }
@@ -579,83 +404,17 @@
         }
       }
     },
-    "/api/Recipes/RemoveIngredients": {
+    "/api/Recipes/Update": {
       "patch": {
         "tags": [
           "Recipe"
         ],
-        "operationId": "RecipeRemoveIngredients",
+        "operationId": "RecipeUpdate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RemoveIngredientsCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Recipes/RemoveCategories": {
-      "patch": {
-        "tags": [
-          "Recipe"
-        ],
-        "operationId": "RecipeRemoveCategories",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveRecipeCategoryCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Recipes/RemoveSteps": {
-      "patch": {
-        "tags": [
-          "Recipe"
-        ],
-        "operationId": "RecipeRemoveSteps",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveStepsCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Recipes/ReorderSteps": {
-      "patch": {
-        "tags": [
-          "Recipe"
-        ],
-        "operationId": "RecipeReorderSteps",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReorderStepsCommand"
+                "$ref": "#/components/schemas/UpdateCommand"
               }
             }
           }
@@ -722,104 +481,6 @@
   },
   "components": {
     "schemas": {
-      "AddIngredientCommand": {
-        "type": "object",
-        "properties": {
-          "recipeId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RecipeIngredientDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "AddRecipeCategoriesCommand": {
-        "type": "object",
-        "properties": {
-          "recipeId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "categoryIds": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "AddStepsCommand": {
-        "required": [
-          "recipeId"
-        ],
-        "type": "object",
-        "properties": {
-          "recipeId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "steps": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RecipeStepDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CategoryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "comment": {
-            "type": "string",
-            "nullable": true
-          },
-          "type": {
-            "enum": [
-              "Recipe",
-              "Ingredient"
-            ],
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ChangeSeqNumberDto": {
-        "type": "object",
-        "properties": {
-          "seqNumber1": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "seqNumber2": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
       "Condition": {
         "required": [
           "field",
@@ -860,41 +521,6 @@
         },
         "additionalProperties": false
       },
-      "CreateCategoryCommand": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "comment": {
-            "type": "string",
-            "nullable": true
-          },
-          "type": {
-            "enum": [
-              "Recipe",
-              "Ingredient"
-            ],
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreateCategoryResponse": {
-        "type": "object",
-        "properties": {
-          "categoryId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "additionalProperties": false
-      },
       "CreateImageCommandResponse": {
         "required": [
           "imageId"
@@ -919,7 +545,7 @@
             "type": "string",
             "nullable": true
           },
-          "usageComment": {
+          "comment": {
             "type": "string",
             "nullable": true
           }
@@ -1022,44 +648,6 @@
         "properties": {
           "ingredient": {
             "$ref": "#/components/schemas/IngredientDto"
-          }
-        },
-        "additionalProperties": false
-      },
-      "GetRecipeByCategoryRequest": {
-        "type": "object",
-        "properties": {
-          "include": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "nullable": true
-          },
-          "exclude": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "nullable": true
-          },
-          "includeLogicAnd": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "GetRecipeByCategoryResponce": {
-        "type": "object",
-        "properties": {
-          "recipes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RecipeDto"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1177,28 +765,6 @@
         },
         "additionalProperties": false
       },
-      "IngredientCategoryDto": {
-        "required": [
-          "id",
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "IngredientDto": {
         "required": [
           "id",
@@ -1218,10 +784,6 @@
             "type": "string",
             "nullable": true
           },
-          "usageComment": {
-            "type": "string",
-            "nullable": true
-          },
           "photoId": {
             "type": "string",
             "format": "uuid",
@@ -1230,13 +792,6 @@
           "recipeId": {
             "type": "string",
             "format": "uuid",
-            "nullable": true
-          },
-          "categories": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/IngredientCategoryDto"
-            },
             "nullable": true
           }
         },
@@ -1278,28 +833,6 @@
         },
         "additionalProperties": false
       },
-      "RecipeCategoryDto": {
-        "required": [
-          "id",
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "RecipeDto": {
         "required": [
           "id",
@@ -1319,12 +852,16 @@
             "type": "string",
             "nullable": true
           },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
           "baseRecipe": {
             "type": "string",
             "format": "uuid",
             "nullable": true
           },
-          "photoId": {
+          "titleImageId": {
             "type": "string",
             "format": "uuid",
             "nullable": true
@@ -1355,6 +892,14 @@
             "type": "string",
             "nullable": true
           },
+          "otherImageIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
           "ingredients": {
             "type": "array",
             "items": {
@@ -1362,10 +907,10 @@
             },
             "nullable": true
           },
-          "categories": {
+          "properties": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeCategoryDto"
+              "$ref": "#/components/schemas/RecipePropertyDto"
             },
             "nullable": true
           },
@@ -1395,6 +940,10 @@
             "type": "string",
             "nullable": true
           },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
           "isRequired": {
             "type": "boolean"
           },
@@ -1402,6 +951,36 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/IngredientQuantityDto"
+            },
+            "nullable": true
+          },
+          "state": {
+            "enum": [
+              "None",
+              "New",
+              "Change",
+              "Remove"
+            ],
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipePropertyDto": {
+        "required": [
+          "name",
+          "values"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
             },
             "nullable": true
           }
@@ -1415,6 +994,10 @@
         ],
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
           "description": {
             "type": "string",
             "nullable": true
@@ -1431,6 +1014,15 @@
             "type": "string",
             "format": "uuid",
             "nullable": true
+          },
+          "state": {
+            "enum": [
+              "None",
+              "New",
+              "Change",
+              "Remove"
+            ],
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -1463,125 +1055,12 @@
         },
         "additionalProperties": false
       },
-      "RemoveCategoryCommand": {
-        "type": "object",
-        "properties": {
-          "categoryId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "additionalProperties": false
-      },
       "RemoveIngredientCommand": {
         "type": "object",
         "properties": {
           "ingredientId": {
             "type": "string",
             "format": "uuid"
-          }
-        },
-        "additionalProperties": false
-      },
-      "RemoveIngredientsCommand": {
-        "type": "object",
-        "properties": {
-          "recipeId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "ingredientIds": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RemoveRecipeCategoryCommand": {
-        "type": "object",
-        "properties": {
-          "recipeId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "categoryIds": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RemoveStepsCommand": {
-        "required": [
-          "recipeId",
-          "seqNumbers"
-        ],
-        "type": "object",
-        "properties": {
-          "recipeId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "seqNumbers": {
-            "type": "array",
-            "items": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ReorderStepsCommand": {
-        "type": "object",
-        "properties": {
-          "recipeId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ChangeSeqNumberDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "SearchCategoriesQuery": {
-        "required": [
-          "query"
-        ],
-        "type": "object",
-        "properties": {
-          "query": {
-            "$ref": "#/components/schemas/SearchQuery"
-          }
-        },
-        "additionalProperties": false
-      },
-      "SearchCategoriesQueryResponse": {
-        "required": [
-          "items"
-        ],
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CategoryDto"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1626,6 +1105,78 @@
               "Descending"
             ],
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateCommand": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "cookingTime": {
+            "type": "string",
+            "format": "date-span",
+            "nullable": true
+          },
+          "baseRecipe": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "storageComment": {
+            "type": "string",
+            "nullable": true
+          },
+          "usageComment": {
+            "type": "string",
+            "nullable": true
+          },
+          "ingredientComment": {
+            "type": "string",
+            "nullable": true
+          },
+          "cookingComment": {
+            "type": "string",
+            "nullable": true
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeStepDto"
+            },
+            "nullable": true
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeIngredientDto"
+            },
+            "nullable": true
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipePropertyDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

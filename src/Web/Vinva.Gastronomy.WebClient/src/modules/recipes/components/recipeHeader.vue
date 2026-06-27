@@ -6,8 +6,11 @@
             </div>
             <div class="col-12 md:col-6 recipe-header-col2-container">
                 <div class="categories-container">
-                    <span v-for="category in vm?.categories" class="category-text">
-                        {{ category.name }}
+                    <span v-for="property in vm?.properties" class="category-text">
+                        {{ property.name }}
+                        <Tag v-for="val in property.values" value="{{ val }}">
+                            {{ val }}
+                        </Tag>
                     </span>
                 </div>                    
                 <div class="recipe-name-container">

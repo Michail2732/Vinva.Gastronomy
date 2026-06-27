@@ -11,8 +11,7 @@ using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Update;
 namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
 {    
     [ApiController]
-    [Route("api/Recipes")]
-    [Authorize(Roles = UserRoles.Manager)]
+    [Route("api/Recipes")]    
     [Produces("application/json")]
     [Consumes("application/json")]
     public class RecipeController : Controller
@@ -25,6 +24,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
         }        
 
         [HttpPost("Create")]
+        [Authorize(Roles = UserRoles.Manager)]
         public async Task<CreateRecipeResponce> Create([FromBody]CreateRecipeCommand command)
         {
             var result = await _mediator.Send(command);
@@ -58,7 +58,8 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
             await _mediator.Send(command);            
         }
 
-        [HttpPatch("Update")]        
+        [HttpPatch("Update")]
+        [Authorize(Roles = UserRoles.Manager)]
         public async Task Update([FromBody]UpdateCommand command)
         {
             await _mediator.Send(command);            
