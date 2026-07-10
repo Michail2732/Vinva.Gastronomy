@@ -3,6 +3,8 @@ import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import InputNumber from 'primevue/inputnumber'
+import ListBox from 'primevue/listbox'
 import Toolbar from 'primevue/toolbar'
 import ConfirmationService from 'primevue/confirmationservice'
 import Aura from '@primeuix/themes/aura'
@@ -140,7 +142,10 @@ export default {
     app.component('Image', Image)    
     app.component('IconField', IconField);
     app.component('InputIcon', InputIcon);
-    app.component('InputText', InputText)
+    app.component('InputText', InputText);
+    app.component('InputNumber', InputNumber);
+
+    app.component('ListBox', ListBox);
     
     app.component('Message', Message);
     app.component('MultiSelect', MultiSelect);  

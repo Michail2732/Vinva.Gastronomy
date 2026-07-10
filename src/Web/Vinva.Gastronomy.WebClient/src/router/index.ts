@@ -50,8 +50,7 @@ const routes = [
       {
         path: '/edit/',
         name: 'editRecipe',
-        component: RecipeDetailsEditPage,
-        beforeEnter: checkAuth        
+        component: RecipeDetailsEditPage,     
       }
     ]
   },  

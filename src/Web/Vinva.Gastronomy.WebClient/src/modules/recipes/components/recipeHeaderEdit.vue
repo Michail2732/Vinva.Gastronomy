@@ -1,27 +1,21 @@
 <template>
-    <div class="header col-12 md:col-6 flex flex-column gap-4">
-        <FloatLabel variant="over" class="recipe-name">            
-            <InputText id="recipe-name-input"
-                       v-model="name" fluid/>        
-            <label for="recipe-name-input">
-                Название
-            </label>                        
-        </FloatLabel>               
+    <div class="header col-12 md:col-8 flex flex-column gap-4">
+        <div class="recipe-name">  
+            <label class="font-bold mb-2 block">Название</label>
+            <InputText v-model="name" placeholder="Введите название рецепта" fluid/>
+        </div>               
         <div class="description">
-            <label>Описание</label>
+            <label class="font-bold block mb-2">Описание</label>
             <Editor v-model="description"/>
         </div>           
         <div>
-            <label>Коментарий</label>
+            <label class="font-bold mb-2 block">Коментарий</label>
             <Editor v-model="comment"/>
         </div>        
-        <FloatLabel variant="over" class="recipe-time">            
-            <InputText id="recipe-time-input"
-                       v-model="name" fluid/>        
-            <label for="recipe-time-input">
-                Время приготовления
-            </label>                        
-        </FloatLabel>      
+        <div variant="over" class="recipe-time">     
+            <label class="font-bold mb-2 block">Время приготовления (мин)</label>       
+            <InputNumber mode="decimal"  v-model="time" fluid/>
+        </div>      
     </div>
 </template>
 <script setup lang="ts">
@@ -30,13 +24,13 @@ import { ref } from 'vue';
 const name = ref('');
 const description = ref('');
 const comment = ref('')
+const time = ref(0);
 
 
 </script>
 <style lang="scss">
     .header
-    {        
-        max-width: 1200px;
+    {                
         margin: 0 auto;
     }
 </style>
