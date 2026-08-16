@@ -22,7 +22,8 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Create
 
             var newIngredient = new Ingredient(request.Name, request.Description)
             {
-                Comment = request.Comment
+                PhotoId = request.PhotoId,
+                RecipeId = request.RecipeId
             };
 
             var result = await _dbContext.Ingredients.AddAsync(newIngredient, cancellationToken);

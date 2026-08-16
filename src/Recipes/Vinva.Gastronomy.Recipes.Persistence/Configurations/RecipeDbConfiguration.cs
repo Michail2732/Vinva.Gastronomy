@@ -14,29 +14,24 @@ using Vinva.Gastronomy.Recipes.Domain.Models;
 
 namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 {
-    public class RecipeDbConfiguration : DescriptiveEntityDbConfiguration<Recipe>
+    public class RecipeDbConfiguration : IEntityTypeConfiguration<Recipe>
     {
-        public override void Configure(EntityTypeBuilder<Recipe> builder)
-        {
-            base.Configure(builder);
+        public void Configure(EntityTypeBuilder<Recipe> builder)
+        {            
             builder.ToTable("Recipes");
 
             builder.HasKey(x => x.Id);
 
+            builder.Property(a => a.Name)
+                   .HasMaxLength(CommonConstants.MaxLengthName)
+                   .IsRequired();
+
+            builder.Property(a => a.Description)
+                   .HasMaxLength(CommonConstants.MaxLengthDescription)
+                   .IsRequired();
+
             builder.HasIndex(a => a.Name)
-                   .IsUnique();            
-
-            builder.Property(a => a.CookingComment)
-                   .HasMaxLength(CommonConstants.MaxLengthComment);
-
-            builder.Property(a => a.IngredientComment)
-                   .HasMaxLength(CommonConstants.MaxLengthComment);
-
-            builder.Property(a => a.StorageComment)
-                   .HasMaxLength(CommonConstants.MaxLengthComment);
-
-            builder.Property(a => a.UsageComment)
-                   .HasMaxLength(CommonConstants.MaxLengthComment);
+                   .IsUnique();                        
 
             builder.Property(a => a.OtherImageIds)
                    .HasColumnType("uuid[]")
@@ -45,17 +40,11 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
             builder.HasOne<Recipe>()
                    .WithMany()                   
                    .HasForeignKey(a => a.BaseRecipe)
-                   .OnDelete(DeleteBehavior.SetNull);
-
-            builder.HasMany(a => a.Steps)
-                   .WithOne()
-                   .HasForeignKey(a => a.RecipeId);
+                   .OnDelete(DeleteBehavior.SetNull);            
 
             builder.HasMany(a => a.Ingredients)
                    .WithOne()
-                   .HasForeignKey(a => a.RecipeId);            
-
-            builder.HasQueryFilter(b => !b.IsDeleted);
+                   .HasForeignKey(a => a.RecipeId);                        
 
             var jsonOptions = new JsonSerializerOptions
             {
@@ -81,8 +70,8 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .Metadata
                    .SetValueComparer(comparer);
 
-                           builder.Property(x => x.Properties)
-                               .HasColumnType("jsonb");
-                       }
-                   }
+            builder.Property(x => x.Properties)
+                   .HasColumnType("jsonb");            
+        }
+    }
 }

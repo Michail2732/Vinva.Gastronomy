@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Vinva.Gastronomy.Common;
 using Vinva.Gastronomy.Common.Entities;
 using Vinva.Gastronomy.Recipes.Domain.Exceptions;
 using Vinva.Gastronomy.Recipes.Domain.Models;
@@ -10,35 +11,20 @@ using Vinva.Gastronomy.Recipes.Domain.Validations;
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
     [DisplayName("Рецепт")]
-    public class Recipe : DescriptiveSoftDeleteEntityOfT<Guid>, IAggregateRoot
-    {        
-        private readonly List<RecipeStep> _recipeSteps = new();
+    public class Recipe : EntityOfT<Guid>, IAggregateRoot
+    {                
         private readonly List<RecipeIngredient> _recipeIngredients = new();
         private RecipeProperties _recipeProperties = RecipeProperties.CreatEmpty();
 
-
+        public string Name { get; }
+        public string Description { get; }
         public Guid? BaseRecipe { get; set; }        
-
-        public Guid? TitleImageId { get; set; }
-        
+        public Guid? TitleImageId { get; set; }        
         public Guid? VideoId { get; set; }
-
         public TimeSpan? CookingTime { get; set; }
-
-        public string? CookingComment { get; set; }        
-
-        public string? IngredientComment { get; set; }
-
-        public string? StorageComment { get; set; }
-
-        public string? UsageComment { get; set; }
-
-        public IReadOnlyList<RecipeStep> Steps => _recipeSteps;
-
         public IReadOnlyList<RecipeIngredient> Ingredients => _recipeIngredients;
-
         public List<Guid> OtherImageIds { get; init; } = new();
-
+        public string Document { get; set; }
         public RecipeProperties Properties
         {
             get => _recipeProperties;
@@ -47,38 +33,24 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
 
 
 #pragma warning disable CS8618
-        private Recipe() { }
+        private Recipe() : base(GetDefaultGuid()) { }
 #pragma warning restore CS8618 
 
-        public Recipe(string name, string description, Guid? baseRecipe = null) : base(name, description) 
+        public Recipe(string name, string description, Guid? baseRecipe = null) : this(GenerateGuid(), name, description, baseRecipe)
         {
-            BaseRecipe = baseRecipe;
+            
         }
 
-        public Recipe(Guid id, string name, string description, Guid? baseRecipe = null) : base(id, name, description)
+        public Recipe(Guid id, string name, string description, Guid? baseRecipe = null) : base(id)
         {
-            BaseRecipe = baseRecipe;
+            ArgumentException.ThrowIfNullOrEmpty(name);
+            ArgumentException.ThrowIfNullOrEmpty(description);
+            Name = name;
+            Description = description;
+            BaseRecipe = baseRecipe;            
         }                
         
-        
-        public Recipe AddStep(RecipeStep step)
-        {
-            var maxSeqNumber = _recipeSteps.Max(a => a.SeqNumber);            
-            step.SeqNumber = maxSeqNumber+1;
-            step.RecipeId = step.RecipeId;                        
-            _recipeSteps.Add(step);
-            return this; 
-        }
-
-        public void RemoveStep(Guid stepId)
-        {
-            var step = _recipeSteps.FirstOrDefault(a => a.Id == stepId);
-            if (step == null)
-                throw new RecipeDomainException(GetType(), RecipeDomainErrors.RecipeStepNotExists(Id, stepId));
-            if (!_recipeSteps.Remove(step))
-                throw new RecipeDomainException(GetType(), RecipeDomainErrors.FailedRemoveStep(Id, stepId));
-        }        
-
+                
         public void AddIngredient(RecipeIngredient ingredient)
         {
             if (_recipeIngredients.Contains(ingredient))

@@ -5,14 +5,21 @@ using Vinva.Gastronomy.Recipes.Domain.Entities;
 
 namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 {
-    public class IngredientDbConfiguration : DescriptiveEntityDbConfiguration<Ingredient>
+    public class IngredientDbConfiguration : IEntityTypeConfiguration<Ingredient>
     {        
-        public override void Configure(EntityTypeBuilder<Ingredient> builder)
-        {
-            base.Configure(builder);
+        public void Configure(EntityTypeBuilder<Ingredient> builder)
+        {            
             builder.ToTable("Ingredients");
 
             builder.HasKey(a => a.Id);
+
+            builder.Property(a => a.Name)
+                   .HasMaxLength(CommonConstants.MaxLengthName)
+                   .IsRequired();
+
+            builder.Property(a => a.Description)
+                   .HasMaxLength(CommonConstants.MaxLengthDescription)
+                   .IsRequired();
 
             builder.HasIndex(a => a.Name)
                    .IsUnique();
@@ -22,11 +29,6 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .HasForeignKey(a => a.RecipeId)
                    .IsRequired(false)
                    .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Property(a => a.Comment)
-                   .HasMaxLength(CommonConstants.MaxLengthComment);            
-
-            builder.HasQueryFilter(b => !b.IsDeleted);
         }
     }
 }

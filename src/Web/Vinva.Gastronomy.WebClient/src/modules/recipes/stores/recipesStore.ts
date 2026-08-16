@@ -2,8 +2,8 @@ import {defineStore} from 'pinia'
 import { ref, computed } from 'vue'
 import {recipeSearchByQuery, recipeSearchByIngredients} from '@/api/gastronomy_generated/sdk.gen'
 import { ApiGastronomyError, type ApiDataResult } from '@/api/types';
-import type { RecipeDto } from '@/api/gastronomy_generated';
-import type { CategoryRecipesViewModel, RecipeCardViewModel, RecipeDetailsViewModel } from '../types/recipeTypes';
+import { Logic, Operator, type RecipeDto } from '@/api/gastronomy_generated';
+import type { RecipeCardViewModel, RecipeDetailsViewModel } from '../types/recipeTypes';
 
 export const useRecipesStore = defineStore('recipes', () => 
 {                
@@ -19,8 +19,8 @@ export const useRecipesStore = defineStore('recipes', () =>
                         [
                             {
                                 field: 'Id',
-                                logic: 'Or',
-                                operator: 'Equals',
+                                logic: Logic.OR,
+                                operator: Operator.EQUALS,
                                 value: id
                             }
                         ]

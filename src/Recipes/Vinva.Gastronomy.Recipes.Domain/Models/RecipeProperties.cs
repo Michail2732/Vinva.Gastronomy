@@ -49,5 +49,7 @@ namespace Vinva.Gastronomy.Recipes.Domain.Models
         public IEnumerator<RecipeProperty> GetEnumerator() => _properties.GetEnumerator();        
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        
     }
 }

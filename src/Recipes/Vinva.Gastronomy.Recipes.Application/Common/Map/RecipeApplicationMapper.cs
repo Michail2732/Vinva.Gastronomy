@@ -20,15 +20,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                 PhotoId = ingredient.PhotoId,
                 RecipeId = ingredient.RecipeId                
             };
-        }
-
-        public RecipeStep Map(RecipeStepDto stepDto, Guid recipeId)
-        {
-            return new RecipeStep(stepDto.Id, recipeId, stepDto.Description, stepDto.SeqNumber, stepDto.PhotoId)
-            {
-                
-            };
-        }
+        }        
 
         public RecipeIngredient Map(RecipeIngredientDto ingredientDto, Guid recipeId)
         {
@@ -40,8 +32,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                          Measure = a.Measure,
                          Quantity = a.Quantity
                      }))
-                , ingredientDto.IsRequired
-                , ingredientDto.Comment);            
+                , ingredientDto.IsRequired);            
         }
 
         public RecipeProperties Map(IEnumerable<RecipePropertyDto> propDtos)
@@ -69,16 +60,12 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                 Id = recipe.Id,
                 Name = recipe.Name,
                 Description = recipe.Description,
-                Comment = recipe.Comment,
                 BaseRecipe = recipe.BaseRecipe,
-                CookingComment = recipe.CookingComment,
                 CookingTime = recipe.CookingTime,
-                IngredientComment = recipe.IngredientComment,
                 TitleImageId = recipe.TitleImageId,
                 OtherImageIds = recipe.OtherImageIds,
-                StorageComment = recipe.StorageComment,
-                UsageComment = recipe.UsageComment,
                 VideoId = recipe.VideoId,
+                Document = recipe.Document,
                 Properties = recipe.Properties.Select(a => new RecipePropertyDto
                 {
                     Name = a.Name,
@@ -94,15 +81,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common.Map
                         Measure = a.Measure,
                         Quantity = a.Quantity
                     }).ToArray()
-                }).ToArray(),
-                Steps = recipe.Steps.Select(a => new RecipeStepDto
-                {                    
-                    Id = a.Id,
-                    Description = a.Description,                    
-                    Comment = a.Comment,
-                    SeqNumber = a.SeqNumber,
-                    PhotoId = a.PhotoId
-                }).ToArray(),
+                }).ToArray()                
             };
         }
     }

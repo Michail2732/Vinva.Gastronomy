@@ -491,29 +491,14 @@
         "type": "object",
         "properties": {
           "logic": {
-            "enum": [
-              "Or",
-              "And"
-            ],
-            "type": "string"
+            "$ref": "#/components/schemas/Logic"
           },
           "field": {
             "type": "string",
             "nullable": true
           },
           "operator": {
-            "enum": [
-              "Less",
-              "LessOrEqual",
-              "Larger",
-              "LargerOrEqual",
-              "Equals",
-              "NotEquals",
-              "StartWith",
-              "EndWith",
-              "Contains"
-            ],
-            "type": "string"
+            "$ref": "#/components/schemas/Operator"
           },
           "value": {
             "nullable": true
@@ -610,6 +595,15 @@
           }
         },
         "additionalProperties": false
+      },
+      "DtoState": {
+        "enum": [
+          "None",
+          "New",
+          "Change",
+          "Remove"
+        ],
+        "type": "string"
       },
       "GetImagesByIdsQuery": {
         "required": [
@@ -815,6 +809,13 @@
         },
         "additionalProperties": false
       },
+      "Logic": {
+        "enum": [
+          "Or",
+          "And"
+        ],
+        "type": "string"
+      },
       "LoginRequest": {
         "required": [
           "login",
@@ -832,6 +833,20 @@
           }
         },
         "additionalProperties": false
+      },
+      "Operator": {
+        "enum": [
+          "Less",
+          "LessOrEqual",
+          "Larger",
+          "LargerOrEqual",
+          "Equals",
+          "NotEquals",
+          "StartWith",
+          "EndWith",
+          "Contains"
+        ],
+        "type": "string"
       },
       "RecipeDto": {
         "required": [
@@ -955,13 +970,7 @@
             "nullable": true
           },
           "state": {
-            "enum": [
-              "None",
-              "New",
-              "Change",
-              "Remove"
-            ],
-            "type": "string"
+            "$ref": "#/components/schemas/DtoState"
           }
         },
         "additionalProperties": false
@@ -1016,13 +1025,7 @@
             "nullable": true
           },
           "state": {
-            "enum": [
-              "None",
-              "New",
-              "Change",
-              "Remove"
-            ],
-            "type": "string"
+            "$ref": "#/components/schemas/DtoState"
           }
         },
         "additionalProperties": false
@@ -1089,6 +1092,13 @@
         },
         "additionalProperties": false
       },
+      "SortDirection": {
+        "enum": [
+          "Ascending",
+          "Descending"
+        ],
+        "type": "string"
+      },
       "Sorting": {
         "required": [
           "property"
@@ -1100,11 +1110,7 @@
             "nullable": true
           },
           "direction": {
-            "enum": [
-              "Ascending",
-              "Descending"
-            ],
-            "type": "string"
+            "$ref": "#/components/schemas/SortDirection"
           }
         },
         "additionalProperties": false
@@ -1240,27 +1246,33 @@
             "nullable": true
           },
           "state": {
-            "enum": [
-              "Active",
-              "Blocked",
-              "Unactive"
-            ],
-            "type": "string"
+            "$ref": "#/components/schemas/UserState"
           },
           "roles": {
             "type": "array",
             "items": {
-              "enum": [
-                "Client",
-                "Manager",
-                "Admin"
-              ],
-              "type": "string"
+              "$ref": "#/components/schemas/UserRole"
             },
             "nullable": true
           }
         },
         "additionalProperties": false
+      },
+      "UserRole": {
+        "enum": [
+          "Client",
+          "Manager",
+          "Admin"
+        ],
+        "type": "string"
+      },
+      "UserState": {
+        "enum": [
+          "Active",
+          "Blocked",
+          "Unactive"
+        ],
+        "type": "string"
       }
     },
     "securitySchemes": {

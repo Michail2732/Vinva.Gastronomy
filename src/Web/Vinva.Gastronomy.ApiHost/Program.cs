@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
+using Vinva.Gastronomy.ApiHost.Swagger;
 using Vinva.Gastronomy.Common.Modularity;
 using Vinva.Gastronomy.Common.Modularity.MediatR;
 using Vinva.Gastronomy.Common.Services;
@@ -43,6 +44,7 @@ moduleContext.ConfigureSwagger(opt =>
         var controllerName = apiDesc.ActionDescriptor.RouteValues["controller"];
         return controllerName + actionName;
     });
+    opt.SchemaFilter<EnumSchemaFilter>();
 });
 
 moduleLoader.RegisterServices(moduleContext);

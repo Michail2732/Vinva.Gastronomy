@@ -8,6 +8,7 @@ import ListBox from 'primevue/listbox'
 import Toolbar from 'primevue/toolbar'
 import ConfirmationService from 'primevue/confirmationservice'
 import Aura from '@primeuix/themes/aura'
+import AutoComplete from 'primevue/autocomplete'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Divider from 'primevue/divider'
@@ -23,11 +24,13 @@ import MultiSelect from 'primevue/multiselect'
 import FloatLabel from 'primevue/floatlabel'
 import Rating from 'primevue/rating'
 import Tag from 'primevue/tag'
+import Textarea from 'primevue/textarea'
 import Editor from 'primevue/editor'
 import ProgressSpinner from 'primevue/progressspinner'
 import Image from 'primevue/image'
 import ToggleButton from 'primevue/togglebutton'
 import Avatar from 'primevue/avatar'
+import CheckBox from 'primevue/checkbox'
 import Badge from 'primevue/badge'
 import Menubar from 'primevue/menubar'
 import Paginator from 'primevue/paginator'
@@ -122,6 +125,7 @@ export default {
     app.use(ConfirmationService);
 
     app.component('Avatar', Avatar);
+    app.component('AutoComplete', AutoComplete);
 
     app.component('Badge', Badge); 
     app.component('Button', Button);
@@ -129,6 +133,7 @@ export default {
     app.component('Card', Card);
     app.component('Column', Column);
     app.component('ConfirmDialog', ConfirmDialog);
+    app.component('CheckBox', CheckBox)
 
     app.component('Divider', Divider);
     app.component('Dialog', Dialog);
@@ -164,5 +169,6 @@ export default {
     app.component('Tag', Tag);
     app.directive('tooltip', Tooltip);
     app.component('Toolbar', Toolbar);
+    app.component('Textarea', Textarea);
   }
 }

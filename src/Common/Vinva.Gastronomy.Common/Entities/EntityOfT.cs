@@ -7,32 +7,24 @@ using Vinva.Gastronomy.Common.Services;
 
 namespace Vinva.Gastronomy.Common
 {
-    public abstract class EntityOfT<T> : Entity, IEntityOfT<T>
-        where T : struct
+    public abstract class EntityOfT<T> : Entity, IEntityOfT<T>        
     {
         public T Id { get; protected set; }
 
         public EntityOfT(T id)
         {
             Id = id;
+        }        
+
+
+        protected static Guid GenerateGuid()
+        {
+            return GuidProvider.Instance.Generate();            
         }
 
-        public EntityOfT()
+        protected static Guid GetDefaultGuid()
         {
-            if (TryGenerateId(out var newId))
-                Id = newId;            
-        }
-
-
-        internal static bool TryGenerateId(out T field)
-        {
-            field = default;
-            if (typeof(T) == typeof(Guid) && GuidProvider.Instance.Generate() is T newId)
-            {
-                field = newId;
-                return true;
-            }
-            return false;
+            return GuidProvider.Instance.Generate();
         }
 
         public override bool Equals(IEntity? other)

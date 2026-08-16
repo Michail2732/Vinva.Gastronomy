@@ -5,9 +5,9 @@ export type ClientOptions = {
 };
 
 export type Condition = {
-    logic: 'Or' | 'And';
+    logic: Logic;
     field: string | null;
-    operator: 'Less' | 'LessOrEqual' | 'Larger' | 'LargerOrEqual' | 'Equals' | 'NotEquals' | 'StartWith' | 'EndWith' | 'Contains';
+    operator: Operator;
     value: unknown;
 };
 
@@ -39,6 +39,13 @@ export type CreateRecipeResponce = {
     recipeId?: string;
     name?: string | null;
 };
+
+export enum DtoState {
+    NONE = 'None',
+    NEW = 'New',
+    CHANGE = 'Change',
+    REMOVE = 'Remove'
+}
 
 export type GetImagesByIdsQuery = {
     imageDtos: Array<ImageQueryDto> | null;
@@ -96,10 +103,27 @@ export type IngredientQuantityDto = {
     quantity: number;
 };
 
+export enum Logic {
+    OR = 'Or',
+    AND = 'And'
+}
+
 export type LoginRequest = {
     login: string | null;
     password: string | null;
 };
+
+export enum Operator {
+    LESS = 'Less',
+    LESS_OR_EQUAL = 'LessOrEqual',
+    LARGER = 'Larger',
+    LARGER_OR_EQUAL = 'LargerOrEqual',
+    EQUALS = 'Equals',
+    NOT_EQUALS = 'NotEquals',
+    START_WITH = 'StartWith',
+    END_WITH = 'EndWith',
+    CONTAINS = 'Contains'
+}
 
 export type RecipeDto = {
     id: string;
@@ -126,7 +150,7 @@ export type RecipeIngredientDto = {
     comment?: string | null;
     isRequired?: boolean;
     quantities: Array<IngredientQuantityDto> | null;
-    state?: 'None' | 'New' | 'Change' | 'Remove';
+    state?: DtoState;
 };
 
 export type RecipePropertyDto = {
@@ -140,7 +164,7 @@ export type RecipeStepDto = {
     comment?: string | null;
     seqNumber: number;
     photoId?: string | null;
-    state?: 'None' | 'New' | 'Change' | 'Remove';
+    state?: DtoState;
 };
 
 export type RegisterCommand = {
@@ -164,9 +188,14 @@ export type SearchQuery = {
     conditions?: Array<Condition> | null;
 };
 
+export enum SortDirection {
+    ASCENDING = 'Ascending',
+    DESCENDING = 'Descending'
+}
+
 export type Sorting = {
     property: string | null;
-    direction?: 'Ascending' | 'Descending';
+    direction?: SortDirection;
 };
 
 export type UpdateCommand = {
@@ -199,9 +228,21 @@ export type UserInfoDto = {
     id: string;
     login: string | null;
     email: string | null;
-    state: 'Active' | 'Blocked' | 'Unactive';
-    roles: Array<'Client' | 'Manager' | 'Admin'> | null;
+    state: UserState;
+    roles: Array<UserRole> | null;
 };
+
+export enum UserRole {
+    CLIENT = 'Client',
+    MANAGER = 'Manager',
+    ADMIN = 'Admin'
+}
+
+export enum UserState {
+    ACTIVE = 'Active',
+    BLOCKED = 'Blocked',
+    UNACTIVE = 'Unactive'
+}
 
 export type AuthenticationLoginData = {
     body?: LoginRequest;

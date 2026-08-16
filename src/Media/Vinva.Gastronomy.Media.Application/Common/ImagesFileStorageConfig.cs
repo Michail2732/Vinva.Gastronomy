@@ -8,6 +8,7 @@ namespace Vinva.Gastronomy.Media.Application.Common
 {
     public class ImagesFileStorageConfig
     {
+        public required string ImagesTempDirectory { get; init; }
         public required string ImagesDirectory { get; init; }
         public required string ImageUrlTemplate { get; init; }
     }

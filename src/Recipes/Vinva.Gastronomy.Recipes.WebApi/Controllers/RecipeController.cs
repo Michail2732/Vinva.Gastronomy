@@ -39,9 +39,9 @@ namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
             return result;
         }
 
-        [HttpPost("SearchByQuery")]
+        [HttpPost("SearchByProperties")]
         [Authorize(Roles = UserRoles.Client)]        
-        public async Task<GetRecipesByFilterQueryResponse> SearchByQuery([FromBody]GetRecipesByFilterQuery request)
+        public async Task<GetRecipesByFilterQueryResponse> SearchByProperties([FromBody]GetRecipesByFilterQuery request)
         {
             var result = await _mediator.Send(request);
             return result;

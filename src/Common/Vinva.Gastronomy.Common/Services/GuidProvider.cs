@@ -13,6 +13,11 @@ namespace Vinva.Gastronomy.Common.Services
             return Uuid.NewSequential();
         }
 
+        public virtual Guid GetDefault()
+        {
+            return Uuid.Nil;
+        }
+
         public static void SetProvider(GuidProvider provider)
         {
             _instance = provider;

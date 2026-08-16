@@ -7,15 +7,9 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Update
     {
         public required Guid Id { get; init; }
         public string? Name { get; init; }
-        public string? Description { get; init; }
-        public string? Comment { get; init; }
+        public string? Description { get; init; }        
         public TimeSpan? CookingTime { get; init; }
-        public Guid? BaseRecipe { get; init; }
-        public string? StorageComment { get; init; }
-        public string? UsageComment { get; init; }
-        public string? IngredientComment { get; init; }
-        public string? CookingComment { get; init; }
-        public RecipeStepDto[]? Steps { get; init; }
+        public Guid? BaseRecipe { get; init; }                
         public RecipeIngredientDto[]? Ingredients { get; init; }
         public RecipePropertyDto[]? Properties { get; init; }
     }

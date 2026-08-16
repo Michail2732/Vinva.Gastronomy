@@ -19,22 +19,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Update
                 RuleFor(a => a.Description)
                 .Must(RecipeDomainValidator.ValidateDescription!)
                 .WithMessage(RecipeDomainErrors.IncorrectDescription);
-            });
-
-            When(a => !string.IsNullOrEmpty(a.Comment), () =>
-            {
-                RuleFor(a => a.Comment)
-                .Must(RecipeDomainValidator.ValidateComment!)
-                .WithMessage(RecipeDomainErrors.IncorrectComment);
-            });
-
-            When(a => !string.IsNullOrEmpty(a.UsageComment), () =>
-            {
-                RuleFor(a => a.UsageComment)
-                .Must(RecipeDomainValidator.ValidateComment!)
-                .WithMessage(RecipeDomainErrors.IncorrectComment);
-            });
-            
+            });                        
         }
     }
 }

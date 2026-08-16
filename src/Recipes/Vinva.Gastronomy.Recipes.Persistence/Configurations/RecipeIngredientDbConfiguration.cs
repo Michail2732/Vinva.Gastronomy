@@ -16,10 +16,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 
             builder.Property(a => a.Name)
                    .HasMaxLength(CommonConstants.MaxLengthName)
-                   .IsRequired();            
-
-            builder.Property(a => a.Comment)
-                   .HasMaxLength(CommonConstants.MaxLengthComment);
+                   .IsRequired();
 
             builder.HasOne<Recipe>()
                    .WithMany(a => a.Ingredients)

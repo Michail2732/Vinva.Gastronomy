@@ -20,11 +20,11 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Create
             cancellationToken.ThrowIfCancellationRequested();            
 
             var newRecipe = new Recipe(request.Name, request.Description, request.BaseRecipe)
-            {
-                Comment = request.Comment,
+            {                
                 CookingTime = request.CookingTime,
-                UsageComment = request.UsageComment,
-                StorageComment = request.StorageComment
+                Document = request.Document,
+                TitleImageId = request.TitleImageId,
+                OtherImageIds = request.OtherImageIds                
             };
 
 

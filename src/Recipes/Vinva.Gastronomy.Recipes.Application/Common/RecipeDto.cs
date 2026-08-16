@@ -12,9 +12,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common
 
         public required string Name { get; init; }        
 
-        public string? Description { get; init; }
-
-        public string? Comment { get; init; }
+        public string? Description { get; init; }        
 
         public Guid? BaseRecipe { get; init; }
 
@@ -22,15 +20,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Common
 
         public Guid? VideoId { get; init; }
 
-        public TimeSpan? CookingTime { get; init; }
-
-        public string? CookingComment { get; init; }
-
-        public string? IngredientComment { get; init; }
-
-        public string? StorageComment { get; init; }
-
-        public string? UsageComment { get; init; }
+        public TimeSpan? CookingTime { get; init; }        
 
         public IList<Guid> OtherImageIds { get; init; } = new List<Guid>();
 
@@ -38,6 +28,6 @@ namespace Vinva.Gastronomy.Recipes.Application.Common
 
         public RecipePropertyDto[] Properties { get; init; } = [];
 
-        public RecipeStepDto[] Steps { get; init; } = [];
+        public string? Document { get; init; }
     }
 }

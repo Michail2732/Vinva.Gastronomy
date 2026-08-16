@@ -1,19 +1,19 @@
 <template>
     <div class="header col-12 md:col-8 flex flex-column gap-4">
-        <div class="recipe-name">  
+        <div>  
             <label class="font-bold mb-2 block">Название</label>
             <InputText v-model="name" placeholder="Введите название рецепта" fluid/>
-        </div>               
-        <div class="description">
-            <label class="font-bold block mb-2">Описание</label>
-            <Editor v-model="description"/>
-        </div>           
+        </div>
         <div>
-            <label class="font-bold mb-2 block">Коментарий</label>
-            <Editor v-model="comment"/>
+            <span class="font-bold block mb-2">Описание</span>
+            <Editor v-model="description" class="h-7rem" />
+        </div>           
+        <div class="mt-6">
+            <span class="font-bold mb-2 block">Коментарий</span>
+            <Editor v-model="comment" class="h-7rem"/>
         </div>        
-        <div variant="over" class="recipe-time">     
-            <label class="font-bold mb-2 block">Время приготовления (мин)</label>       
+        <div  class="mt-6">     
+            <span class="font-bold mb-2 block">Время приготовления (мин)</span>
             <InputNumber mode="decimal"  v-model="time" fluid/>
         </div>      
     </div>

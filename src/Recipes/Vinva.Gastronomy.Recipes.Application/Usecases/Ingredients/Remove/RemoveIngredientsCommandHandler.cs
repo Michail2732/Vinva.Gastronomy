@@ -24,9 +24,8 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Ingredients.Remove
 
             if (ingredient == null)            
                  throw new NotFoundException(RecipesApplicationErrors.IngredientNotFound(ingredientId));
-
-            ingredient.Delete();
-            _dbContext.Ingredients.Update(ingredient);
+            
+            _dbContext.Ingredients.Remove(ingredient);
             await _dbContext.SaveChangesAsync(ct);            
         }
     }

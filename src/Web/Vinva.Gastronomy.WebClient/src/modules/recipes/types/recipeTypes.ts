@@ -22,12 +22,6 @@ export interface RecipeHeaderViewModel extends Pick<RecipeDto, 'id' | 'name' | '
 }
 
 export interface RecipeIngredientViewModel extends RecipeIngredientDto
-{
-
+{    
+    
 }
-
-export interface CategoryRecipesViewModel
-{
-    recipes: Array<RecipeCardViewModel>;
-    category: string;
-};

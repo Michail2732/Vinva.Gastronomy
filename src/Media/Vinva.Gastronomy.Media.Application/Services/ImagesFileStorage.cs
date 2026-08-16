@@ -23,6 +23,11 @@ namespace Vinva.Gastronomy.Media.Application.Services
             _configuraiton = fileStorageConfiguration?.Value ?? throw new ArgumentNullException(nameof(fileStorageConfiguration));
         }
 
+        public Task CommitTempAsync(Guid imageId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task DeleteAsync(Guid imageId, CancellationToken ct = default)
         {
             throw new NotImplementedException();
@@ -46,9 +51,9 @@ namespace Vinva.Gastronomy.Media.Application.Services
             return Task.FromResult(File.Exists(filePath));
         }
 
-        public async Task UploadAsync(Stream itemStream, Guid imageId, CancellationToken ct = default)
+        public async Task UploadTempAsync(Stream itemStream, Guid imageId, CancellationToken ct = default)
         {
-            var newFilePath = Path.Combine(_configuraiton.ImagesDirectory, imageId.ToString());
+            var newFilePath = Path.Combine(_configuraiton.ImagesTempDirectory, imageId.ToString());
             using var newFile = File.OpenWrite(newFilePath);
             await itemStream.CopyToAsync(newFile, ct);
         }

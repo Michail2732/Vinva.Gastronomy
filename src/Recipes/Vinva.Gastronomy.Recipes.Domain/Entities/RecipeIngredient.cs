@@ -11,15 +11,14 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         public Guid RecipeId { get; private set; }
         public Guid IngredientId { get; private set; }
         public IngredientQuantities Quantities { get; private set; }
-        public bool IsRequired { get; private set; }
-        public string? Comment { get; set; }
+        public bool IsRequired { get; private set; }        
 
 
 #pragma warning disable CS8618 
         private RecipeIngredient() { }
 #pragma warning restore CS8618 
 
-        public RecipeIngredient(Guid recipeId, Guid ingredientId, string ingredientName, IngredientQuantities quantities, bool isRequired = true, string? comment = null)             
+        public RecipeIngredient(Guid recipeId, Guid ingredientId, string ingredientName, IngredientQuantities quantities, bool isRequired = true)
         {
             ArgumentException.ThrowIfNullOrEmpty(ingredientName);
             Name = ingredientName;
@@ -28,8 +27,7 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
             if (quantities.IsEmpty)
                 throw new ArgumentException(nameof(quantities));
             Quantities = quantities;
-            IsRequired = isRequired;
-            Comment = comment;
+            IsRequired = isRequired;            
         }
 
 
