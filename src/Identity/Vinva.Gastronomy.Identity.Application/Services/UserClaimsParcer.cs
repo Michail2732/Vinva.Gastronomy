@@ -13,6 +13,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
     public class UserClaimsParcer
     {
         public const string StateType = "State";
+        public const string SessionIdType = "session_id";
 
         
         public Guid ParseId(ClaimsPrincipal principal)
@@ -49,7 +50,7 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
                 
         public UserInfo Parse(ClaimsPrincipal principal)
         {
-            var idStr = principal.Claims.First(a => a.Type == JwtRegisteredClaimNames.Sub).Value;
+            var idStr = principal.Claims.First(a => a.Type ==  JwtRegisteredClaimNames.Sub).Value;
             var stateStr = principal.Claims.First(a => a.Type == StateType).Value;
 
             List<UserRole> roles = new List<UserRole>();

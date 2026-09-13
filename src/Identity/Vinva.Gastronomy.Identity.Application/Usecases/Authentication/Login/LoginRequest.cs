@@ -10,6 +10,10 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Authentication.Login
     public readonly record struct LoginRequest : IRequest<LoginResponce>
     {
         /// <summary>
+        ///    Идентификатор устройства.
+        /// </summary>
+        public string? DeviceId { get; init; }
+        /// <summary>
         ///     Логин.
         /// </summary>
         public required string Login { get; init; }

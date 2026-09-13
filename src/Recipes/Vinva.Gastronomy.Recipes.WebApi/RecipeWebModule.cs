@@ -31,7 +31,7 @@ namespace Vinva.Gastronomy.Recipes.WebApi
                 if (webApp.Environment.IsDevelopment())
                 {
                     var recipeCount = context.Recipes.Count();
-                    var ingredientsCount = context.Ingredients.Count();
+                    var ingredientsCount = context.CharacteristicDefinitions.Count();
                     if (recipeCount == 0 && ingredientsCount == 0)
                     {
                         var baseDir = AppDomain.CurrentDomain.BaseDirectory;                        
@@ -58,10 +58,10 @@ namespace Vinva.Gastronomy.Recipes.WebApi
 
             context.ConfigureMediatR(opt =>
             {
-                opt.RegisterServicesFromAssemblies(typeof(Application.Common.IngredientDto).Assembly);
+                opt.RegisterServicesFromAssemblies(typeof(Application.Common.CharacteristicDto).Assembly);
             });
             context.AddApplicationPart(GetType().Assembly);
-            services.AddValidatorsFromAssembly(typeof(Application.Common.IngredientDto).Assembly);
+            services.AddValidatorsFromAssembly(typeof(Application.Common.CharacteristicDto).Assembly);
             services.AddDbContext<RecipeDbContext>(options =>
             {
                 options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnectionString"));

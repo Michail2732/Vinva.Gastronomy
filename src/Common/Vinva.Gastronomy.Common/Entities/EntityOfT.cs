@@ -27,6 +27,24 @@ namespace Vinva.Gastronomy.Common
             return GuidProvider.Instance.Generate();
         }
 
+        protected static bool TryGenerateId(out T id)
+        {
+            if (typeof(T) == typeof(Guid))
+            {
+                id = (T)(object)GuidProvider.Instance.Generate();
+                return true;
+            }
+
+            if (typeof(T) == typeof(string))
+            {
+                id = (T)(object)GuidProvider.Instance.Generate().ToString();
+                return true;
+            }
+
+            id = default!;
+            return false;
+        }
+
         public override bool Equals(IEntity? other)
         {
             return Equals(other as IEntityOfT<T>);
@@ -40,7 +58,7 @@ namespace Vinva.Gastronomy.Common
         public virtual bool Equals(IEntityOfT<T>? other)
         {
             return other is not null &&
-                   Id.Equals(other.Id);
+                   EqualityComparer<T>.Default.Equals(Id, other.Id);
         }
 
         public override int GetHashCode()

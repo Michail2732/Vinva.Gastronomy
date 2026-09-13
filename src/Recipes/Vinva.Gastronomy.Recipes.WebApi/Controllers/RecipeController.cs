@@ -1,68 +1,73 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Vinva.Gastronomy.Common.Entities;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Create;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByFilter;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.GetByIngredients;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Create;
+using Vinva.Gastronomy.Recipes.Application.Usecases.SearchByCharacteristics;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Update;
 using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Remove;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Update;
 
 namespace Vinva.Gastronomy.Recipes.WebApi.Controllers
-{    
+{
     [ApiController]
-    [Route("api/Recipes")]    
+    [Route("api/recipes")]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class RecipeController : Controller
+    public sealed class RecipeController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IMediator mediator;
 
         public RecipeController(IMediator mediator)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        }        
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
 
-        [HttpPost("Create")]
+        [HttpPost]
         [Authorize(Roles = UserRoles.Manager)]
-        public async Task<CreateRecipeResponce> Create([FromBody]CreateRecipeCommand command)
+        [ProducesResponseType(typeof(CreateRecipeResponce), StatusCodes.Status201Created)]
+        public async Task<ActionResult<CreateRecipeResponce>> Create(
+            [FromBody] CreateRecipeCommand command,
+            CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(command);
-            return result;
-        }        
-
-        [HttpPost("SearchByIngredients")]
-        [Authorize(Roles = UserRoles.Client)]
-        public async Task<GetRecipeByIngredientsResponce> SearchByIngredients([FromBody]GetRecipeByIngredientsRequest request)
-        {
-            var result = await _mediator.Send(request);
-            return result;
+            var response = await mediator.Send(command, cancellationToken);
+            return StatusCode(StatusCodes.Status201Created, response);
         }
 
-        [HttpPost("SearchByProperties")]
-        [Authorize(Roles = UserRoles.Client)]        
-        public async Task<GetRecipesByFilterQueryResponse> SearchByProperties([FromBody]GetRecipesByFilterQuery request)
+        [HttpPatch("{id:guid}")]
+        [Authorize(Roles = UserRoles.Manager)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Update(
+            [FromRoute] Guid id,
+            [FromBody] UpdateCommand command,
+            CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(request);
-            return result;
+            if (command.Id != id)
+                return BadRequest("The route id and command id must match.");
+
+            await mediator.Send(command, cancellationToken);
+            return NoContent();
         }
 
-        [HttpDelete("Remove")]
+        [HttpDelete("{id:guid}")]
         [Authorize(Roles = UserRoles.Administrator)]
-        public async Task Remove([FromQuery] Guid recipeId)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Delete(
+            [FromRoute] Guid id,
+            CancellationToken cancellationToken)
         {
-            var command = new RemoveCommand
-            {
-                RecipeId = recipeId
-            };
-            await _mediator.Send(command);            
+            await mediator.Send(new RemoveCommand { RecipeId = id }, cancellationToken);
+            return NoContent();
         }
 
-        [HttpPatch("Update")]
-        [Authorize(Roles = UserRoles.Manager)]
-        public async Task Update([FromBody]UpdateCommand command)
+        [HttpPost("search-by-characteristics")]
+        [Authorize(Roles = UserRoles.Client)]
+        [ProducesResponseType(typeof(SearchRecipesByCharacteristicsResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<SearchRecipesByCharacteristicsResponse>> Search(
+            [FromBody] SearchRecipesByCharacteristicsQuery query,
+            CancellationToken cancellationToken)
         {
-            await _mediator.Send(command);            
-        }       
+            return Ok(await mediator.Send(query, cancellationToken));
+        }
     }
 }

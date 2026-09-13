@@ -12,8 +12,8 @@ namespace Vinva.Gastronomy.Identity.Persistence
     public class IdentityDbContext : DbContext
     {
         public DbSet<User> Users { get; private init; }
-        public DbSet<UserTokens> UserTokens { get; private init; }
-        public DbSet<RegistrationToken> RegistrationTokens { get; private set; }
+        public DbSet<UserSession> Sessions { get; private init; }
+        public DbSet<UserRegistration> Registrations { get; private set; }
 
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options)
         {
@@ -23,7 +23,8 @@ namespace Vinva.Gastronomy.Identity.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserDbConfiguration());
-            modelBuilder.ApplyConfiguration(new UserTokensDbConfiguration());
+            modelBuilder.ApplyConfiguration(new UserSessionsDbConfiguration());
+            modelBuilder.ApplyConfiguration(new UserRegistrationsDbConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

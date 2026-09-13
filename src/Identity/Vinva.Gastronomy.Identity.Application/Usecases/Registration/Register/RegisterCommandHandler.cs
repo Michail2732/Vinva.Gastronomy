@@ -14,7 +14,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterCommandResponce>
     {
         private readonly IdentityDbContext _dbContext;
-        private readonly IPasswordHashService _passwordHashService;
+        private readonly IPasswordService _passwordHashService;
         private readonly IRegistrationService _registrationService;
         private readonly RegisterSmtpConfig _registerConfig;
         private readonly TimeProvider _timeProvider;
@@ -22,7 +22,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
         public RegisterCommandHandler(IdentityDbContext identityUnitOfWork,
             IRegistrationService registrationService,
             IOptions<RegisterSmtpConfig> emailConfig,
-            IPasswordHashService passwordHashService,
+            IPasswordService passwordHashService,
             TimeProvider timeProvider)
         {
             _dbContext = identityUnitOfWork ?? throw new ArgumentNullException(nameof(identityUnitOfWork));
@@ -34,7 +34,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
 
         public async Task<RegisterCommandResponce> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var query = from tokenQ in _dbContext.RegistrationTokens
+            var query = from tokenQ in _dbContext.Registrations
                         where tokenQ.Email == request.Email
                         join userQ in _dbContext.Users on tokenQ.Email equals userQ.Email into userJoin
                         from userQ in userJoin.DefaultIfEmpty()
@@ -50,21 +50,21 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
                 throw new BadRequestException(IdentityApplicationErrors.RegistrationTokenNotExpires);
             
 
-            if (!_passwordHashService.IsValidPassword(request.Password))
-                throw new BadRequestException($"Пароль не соответствует требованиям: {_passwordHashService.GetPasswordRequirements()}");
+            if (!_passwordHashService.IsValidPassword(request.Password, out var passwordError))
+                throw new BadRequestException($"Пароль не соответствует требованиям: {passwordError}");
 
             var passwordHash = _passwordHashService.HashPassword(request.Password);
 
             if (token != null)
             {                
                 await _registrationService.UpdateTokenAsync(token, passwordHash);
-                _dbContext.RegistrationTokens.Update(token);
+                _dbContext.Registrations.Update(token);
 
             }
             else
             {
                 token = await _registrationService.GenerateTokenAsync(request.Email, request.Login, passwordHash, cancellationToken);
-                await _dbContext.RegistrationTokens.AddAsync(token);
+                await _dbContext.Registrations.AddAsync(token);
             }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -83,7 +83,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
                 var message = _registerConfig.GetMailBody(request.Login, confirmLink); 
                 smtpClient.Send(_registerConfig.From, request.Email, _registerConfig.MailSubject, message);
                 token.LetterSent(_timeProvider);
-                _dbContext.RegistrationTokens.Update(token);
+                _dbContext.Registrations.Update(token);
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }
             catch (Exception)

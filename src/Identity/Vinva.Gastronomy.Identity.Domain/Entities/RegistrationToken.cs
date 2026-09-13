@@ -9,7 +9,7 @@ using Vinva.Gastronomy.Identity.Domain.Exceptions;
 
 namespace Vinva.Gastronomy.Identity.Domain.Entities
 {
-    public class RegistrationToken : EntityOfT<Guid>
+    public class UserRegistration : EntityOfT<Guid>
     {        
         public DateTimeOffset ExpiresAt { get; private set; }
         public string PasswordHash { get; private set; }        
@@ -22,10 +22,15 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
         public DateTimeOffset? ConfirmCompleateTimestap { get; private set; }
         public bool IsConfirmCompleate => ConfirmCompleateTimestap.HasValue;
 
-        public RegistrationToken(DateTimeOffset expiresAt,
+#pragma warning disable CS8618
+        private UserRegistration() : base(GetDefaultGuid()) { }
+#pragma warning restore CS8618 
+
+        public UserRegistration(Guid id,DateTimeOffset expiresAt,
             string passwordHash, string login, string email, 
             DateTimeOffset? letterSentTimestap = null,
             DateTimeOffset? confirmCompleateTimestap = null)
+            :base(id)
         {
             ExpiresAt = expiresAt;
             PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
@@ -33,6 +38,15 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
             Email = email ?? throw new ArgumentNullException(nameof(email));
             LetterSentTimestap = letterSentTimestap;
             ConfirmCompleateTimestap = confirmCompleateTimestap;            
+        }
+
+         public UserRegistration(DateTimeOffset expiresAt,
+            string passwordHash, string login, string email, 
+            DateTimeOffset? letterSentTimestap = null,
+            DateTimeOffset? confirmCompleateTimestap = null)
+            :this(GenerateGuid(), expiresAt, passwordHash, login, email, letterSentTimestap, confirmCompleateTimestap)
+        {
+            
         }
 
         public bool IsExpires(TimeProvider timeProvider)

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register;
 using Vinva.Gastronomy.Identity.Application.Usecases.Registration.RegisterConfirm;
 
@@ -21,6 +22,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
 
         [HttpPost("Register")]
         [AllowAnonymous]
+        [EnableRateLimiting("identity-auth")]
         public async Task<RegisterCommandResponce> Register([FromBody]RegisterCommand command)
         {
             return await _mediator.Send(command);
@@ -28,6 +30,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
 
         [HttpPost("RegisterConfirm")]
         [AllowAnonymous]
+        [EnableRateLimiting("identity-auth")]
         public async Task RegisterConfirm([FromQuery]Guid tokenId)
         {
             var command = new RegisterConfirmCommand

@@ -5,14 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Vinva.Gastronomy.Common.Exceptions;
 using Vinva.Gastronomy.Common.Modularity;
@@ -40,6 +38,11 @@ namespace Vinva.Gastronomy.Identity.WebApi
                 var context = scope.ServiceProvider.GetService<IdentityDbContext>()
                     ?? throw new ArgumentNullException($"Not found {nameof(IdentityDbContext)}");
                 await context!.Database.MigrateAsync(ct);
+
+                var sessionService = scope.ServiceProvider.GetRequiredService<ISessionService>();
+                var sessions = await context.Sessions.AsNoTracking().ToListAsync(ct);
+                foreach (var session in sessions)
+                    sessionService.AddOrUpdateSession(session);
             }
         }
 
@@ -61,7 +64,10 @@ namespace Vinva.Gastronomy.Identity.WebApi
             services.AddHttpContextAccessor();
             services.AddSingleton<IUserContext, UserContext>();
             services.AddSingleton<ITokenService, TokenService>();
-            services.AddSingleton<IPasswordHashService, PasswordHashService>();
+            services.AddSingleton<IHashService, HashService>();
+            services.AddSingleton<IPasswordService, PasswordService>();
+            services.AddSingleton<ISessionService, SessionService>();
+            services.AddSingleton(TimeProvider.System);
             services.AddSingleton<IRegistrationService, RegistrationService>();
             services.AddSingleton<AuthCookieOptionsFactory>();            
             services.AddDbContext<IdentityDbContext>(options =>
@@ -85,31 +91,10 @@ namespace Vinva.Gastronomy.Identity.WebApi
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    if (context.Environment.IsDevelopment())
-                    {
-                        options.IncludeErrorDetails = true;
-                    }                    
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SecretKey)),
-                        ValidateIssuer = true,
-                        ValidIssuer = jwtConfig.Issuer,
-                        ValidateAudience = true,
-                        ValidAudience = jwtConfig.Audience,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.FromMinutes(jwtConfig.ClockSkewMinutes),                        
-                    };
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            var accessToken = context.Request.Cookies[AuthenticationController.ACCESS_TOKEN_KEY];
-                            if (!string.IsNullOrEmpty(accessToken))
-                                context.Token = accessToken;
-                            return Task.CompletedTask;
-                        }
-                    };
+                    JwtBearerConfiguration.Configure(
+                        options,
+                        jwtConfig,
+                        context.Environment.IsDevelopment());
                 });
 
             context.ConfigureSwagger(opt =>

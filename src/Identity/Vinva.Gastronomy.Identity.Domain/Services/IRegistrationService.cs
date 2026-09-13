@@ -9,8 +9,8 @@ namespace Vinva.Gastronomy.Identity.Domain.Services
 {
     public interface IRegistrationService
     {
-        Task<RegistrationToken> GenerateTokenAsync(string email, string login, string passwordHash, CancellationToken ct = default);
-        Task UpdateTokenAsync(RegistrationToken token, string newPasswordHash, CancellationToken ct = default);
+        Task<UserRegistration> GenerateTokenAsync(string email, string login, string passwordHash, CancellationToken ct = default);
+        Task UpdateTokenAsync(UserRegistration token, string newPasswordHash, CancellationToken ct = default);
         /// <summary>
         /// Сгенерировать временную ссылку для подтверждения регистрации
         /// </summary>

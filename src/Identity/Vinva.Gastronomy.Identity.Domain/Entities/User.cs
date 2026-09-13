@@ -18,34 +18,38 @@ namespace Vinva.Gastronomy.Identity.Domain.Entities
         public string PasswordHash { get; private set; }
         public string Email { get; private set; }
         public UserRole[] Roles { get; set; } = Array.Empty<UserRole>();
-        public UserState State { get; set; }        
-        public DateTimeOffset? LastLoginAt { get; set; }
-        public DateTimeOffset? LastLogoutAt { get; set; }
-        public DateTimeOffset? LastPasswordChangedAt { get; private set; }
-        public DateTimeOffset? LastEmailChangedAt { get; private set; }
-        public UserTokens? Tokens { get; set; }
+        public UserState State { get; set; }                
+        public UserSession? Session { get; set; }        
+        public UserRegistration? Registration { get; set; }        
+        
+ 
+#pragma warning disable CS8618
+        private User() : base(GetDefaultGuid()) { }
+#pragma warning restore CS8618 
 
-
-        public User(string login, string passwordHash, string email)
+        public User(Guid id,string login, string passwordHash, string email) : base(id)
         {
             Login = login ?? throw new ArgumentNullException(nameof(login));
             PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
             Email = email ?? throw new ArgumentNullException(nameof(email));         
         }
 
-        public void ChangePassword(string newPasswordHash, DateTimeOffset currentTime)
+        public User(string login, string passwordHash, string email) : this(GenerateGuid(), login, passwordHash, email)
         {
-            PasswordHash = newPasswordHash;
-            LastPasswordChangedAt = currentTime;
         }
 
 
-        public void ChangeEmail(string newEmail, DateTimeOffset currentTime)        
+        public void ChangePassword(string newPasswordHash)
+        {
+            PasswordHash = newPasswordHash;            
+        }
+
+
+        public void ChangeEmail(string newEmail)
         {
             if (!EmailService.Check(newEmail))
                 throw new IdentityDomainException(IdentityErrorMessages.NewEmailIsIncorrect(newEmail));
-            Email = newEmail;
-            LastEmailChangedAt = currentTime;
+            Email = newEmail;            
         }        
 
     }

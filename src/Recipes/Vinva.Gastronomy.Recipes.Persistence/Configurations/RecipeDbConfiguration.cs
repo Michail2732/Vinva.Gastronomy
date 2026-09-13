@@ -27,13 +27,13 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .IsRequired();
 
             builder.Property(a => a.Description)
-                   .HasMaxLength(CommonConstants.MaxLengthDescription)
+                   .HasMaxLength(CommonConstants.MaxLengthMeasure)
                    .IsRequired();
 
             builder.HasIndex(a => a.Name)
                    .IsUnique();                        
 
-            builder.Property(a => a.OtherImageIds)
+            builder.Property(a => a.GalleryImageIds)
                    .HasColumnType("uuid[]")
                    .HasDefaultValueSql("'{}'::uuid[]");
 
@@ -42,36 +42,10 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .HasForeignKey(a => a.BaseRecipe)
                    .OnDelete(DeleteBehavior.SetNull);            
 
-            builder.HasMany(a => a.Ingredients)
-                   .WithOne()
-                   .HasForeignKey(a => a.RecipeId);                        
+            builder.Ignore(a => a.Characteristics);
+              
 
-            var jsonOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = false
-            };
-
-            var converter = new ValueConverter<RecipeProperties, string>(
-                v => JsonSerializer.Serialize(v, jsonOptions),
-                v => JsonSerializer.Deserialize<RecipeProperties>(v, jsonOptions)!
-            );
-
-            var comparer = new ValueComparer<RecipeProperties>(
-                (a, b) => JsonSerializer.Serialize(a, jsonOptions) == JsonSerializer.Serialize(b, jsonOptions),
-                v => JsonSerializer.Serialize(v, jsonOptions).GetHashCode(),
-                v => JsonSerializer.Deserialize<RecipeProperties>(
-                        JsonSerializer.Serialize(v, jsonOptions),
-                        jsonOptions)!
-            );
-
-            builder.Property(x => x.Properties)
-                   .HasConversion(converter)
-                   .Metadata
-                   .SetValueComparer(comparer);
-
-            builder.Property(x => x.Properties)
-                   .HasColumnType("jsonb");            
+            
         }
     }
 }

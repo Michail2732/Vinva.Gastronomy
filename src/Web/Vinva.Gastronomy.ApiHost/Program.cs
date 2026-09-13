@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
+using System.Threading.RateLimiting;
 using Vinva.Gastronomy.ApiHost.Swagger;
 using Vinva.Gastronomy.Common.Modularity;
 using Vinva.Gastronomy.Common.Modularity.MediatR;
@@ -8,9 +10,20 @@ using Vinva.Gastronomy.Identity.WebApi;
 using Vinva.Gastronomy.Media.WebApi;
 using Vinva.Gastronomy.Recipes.WebApi;
 
-//todo: добавить RateLimit для EndPoint'ов и контроллеров
 //todo: проверить генерируемые EF запросы
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("identity-auth", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 30,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+});
 var moduleContext = new WebModuleContext(
     builder.Services,
     builder.Configuration,
@@ -75,6 +88,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

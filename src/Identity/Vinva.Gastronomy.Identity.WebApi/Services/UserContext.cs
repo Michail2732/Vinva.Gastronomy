@@ -18,7 +18,14 @@ namespace Vinva.Gastronomy.Identity.WebApi.Services
         private readonly IHttpContextAccessor _httpContextAccess;
         private readonly UserClaimsParcer _parser;
 
-        public bool IsAuthenticated => throw new NotImplementedException();
+        public bool IsAuthenticated
+        {
+            get
+            {
+                var context = _httpContextAccess.HttpContext;
+                return context?.User.Identity?.IsAuthenticated == true;
+            }
+        }
 
         public UserContext(IHttpContextAccessor httpContextAccess)
         {

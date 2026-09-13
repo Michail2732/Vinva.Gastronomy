@@ -23,6 +23,14 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.Register
             RuleFor(x => x.Password)
                 .NotEmpty()
                 .WithMessage("Пароль обязателен");
+
+            RuleFor(x => x.Email)
+                .NotEmpty()
+                .WithMessage("Email обязателен")
+                .EmailAddress()
+                .WithMessage("Некорректный email")
+                .MaximumLength(100)
+                .WithMessage("Email не может превышать 100 символов");
         }
 
     }

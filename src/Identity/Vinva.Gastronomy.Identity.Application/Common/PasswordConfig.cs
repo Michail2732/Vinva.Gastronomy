@@ -12,7 +12,6 @@ namespace Vinva.Gastronomy.Identity.Application.Common
         public bool RequireUppercase { get; set; } = true;
         public bool RequireLowercase { get; set; } = true;
         public bool RequireDigits { get; set; } = true;
-        public bool RequireSpecialCharacters { get; set; } = false;
-        public int WorkFactor { get; set; } = 12;
+        public bool RequireSpecialCharacters { get; set; } = false;        
     }
 }

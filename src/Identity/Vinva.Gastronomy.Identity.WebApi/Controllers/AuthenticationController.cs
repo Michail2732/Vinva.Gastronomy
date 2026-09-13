@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +54,7 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         /// </remarks>
         [HttpPost("Login")]
         [AllowAnonymous]
+        [EnableRateLimiting("identity-auth")]
         public async Task<UserInfoDto> Login([FromBody]LoginRequest request)
         {
             var result = await _mediator.Send(request);
@@ -69,12 +71,14 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
         ///     Обновляет access токен используя refresh токен.
         /// </remarks>
         [HttpPost("RefreshToken")]
+        [AllowAnonymous]
+        [EnableRateLimiting("identity-auth")]
         public async Task<UserInfoDto> RefreshToken()
         {
-            var tokens = GetAccessAndRefreshTokens();
+            var refreshToken = GetRefreshToken();
             var request = new RefreshTokenRequest
             {
-                RefreshToken = tokens.RefreshToken
+                RefreshToken = refreshToken
             };
             var result = await _mediator.Send(request);
 
@@ -126,7 +130,16 @@ namespace Vinva.Gastronomy.Identity.WebApi.Controllers
             if (!Request.Cookies.TryGetValue(REFRESH_TOKEN_KEY, out var refreshToken) || string.IsNullOrEmpty(refreshToken))
                 throw new UnauthorizedException();
             return (accessToken, refreshToken);
-        }   
+        }
+
+        private string GetRefreshToken()
+        {
+            if (!Request.Cookies.TryGetValue(REFRESH_TOKEN_KEY, out var refreshToken) ||
+                string.IsNullOrEmpty(refreshToken))
+                throw new UnauthorizedException();
+
+            return refreshToken;
+        }
         
         private void SetAccessRefreshToken(string? accessToken, string? refreshToken)
         {

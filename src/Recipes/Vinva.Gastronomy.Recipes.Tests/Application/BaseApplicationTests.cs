@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Vinva.Gastronomy.Common.Modularity.MediatR;
 using Vinva.Gastronomy.Common.Services;
-using Vinva.Gastronomy.Recipes.Application.Usecases.Recipes;
+using Vinva.Gastronomy.Recipes.Application.Usecases;
 using Vinva.Gastronomy.Recipes.Persistence;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application

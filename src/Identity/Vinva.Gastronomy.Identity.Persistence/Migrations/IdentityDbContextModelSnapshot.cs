@@ -22,38 +22,6 @@ namespace Vinva.Gastronomy.Identity.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Vinva.Gastronomy.Identity.Domain.Entities.RegistrationToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("ConfirmCompleateTimestap")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTimeOffset>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset?>("LetterSentTimestap")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RegistrationTokens");
-                });
-
             modelBuilder.Entity("Vinva.Gastronomy.Identity.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -64,18 +32,6 @@ namespace Vinva.Gastronomy.Identity.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
-
-                    b.Property<DateTimeOffset?>("LastEmailChangedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset?>("LastLoginAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset?>("LastLogoutAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset?>("LastPasswordChangedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Login")
                         .IsRequired()
@@ -104,40 +60,104 @@ namespace Vinva.Gastronomy.Identity.Persistence.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Vinva.Gastronomy.Identity.Domain.Entities.UserTokens", b =>
+            modelBuilder.Entity("Vinva.Gastronomy.Identity.Domain.Entities.UserRegistration", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("ConfirmCompleateTimestap")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("LetterSentTimestap")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Login")
+                        .IsUnique();
+
+                    b.ToTable("UserRegistrations", (string)null);
+                });
+
+            modelBuilder.Entity("Vinva.Gastronomy.Identity.Domain.Entities.UserSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DeviceId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RefreshTokenHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("AccessToken")
-                        .HasColumnType("text");
+                    b.HasKey("Id");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId");
-
-                    b.HasIndex("AccessToken")
+                    b.HasIndex("RefreshTokenHash")
                         .IsUnique();
 
-                    b.HasIndex("RefreshToken")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserTokens", (string)null);
+                    b.ToTable("UserSessions", (string)null);
                 });
 
-            modelBuilder.Entity("Vinva.Gastronomy.Identity.Domain.Entities.UserTokens", b =>
+            modelBuilder.Entity("Vinva.Gastronomy.Identity.Domain.Entities.UserRegistration", b =>
                 {
                     b.HasOne("Vinva.Gastronomy.Identity.Domain.Entities.User", null)
-                        .WithOne("Tokens")
-                        .HasForeignKey("Vinva.Gastronomy.Identity.Domain.Entities.UserTokens", "UserId")
+                        .WithOne("Registration")
+                        .HasForeignKey("Vinva.Gastronomy.Identity.Domain.Entities.UserRegistration", "Email")
+                        .HasPrincipalKey("Vinva.Gastronomy.Identity.Domain.Entities.User", "Email")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Vinva.Gastronomy.Identity.Domain.Entities.UserSession", b =>
+                {
+                    b.HasOne("Vinva.Gastronomy.Identity.Domain.Entities.User", null)
+                        .WithOne("Session")
+                        .HasForeignKey("Vinva.Gastronomy.Identity.Domain.Entities.UserSession", "UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Vinva.Gastronomy.Identity.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Tokens");
+                    b.Navigation("Registration");
+
+                    b.Navigation("Session");
                 });
 #pragma warning restore 612, 618
         }

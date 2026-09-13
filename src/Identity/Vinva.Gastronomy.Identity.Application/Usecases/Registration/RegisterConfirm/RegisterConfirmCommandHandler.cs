@@ -30,7 +30,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.RegisterCo
 
         public async Task Handle(RegisterConfirmCommand request, CancellationToken cancellationToken)
         {
-            var token = await _dbContext.RegistrationTokens.FirstOrDefaultAsync(a => a.Id == request.TokenId);            
+            var token = await _dbContext.Registrations.FirstOrDefaultAsync(a => a.Id == request.TokenId);            
             if (token == null)
                 throw new BadRequestException(IdentityApplicationErrors.IncorrectRegisterToken);
 
@@ -43,7 +43,7 @@ namespace Vinva.Gastronomy.Identity.Application.Usecases.Registration.RegisterCo
             var user = new User(token.Login, token.PasswordHash, token.Email);
             token.Confirm(_timeProvider);
 
-            _dbContext.RegistrationTokens.Update(token);
+            _dbContext.Registrations.Update(token);
             await _dbContext.Users.AddAsync(user, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }

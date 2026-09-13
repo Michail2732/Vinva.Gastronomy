@@ -33,15 +33,15 @@ namespace Vinva.Gastronomy.Identity.WebApi.Services
             return new Uri(uriStr);
         }
 
-        public Task<RegistrationToken> GenerateTokenAsync(string email, string login, string passwordHash, CancellationToken ct = default)
+        public Task<UserRegistration> GenerateTokenAsync(string email, string login, string passwordHash, CancellationToken ct = default)
         {
             var utcNow = _timeProvider.GetUtcNow();
             var expiresTime = utcNow + _expiresDelta;
-            var regToken = new RegistrationToken(expiresTime, passwordHash, login, email);            
+            var regToken = new UserRegistration(expiresTime, passwordHash, login, email);            
             return Task.FromResult(regToken);
         }
 
-        public Task UpdateTokenAsync(RegistrationToken token, string newPasswordHash, CancellationToken ct = default)
+        public Task UpdateTokenAsync(UserRegistration token, string newPasswordHash, CancellationToken ct = default)
         {            
             token.KeepAlive(newPasswordHash, _expiresDelta, _timeProvider);
             return Task.CompletedTask;

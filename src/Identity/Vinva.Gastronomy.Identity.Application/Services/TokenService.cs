@@ -47,6 +47,8 @@ namespace Vinva.Gastronomy.Identity.Application.Services
             var claims = parser.Parce(user);            
             claims.Add(new(JwtRegisteredClaimNames.Jti, _guidProvider.Generate().ToString()));
             claims.Add(new(JwtRegisteredClaimNames.Iat, _timeProvider.GetUtcNow().ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
+            if (user.Session is not null)
+                claims.Add(new(UserClaimsParcer.SessionIdType, user.Session.Id.ToString()));
             
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -66,11 +68,29 @@ namespace Vinva.Gastronomy.Identity.Application.Services
             return Task.FromResult(tokenHandler.WriteToken(token));
         }
 
-        //todo: repair stuff
+        
         public Task<string> GenerateRefreshTokenAsync(User user, CancellationToken ct = default)
         {            
-            var refreshToken = _guidProvider.Generate().ToString("N") + _guidProvider.Generate().ToString("N");
-            return Task.FromResult(refreshToken);
+             var parser = new UserClaimsParcer();
+            var claims = parser.Parce(user);            
+            claims.Add(new(JwtRegisteredClaimNames.Jti, _guidProvider.Generate().ToString()));
+            claims.Add(new(JwtRegisteredClaimNames.Iat, _timeProvider.GetUtcNow().ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
+            if (user.Session is not null)
+                claims.Add(new(UserClaimsParcer.SessionIdType, user.Session.Id.ToString()));
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays),
+                Issuer = _jwtSettings.Issuer,
+                Audience = _jwtSettings.Audience,
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey)),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return Task.FromResult(tokenHandler.WriteToken(token));
         }
 
         public Task<ClaimsPrincipal?> ValidateTokenAsync(string token, CancellationToken ct = default)

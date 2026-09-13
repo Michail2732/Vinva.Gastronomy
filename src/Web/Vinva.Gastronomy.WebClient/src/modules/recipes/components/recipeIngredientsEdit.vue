@@ -36,7 +36,6 @@
 import { ref } from 'vue';
 import type {RecipeIngredientViewModel} from '../types/recipeTypes.ts'
 import  IngredientEditor  from './recipeIngredientEdit.vue'
-import { DtoState } from '@/api/gastronomy_generated/types.gen.ts';
 
 const ingredientEditorVisible = ref(false);
 const selectedIngredient = ref<RecipeIngredientViewModel | null>(null);
