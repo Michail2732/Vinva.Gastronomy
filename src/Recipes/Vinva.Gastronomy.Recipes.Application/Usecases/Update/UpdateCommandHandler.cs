@@ -31,6 +31,11 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Update
             foreach (var record in records)
                 recipe.AddCharacteristic(CharacteristicRecordMapper.ToDomain(record));
 
+            var ingredientRecords = await dbContext.RecipeIngredientRecords
+                .Where(record => record.RecipeId == recipe.Id)
+                .ToListAsync(cancellationToken);
+            recipe.ReplaceIngredients(ingredientRecords.Select(RecipeIngredientRecordMapper.ToDomain));
+
             recipe.UpdateDetails(
                 request.Name ?? recipe.Name,
                 request.Description ?? recipe.Description,
@@ -39,6 +44,14 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Update
 
             if (request.Characteristics is not null)
                 ApplyCharacteristics(recipe, records, request.Characteristics);
+
+            if (request.Ingredients is not null)
+            {
+                dbContext.RecipeIngredientRecords.RemoveRange(ingredientRecords);
+                var ingredients = request.Ingredients.Select(dto => RecipeIngredientDtoMapper.ToDomain(dto, recipe.Id)).ToArray();
+                recipe.ReplaceIngredients(ingredients);
+                dbContext.RecipeIngredientRecords.AddRange(ingredients.Select(RecipeIngredientRecordMapper.ToRecord));
+            }
 
             await dbContext.SaveChangesAsync(cancellationToken);
         }
@@ -59,7 +72,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Update
                 if (dto.State == DtoState.New)
                 {
                     if (existingRecord is not null)
-                        throw new InvalidOperationException($"Characteristic '{dto.Name}' already exists.");
+                        throw new InvalidOperationException($"RecipeCharacteristic '{dto.Name}' already exists.");
 
                     var characteristic = CharacteristicDtoMapper.ToDomain(dto, recipe.Id);
                     recipe.AddCharacteristic(characteristic);
@@ -69,7 +82,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Update
                 }
 
                 if (existingRecord is null || existingCharacteristic is null)
-                    throw new KeyNotFoundException($"Characteristic '{dto.Name}' was not found.");
+                    throw new KeyNotFoundException($"RecipeCharacteristic '{dto.Name}' was not found.");
 
                 if (dto.State == DtoState.Remove)
                 {

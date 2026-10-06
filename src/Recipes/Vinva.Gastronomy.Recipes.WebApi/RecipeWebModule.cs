@@ -19,53 +19,36 @@ namespace Vinva.Gastronomy.Recipes.WebApi
     {
         public string ModuleName => "Recipe";
 
-        public int Order => 0;        
+        public IReadOnlyCollection<Type> DependsOn => Array.Empty<Type>();
 
-        public async Task InitializeAsync(WebApplication webApp, CancellationToken ct = default)
+        public async Task InitializeAsync(ModuleInitializationContext context, CancellationToken ct = default)
         {
-            using (var scope = webApp.Services.CreateScope())
+            using (var scope = context.CreateScope())
             {
-                var context = scope.ServiceProvider.GetService<RecipeDbContext>()
+                var dbContext = scope.ServiceProvider.GetService<RecipeDbContext>()
                     ?? throw new ArgumentNullException($"Not found {nameof(RecipeDbContext)}");
-                await context!.Database.MigrateAsync();
-                if (webApp.Environment.IsDevelopment())
-                {
-                    var recipeCount = context.Recipes.Count();
-                    var ingredientsCount = context.CharacteristicDefinitions.Count();
-                    if (recipeCount == 0 && ingredientsCount == 0)
-                    {
-                        var baseDir = AppDomain.CurrentDomain.BaseDirectory;                        
-                        var recipesGeneratorSqlPath = Path.Combine(baseDir, "Data/RecipesGenerator.sql");
-                        var ingredientsGeneratorSqlPath = Path.Combine(baseDir, "./Data/IngredientsGenerator.sql");
-                        if (File.Exists(recipesGeneratorSqlPath))
-                        {
-                            var recipesGeneratorSql = await File.ReadAllTextAsync(recipesGeneratorSqlPath, ct);
-                            await context.Database.ExecuteSqlRawAsync(recipesGeneratorSql, ct);
-                        }                            
-                        if (File.Exists(ingredientsGeneratorSqlPath))
-                        {
-                            var ingredientsGeneratorSql = await File.ReadAllTextAsync(ingredientsGeneratorSqlPath, ct);
-                            await context.Database.ExecuteSqlRawAsync(ingredientsGeneratorSql, ct);
-                        }                        
-                    }
-                }
+                await dbContext.Database.MigrateAsync(ct);                
             }            
         }
 
-        public void RegisterServices(WebModuleContext context)
+        public void RegisterServices(ModuleServiceContext context)
         {
             var services = context.Services;
 
-            context.ConfigureMediatR(opt =>
-            {
-                opt.RegisterServicesFromAssemblies(typeof(Application.Common.CharacteristicDto).Assembly);
-            });
-            context.AddApplicationPart(GetType().Assembly);
             services.AddValidatorsFromAssembly(typeof(Application.Common.CharacteristicDto).Assembly);
             services.AddDbContext<RecipeDbContext>(options =>
             {
                 options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnectionString"));
             });
+        }
+
+        public void RegisterWeb(ModuleWebContext context)
+        {
+            context.ConfigureMediatR(opt =>
+            {
+                opt.RegisterServicesFromAssemblies(typeof(Application.Common.CharacteristicDto).Assembly);
+            });
+            context.AddApplicationPart(GetType().Assembly);
         }
     }
 }   

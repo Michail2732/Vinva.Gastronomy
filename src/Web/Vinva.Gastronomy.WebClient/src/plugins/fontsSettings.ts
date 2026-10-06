@@ -1,3 +1,10 @@
 import '@fontsource/inter/400.css'; 
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/700.css';
+import '@fontsource/lora/400.css';
+import '@fontsource/lora/700.css';
+import '@fontsource/source-sans-3/400.css';
+import '@fontsource/source-sans-3/600.css';
+import '@fontsource/open-sans/400.css';
+import '@fontsource/roboto-slab/400.css';
+import '@fontsource/playfair-display/400.css';

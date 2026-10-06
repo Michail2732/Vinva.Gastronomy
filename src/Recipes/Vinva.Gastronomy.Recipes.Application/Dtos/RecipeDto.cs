@@ -18,6 +18,8 @@ namespace Vinva.Gastronomy.Recipes.Application.Common
 
         public CharacteristicDto[] Characteristics { get; init; } = [];
 
+        public RecipeIngredientDto[] Ingredients { get; init; } = [];
+
         public string? Document { get; init; }
     }
 }

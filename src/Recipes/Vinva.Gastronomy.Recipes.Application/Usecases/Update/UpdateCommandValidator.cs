@@ -11,6 +11,8 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Update
             RuleFor(command => command.Description).NotEmpty().When(command => command.Description is not null);
             RuleForEach(command => command.Characteristics)
                 .ChildRules(characteristic => characteristic.RuleFor(value => value.Name).NotEmpty());
+            RuleForEach(command => command.Ingredients)
+                .ChildRules(ingredient => ingredient.RuleFor(value => value.Name).NotEmpty());
         }
     }
 }

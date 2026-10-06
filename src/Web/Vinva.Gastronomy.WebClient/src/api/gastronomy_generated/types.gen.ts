@@ -4,40 +4,59 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}` | (string & {});
 };
 
-export type Condition = {
-    logic: Logic;
-    field: string | null;
+export type CharacteristicDto = {
+    recipeId: string;
+    name: string | null;
+    type: CharacteristicType;
+    value: {
+        [key: string]: JsonNode;
+    } | null;
+    measure?: string | null;
+    state?: DtoState;
+};
+
+export type CharacteristicFilterDto = {
+    name: string | null;
+    type: CharacteristicType;
     operator: Operator;
     value: unknown;
+    logic?: Logic;
+};
+
+export enum CharacteristicType {
+    STRING = 'String',
+    NUMBER = 'Number',
+    RANGE = 'Range',
+    ARRAY = 'Array'
+}
+
+export type RecipeIngredientQuantityDto = {
+    amount: number;
+    unit: string;
+};
+
+export type RecipeIngredientDto = {
+    name: string;
+    part?: string | null;
+    quantities?: Array<RecipeIngredientQuantityDto> | null;
 };
 
 export type CreateImageCommandResponse = {
     imageId: string;
 };
 
-export type CreateIngredientCommand = {
-    name?: string | null;
-    description?: string | null;
-    comment?: string | null;
-};
-
-export type CreateIngredientResponse = {
-    ingredientId?: string;
-};
-
 export type CreateRecipeCommand = {
-    name?: string | null;
-    description?: string | null;
-    comment?: string | null;
-    cookingTime?: string;
+    name: string | null;
+    description: string | null;
+    document?: string | null;
     baseRecipe?: string | null;
-    storageComment?: string | null;
-    usageComment?: string | null;
+    characteristics?: Array<CharacteristicDto> | null;
+    ingredients?: Array<RecipeIngredientDto> | null;
 };
 
 export type CreateRecipeResponce = {
-    recipeId?: string;
-    name?: string | null;
+    recipeId: string;
+    name: string | null;
 };
 
 export enum DtoState {
@@ -55,28 +74,6 @@ export type GetImagesByIdsQueryResponse = {
     items: Array<ImageResponceDto> | null;
 };
 
-export type GetIngredientByIdResponce = {
-    ingredient?: IngredientDto;
-};
-
-export type GetRecipeByIngredientsRequest = {
-    include?: Array<string> | null;
-    exclude?: Array<string> | null;
-    includeLogicAnd?: boolean;
-};
-
-export type GetRecipeByIngredientsResponce = {
-    recipes?: Array<RecipeDto> | null;
-};
-
-export type GetRecipesByFilterQuery = {
-    query: SearchQuery;
-};
-
-export type GetRecipesByFilterQueryResponse = {
-    recipes?: Array<RecipeDto> | null;
-};
-
 export type ImageQueryDto = {
     imageId: string;
     width: number;
@@ -90,17 +87,14 @@ export type ImageResponceDto = {
     url: string | null;
 };
 
-export type IngredientDto = {
-    id: string;
-    name: string | null;
-    description?: string | null;
-    photoId?: string | null;
-    recipeId?: string | null;
+export type JsonNode = {
+    options?: JsonNodeOptions;
+    parent?: JsonNode;
+    root?: JsonNode;
 };
 
-export type IngredientQuantityDto = {
-    measure: string | null;
-    quantity: number;
+export type JsonNodeOptions = {
+    propertyNameCaseInsensitive?: boolean;
 };
 
 export enum Logic {
@@ -109,6 +103,7 @@ export enum Logic {
 }
 
 export type LoginRequest = {
+    deviceId?: string | null;
     login: string | null;
     password: string | null;
 };
@@ -129,42 +124,10 @@ export type RecipeDto = {
     id: string;
     name: string | null;
     description?: string | null;
-    comment?: string | null;
     baseRecipe?: string | null;
-    titleImageId?: string | null;
-    videoId?: string | null;
-    cookingTime?: string | null;
-    cookingComment?: string | null;
-    ingredientComment?: string | null;
-    storageComment?: string | null;
-    usageComment?: string | null;
-    otherImageIds?: Array<string> | null;
+    characteristics?: Array<CharacteristicDto> | null;
+    document?: string | null;
     ingredients?: Array<RecipeIngredientDto> | null;
-    properties?: Array<RecipePropertyDto> | null;
-    steps?: Array<RecipeStepDto> | null;
-};
-
-export type RecipeIngredientDto = {
-    ingredientId: string;
-    ingredientName: string | null;
-    comment?: string | null;
-    isRequired?: boolean;
-    quantities: Array<IngredientQuantityDto> | null;
-    state?: DtoState;
-};
-
-export type RecipePropertyDto = {
-    name: string | null;
-    values: Array<string> | null;
-};
-
-export type RecipeStepDto = {
-    id?: string;
-    description: string | null;
-    comment?: string | null;
-    seqNumber: number;
-    photoId?: string | null;
-    state?: DtoState;
 };
 
 export type RegisterCommand = {
@@ -177,51 +140,24 @@ export type RegisterCommandResponce = {
     details?: string | null;
 };
 
-export type RemoveIngredientCommand = {
-    ingredientId?: string;
-};
-
-export type SearchQuery = {
-    take?: number;
+export type SearchRecipesByCharacteristicsQuery = {
+    filters?: Array<CharacteristicFilterDto> | null;
     skip?: number;
-    sort?: Sorting;
-    conditions?: Array<Condition> | null;
+    take?: number;
 };
 
-export enum SortDirection {
-    ASCENDING = 'Ascending',
-    DESCENDING = 'Descending'
-}
-
-export type Sorting = {
-    property: string | null;
-    direction?: SortDirection;
+export type SearchRecipesByCharacteristicsResponse = {
+    recipes?: Array<RecipeDto> | null;
 };
 
 export type UpdateCommand = {
     id: string;
     name?: string | null;
     description?: string | null;
-    comment?: string | null;
-    cookingTime?: string | null;
+    document?: string | null;
     baseRecipe?: string | null;
-    storageComment?: string | null;
-    usageComment?: string | null;
-    ingredientComment?: string | null;
-    cookingComment?: string | null;
-    steps?: Array<RecipeStepDto> | null;
+    characteristics?: Array<CharacteristicDto> | null;
     ingredients?: Array<RecipeIngredientDto> | null;
-    properties?: Array<RecipePropertyDto> | null;
-};
-
-export type UpdateIngredientCommand = {
-    id?: string;
-    name?: string | null;
-    description?: string | null;
-    comment?: string | null;
-    usageComment?: string | null;
-    photoId?: string | null;
-    recipeId?: string | null;
 };
 
 export type UserInfoDto = {
@@ -341,145 +277,73 @@ export type ImageCreateImageResponses = {
 
 export type ImageCreateImageResponse = ImageCreateImageResponses[keyof ImageCreateImageResponses];
 
-export type IngredientCreateData = {
-    body?: CreateIngredientCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Ingredients/Create';
-};
-
-export type IngredientCreateResponses = {
-    /**
-     * OK
-     */
-    200: CreateIngredientResponse;
-};
-
-export type IngredientCreateResponse = IngredientCreateResponses[keyof IngredientCreateResponses];
-
-export type IngredientGetByIdData = {
-    body?: never;
-    path?: never;
-    query?: {
-        ingredientId?: string;
-    };
-    url: '/api/Ingredients/GetById';
-};
-
-export type IngredientGetByIdResponses = {
-    /**
-     * OK
-     */
-    200: GetIngredientByIdResponce;
-};
-
-export type IngredientGetByIdResponse = IngredientGetByIdResponses[keyof IngredientGetByIdResponses];
-
-export type IngredientRemoveData = {
-    body?: RemoveIngredientCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Ingredients/Remove';
-};
-
-export type IngredientRemoveResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
-
-export type IngredientUpdateData = {
-    body?: UpdateIngredientCommand;
-    path?: never;
-    query?: never;
-    url: '/api/Ingredients/Update';
-};
-
-export type IngredientUpdateResponses = {
-    /**
-     * OK
-     */
-    200: unknown;
-};
-
 export type RecipeCreateData = {
     body?: CreateRecipeCommand;
     path?: never;
     query?: never;
-    url: '/api/Recipes/Create';
+    url: '/api/recipes';
 };
 
 export type RecipeCreateResponses = {
     /**
-     * OK
+     * Created
      */
-    200: CreateRecipeResponce;
+    201: CreateRecipeResponce;
 };
 
 export type RecipeCreateResponse = RecipeCreateResponses[keyof RecipeCreateResponses];
 
-export type RecipeSearchByIngredientsData = {
-    body?: GetRecipeByIngredientsRequest;
-    path?: never;
-    query?: never;
-    url: '/api/Recipes/SearchByIngredients';
-};
-
-export type RecipeSearchByIngredientsResponses = {
-    /**
-     * OK
-     */
-    200: GetRecipeByIngredientsResponce;
-};
-
-export type RecipeSearchByIngredientsResponse = RecipeSearchByIngredientsResponses[keyof RecipeSearchByIngredientsResponses];
-
-export type RecipeSearchByQueryData = {
-    body?: GetRecipesByFilterQuery;
-    path?: never;
-    query?: never;
-    url: '/api/Recipes/SearchByQuery';
-};
-
-export type RecipeSearchByQueryResponses = {
-    /**
-     * OK
-     */
-    200: GetRecipesByFilterQueryResponse;
-};
-
-export type RecipeSearchByQueryResponse = RecipeSearchByQueryResponses[keyof RecipeSearchByQueryResponses];
-
-export type RecipeRemoveData = {
+export type RecipeDeleteData = {
     body?: never;
-    path?: never;
-    query?: {
-        recipeId?: string;
+    path: {
+        id: string;
     };
-    url: '/api/Recipes/Remove';
+    query?: never;
+    url: '/api/recipes/{id}';
 };
 
-export type RecipeRemoveResponses = {
+export type RecipeDeleteResponses = {
     /**
-     * OK
+     * No Content
      */
-    200: unknown;
+    204: void;
 };
+
+export type RecipeDeleteResponse = RecipeDeleteResponses[keyof RecipeDeleteResponses];
 
 export type RecipeUpdateData = {
     body?: UpdateCommand;
-    path?: never;
+    path: {
+        id: string;
+    };
     query?: never;
-    url: '/api/Recipes/Update';
+    url: '/api/recipes/{id}';
 };
 
 export type RecipeUpdateResponses = {
     /**
+     * No Content
+     */
+    204: void;
+};
+
+export type RecipeUpdateResponse = RecipeUpdateResponses[keyof RecipeUpdateResponses];
+
+export type RecipeSearchData = {
+    body?: SearchRecipesByCharacteristicsQuery;
+    path?: never;
+    query?: never;
+    url: '/api/recipes/search-by-characteristics';
+};
+
+export type RecipeSearchResponses = {
+    /**
      * OK
      */
-    200: unknown;
+    200: SearchRecipesByCharacteristicsResponse;
 };
+
+export type RecipeSearchResponse = RecipeSearchResponses[keyof RecipeSearchResponses];
 
 export type RegistrationRegisterData = {
     body?: RegisterCommand;

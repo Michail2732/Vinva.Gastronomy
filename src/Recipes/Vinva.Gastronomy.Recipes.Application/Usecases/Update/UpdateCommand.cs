@@ -11,5 +11,6 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Update
         public string? Document { get; init; }
         public Guid? BaseRecipe { get; init; }
         public CharacteristicDto[]? Characteristics { get; init; }
+        public RecipeIngredientDto[]? Ingredients { get; init; }
     }
 }

@@ -25,18 +25,17 @@ namespace Vinva.Gastronomy.Media.Domain.Entities
 
 
 #pragma warning disable CS8618
-        private ImageMetadata()
+        private ImageMetadata() : base(GetDefaultGuid())
         {
 
         }
 #pragma warning restore CS8618
-        public ImageMetadata(Guid id, string name) 
-        {
-            Id = id;
+        public ImageMetadata(Guid id, string name) : base(id)
+        {            
             Name = name ?? throw new ArgumentNullException(nameof(name));            
         }
 
-        public ImageMetadata(string name) : base()
+        public ImageMetadata(string name) : base(GenerateGuid())
         {            
             Name = name ?? throw new ArgumentNullException(nameof(name));            
         }

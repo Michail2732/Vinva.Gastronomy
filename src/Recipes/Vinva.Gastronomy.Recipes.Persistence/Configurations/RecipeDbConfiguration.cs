@@ -43,6 +43,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .OnDelete(DeleteBehavior.SetNull);            
 
             builder.Ignore(a => a.Characteristics);
+            builder.Ignore(a => a.Ingredients);
               
 
             

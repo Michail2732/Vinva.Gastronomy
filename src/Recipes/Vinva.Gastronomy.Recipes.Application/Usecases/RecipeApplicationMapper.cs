@@ -1,4 +1,5 @@
 using Vinva.Gastronomy.Recipes.Application.Common;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Common;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 
 namespace Vinva.Gastronomy.Recipes.Application.Usecases
@@ -27,6 +28,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases
                     Value = characteristic.Value.GetJson(),
                     Measure = characteristic.Measure
                 }).ToArray()
+                ,Ingredients = recipe.Ingredients.Select(RecipeIngredientDtoMapper.ToDto).ToArray()
             };
         }
     }

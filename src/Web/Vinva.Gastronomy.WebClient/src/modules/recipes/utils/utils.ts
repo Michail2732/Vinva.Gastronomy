@@ -1,51 +1,47 @@
-import type { RecipeIngredientDto, IngredientQuantityDto} from "@/api/gastronomy_generated";
-
-
-export function getQuantitiesAsString(ingredient: RecipeIngredientDto) : string
-{
-    
-    return ingredient.quantities?.map(a => `${a.quantity}: ${a.measure}`).join('; ') || '';    
+export interface IngredientQuantityViewModel {
+    quantity: number
+    measure: string
 }
 
-export interface QuantitiesParseResult 
-{
-    success: boolean;
-    result: Array<IngredientQuantityDto> | null | undefined;
+export interface RecipeIngredientViewModel {
+    quantities?: IngredientQuantityViewModel[] | null
 }
 
-export const isAlphaNumericWithSpaces = (str: string) =>
-{
+export function getQuantitiesAsString(ingredient: RecipeIngredientViewModel): string {
+    return ingredient.quantities?.map((quantity) => `${quantity.quantity}: ${quantity.measure}`).join('; ') || ''
+}
+
+export interface QuantitiesParseResult {
+    success: boolean
+    result: IngredientQuantityViewModel[] | null | undefined
+}
+
+export const isAlphaNumericWithSpaces = (str: string) => {
     const regex = /^[a-zA-Zа-яА-ЯёЁ0-9 ]+$/
     return regex.test(str);
 }
 
-export function tryParseQuantitiesString(quantitiesStr: string) : QuantitiesParseResult 
-{
-    let success = true;
-    const quantities :IngredientQuantityDto[] = [];
+export function tryParseQuantitiesString(quantitiesStr: string): QuantitiesParseResult {
+    let success = true
+    const quantities: IngredientQuantityViewModel[] = []
     const splitedQuantitiesStr = quantitiesStr.split(';')
     for (const quantityStr of splitedQuantitiesStr)
     {
         const splitedQuantityStr = quantityStr.trim().split(':')
         if (splitedQuantityStr.length != 2)
         {
-            success = false;
+            success = false
             break;
         }            
         const measure = splitedQuantityStr[1]!
         const quantity = Number(splitedQuantityStr[0]!)
         if (!measure || isNaN(quantity))
         {
-            success = false;
+            success = false
             break;
         }
         
-        quantities.push(
-            {
-                measure: measure,
-                quantity: quantity
-            }
-        );
+        quantities.push({ measure, quantity })
     }
     return {
         success: success,

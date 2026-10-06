@@ -10,5 +10,6 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Create
         public string Document { get; init; } = string.Empty;
         public Guid? BaseRecipe { get; init; }
         public CharacteristicDto[] Characteristics { get; init; } = [];
+        public RecipeIngredientDto[] Ingredients { get; init; } = [];
     }
 }

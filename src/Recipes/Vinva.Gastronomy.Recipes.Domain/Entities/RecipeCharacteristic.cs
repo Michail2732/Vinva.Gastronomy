@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,7 +11,7 @@ using Vinva.Gastronomy.Recipes.Domain.Models;
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
     [DisplayName("Свойство")]
-    public class Characteristic : Entity, IEquatable<Characteristic?>
+    public class RecipeCharacteristic : Entity, IEquatable<RecipeCharacteristic?>
     {        
         public Guid RecipeId { get; internal set; }        
         public string Name { get; }        
@@ -20,16 +20,16 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         public ICharacteristicValue Value { get; }
 
 #pragma warning disable CS8618
-        private Characteristic() { }
+        private RecipeCharacteristic() { }
 #pragma warning restore CS8618 
 
-        public Characteristic(Guid recipeId, string name, CharacteristicType type, ICharacteristicValue value)
+        public RecipeCharacteristic(Guid recipeId, string name, CharacteristicType type, ICharacteristicValue value)
             : this(name, type, value)
         {
             RecipeId = recipeId;            
         }
 
-        public Characteristic(string name, CharacteristicType type, ICharacteristicValue value)
+        public RecipeCharacteristic(string name, CharacteristicType type, ICharacteristicValue value)
         {            
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Type = type;
@@ -58,15 +58,15 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
 
         public override bool Equals(object? obj)
         {
-            return Equals(obj as Characteristic);
+            return Equals(obj as RecipeCharacteristic);
         }
 
         public override bool Equals(IEntity? obj)
         {
-            return Equals(obj as Characteristic);
+            return Equals(obj as RecipeCharacteristic);
         }
 
-        public bool Equals(Characteristic? other)
+        public bool Equals(RecipeCharacteristic? other)
         {
             return other is not null &&
                    RecipeId.Equals(other.RecipeId) &&
@@ -78,12 +78,12 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
             return HashCode.Combine(RecipeId, Name);
         }
 
-        public static bool operator ==(Characteristic? left, Characteristic? right)
+        public static bool operator ==(RecipeCharacteristic? left, RecipeCharacteristic? right)
         {
-            return EqualityComparer<Characteristic>.Default.Equals(left, right);
+            return EqualityComparer<RecipeCharacteristic>.Default.Equals(left, right);
         }
 
-        public static bool operator !=(Characteristic? left, Characteristic? right)
+        public static bool operator !=(RecipeCharacteristic? left, RecipeCharacteristic? right)
         {
             return !(left == right);
         }

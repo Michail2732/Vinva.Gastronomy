@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AuthenticationLoginData, AuthenticationLoginResponses, AuthenticationLogoutData, AuthenticationLogoutResponses, AuthenticationMeData, AuthenticationMeResponses, AuthenticationRefreshTokenData, AuthenticationRefreshTokenResponses, ImageCreateImageData, ImageCreateImageResponses, ImageGetImagesByIdsData, ImageGetImagesByIdsResponses, IngredientCreateData, IngredientCreateResponses, IngredientGetByIdData, IngredientGetByIdResponses, IngredientRemoveData, IngredientRemoveResponses, IngredientUpdateData, IngredientUpdateResponses, RecipeCreateData, RecipeCreateResponses, RecipeRemoveData, RecipeRemoveResponses, RecipeSearchByIngredientsData, RecipeSearchByIngredientsResponses, RecipeSearchByQueryData, RecipeSearchByQueryResponses, RecipeUpdateData, RecipeUpdateResponses, RegistrationRegisterConfirmData, RegistrationRegisterConfirmResponses, RegistrationRegisterData, RegistrationRegisterResponses } from './types.gen';
+import type { AuthenticationLoginData, AuthenticationLoginResponses, AuthenticationLogoutData, AuthenticationLogoutResponses, AuthenticationMeData, AuthenticationMeResponses, AuthenticationRefreshTokenData, AuthenticationRefreshTokenResponses, ImageCreateImageData, ImageCreateImageResponses, ImageGetImagesByIdsData, ImageGetImagesByIdsResponses, RecipeCreateData, RecipeCreateResponses, RecipeDeleteData, RecipeDeleteResponses, RecipeSearchData, RecipeSearchResponses, RecipeUpdateData, RecipeUpdateResponses, RegistrationRegisterConfirmData, RegistrationRegisterConfirmResponses, RegistrationRegisterData, RegistrationRegisterResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -90,65 +90,13 @@ export const imageCreateImage = <ThrowOnError extends boolean = false>(options?:
     }
 });
 
-export const ingredientCreate = <ThrowOnError extends boolean = false>(options?: Options<IngredientCreateData, ThrowOnError>): RequestResult<IngredientCreateResponses, unknown, ThrowOnError> => (options?.client ?? client).post<IngredientCreateResponses, unknown, ThrowOnError>({
-    security: [{
-            in: 'cookie',
-            name: 'accessToken',
-            type: 'apiKey'
-        }],
-    url: '/api/Ingredients/Create',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers
-    }
-});
-
-export const ingredientGetById = <ThrowOnError extends boolean = false>(options?: Options<IngredientGetByIdData, ThrowOnError>): RequestResult<IngredientGetByIdResponses, unknown, ThrowOnError> => (options?.client ?? client).get<IngredientGetByIdResponses, unknown, ThrowOnError>({
-    security: [{
-            in: 'cookie',
-            name: 'accessToken',
-            type: 'apiKey'
-        }],
-    url: '/api/Ingredients/GetById',
-    ...options
-});
-
-export const ingredientRemove = <ThrowOnError extends boolean = false>(options?: Options<IngredientRemoveData, ThrowOnError>): RequestResult<IngredientRemoveResponses, unknown, ThrowOnError> => (options?.client ?? client).delete<IngredientRemoveResponses, unknown, ThrowOnError>({
-    security: [{
-            in: 'cookie',
-            name: 'accessToken',
-            type: 'apiKey'
-        }],
-    url: '/api/Ingredients/Remove',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers
-    }
-});
-
-export const ingredientUpdate = <ThrowOnError extends boolean = false>(options?: Options<IngredientUpdateData, ThrowOnError>): RequestResult<IngredientUpdateResponses, unknown, ThrowOnError> => (options?.client ?? client).patch<IngredientUpdateResponses, unknown, ThrowOnError>({
-    security: [{
-            in: 'cookie',
-            name: 'accessToken',
-            type: 'apiKey'
-        }],
-    url: '/api/Ingredients/Update',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers
-    }
-});
-
 export const recipeCreate = <ThrowOnError extends boolean = false>(options?: Options<RecipeCreateData, ThrowOnError>): RequestResult<RecipeCreateResponses, unknown, ThrowOnError> => (options?.client ?? client).post<RecipeCreateResponses, unknown, ThrowOnError>({
     security: [{
             in: 'cookie',
             name: 'accessToken',
             type: 'apiKey'
         }],
-    url: '/api/Recipes/Create',
+    url: '/api/recipes',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -156,51 +104,37 @@ export const recipeCreate = <ThrowOnError extends boolean = false>(options?: Opt
     }
 });
 
-export const recipeSearchByIngredients = <ThrowOnError extends boolean = false>(options?: Options<RecipeSearchByIngredientsData, ThrowOnError>): RequestResult<RecipeSearchByIngredientsResponses, unknown, ThrowOnError> => (options?.client ?? client).post<RecipeSearchByIngredientsResponses, unknown, ThrowOnError>({
+export const recipeDelete = <ThrowOnError extends boolean = false>(options: Options<RecipeDeleteData, ThrowOnError>): RequestResult<RecipeDeleteResponses, unknown, ThrowOnError> => (options.client ?? client).delete<RecipeDeleteResponses, unknown, ThrowOnError>({
     security: [{
             in: 'cookie',
             name: 'accessToken',
             type: 'apiKey'
         }],
-    url: '/api/Recipes/SearchByIngredients',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers
-    }
-});
-
-export const recipeSearchByQuery = <ThrowOnError extends boolean = false>(options?: Options<RecipeSearchByQueryData, ThrowOnError>): RequestResult<RecipeSearchByQueryResponses, unknown, ThrowOnError> => (options?.client ?? client).post<RecipeSearchByQueryResponses, unknown, ThrowOnError>({
-    security: [{
-            in: 'cookie',
-            name: 'accessToken',
-            type: 'apiKey'
-        }],
-    url: '/api/Recipes/SearchByQuery',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers
-    }
-});
-
-export const recipeRemove = <ThrowOnError extends boolean = false>(options?: Options<RecipeRemoveData, ThrowOnError>): RequestResult<RecipeRemoveResponses, unknown, ThrowOnError> => (options?.client ?? client).delete<RecipeRemoveResponses, unknown, ThrowOnError>({
-    security: [{
-            in: 'cookie',
-            name: 'accessToken',
-            type: 'apiKey'
-        }],
-    url: '/api/Recipes/Remove',
+    url: '/api/recipes/{id}',
     ...options
 });
 
-export const recipeUpdate = <ThrowOnError extends boolean = false>(options?: Options<RecipeUpdateData, ThrowOnError>): RequestResult<RecipeUpdateResponses, unknown, ThrowOnError> => (options?.client ?? client).patch<RecipeUpdateResponses, unknown, ThrowOnError>({
+export const recipeUpdate = <ThrowOnError extends boolean = false>(options: Options<RecipeUpdateData, ThrowOnError>): RequestResult<RecipeUpdateResponses, unknown, ThrowOnError> => (options.client ?? client).patch<RecipeUpdateResponses, unknown, ThrowOnError>({
     security: [{
             in: 'cookie',
             name: 'accessToken',
             type: 'apiKey'
         }],
-    url: '/api/Recipes/Update',
+    url: '/api/recipes/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const recipeSearch = <ThrowOnError extends boolean = false>(options?: Options<RecipeSearchData, ThrowOnError>): RequestResult<RecipeSearchResponses, unknown, ThrowOnError> => (options?.client ?? client).post<RecipeSearchResponses, unknown, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: 'accessToken',
+            type: 'apiKey'
+        }],
+    url: '/api/recipes/search-by-characteristics',
     ...options,
     headers: {
         'Content-Type': 'application/json',

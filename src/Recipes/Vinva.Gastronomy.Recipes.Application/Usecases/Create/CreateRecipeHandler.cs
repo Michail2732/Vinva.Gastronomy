@@ -27,9 +27,14 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Create
             foreach (var dto in request.Characteristics)
                 recipe.AddCharacteristic(CharacteristicDtoMapper.ToDomain(dto, recipe.Id));
 
+            foreach (var dto in request.Ingredients)
+                recipe.AddIngredient(RecipeIngredientDtoMapper.ToDomain(dto, recipe.Id));
+
             dbContext.Recipes.Add(recipe);
             dbContext.CharacteristicRecords.AddRange(
                 recipe.Characteristics.Select(CharacteristicRecordMapper.ToRecord));
+            dbContext.RecipeIngredientRecords.AddRange(
+                recipe.Ingredients.Select(RecipeIngredientRecordMapper.ToRecord));
             await dbContext.SaveChangesAsync(cancellationToken);
 
             return new CreateRecipeResponce

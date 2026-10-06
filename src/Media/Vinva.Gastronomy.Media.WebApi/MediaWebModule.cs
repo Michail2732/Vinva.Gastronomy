@@ -23,27 +23,20 @@ namespace Vinva.Gastronomy.Media.WebApi
     {
         public string ModuleName => "Media";
 
-        public int Order => 3;
+        public IReadOnlyCollection<Type> DependsOn => Array.Empty<Type>();
 
-        public async Task InitializeAsync(WebApplication webApp, CancellationToken ct = default)
+        public async Task InitializeAsync(ModuleInitializationContext context, CancellationToken ct = default)
         {
-            using (var scope = webApp.Services.CreateScope())
+            using (var scope = context.CreateScope())
             {
-                var context = scope.ServiceProvider.GetService<MediaDbContext>()
+                var dbContext = scope.ServiceProvider.GetService<MediaDbContext>()
                     ?? throw new ArgumentNullException($"Not found {nameof(MediaDbContext)}");
-                await context!.Database.MigrateAsync();
+                await dbContext.Database.MigrateAsync(ct);
             }                        
         }
 
-        public void RegisterServices(WebModuleContext context)
+        public void RegisterServices(ModuleServiceContext context)
         {
-            context.ConfigureMediatR(opt =>
-            {
-                opt.RegisterServicesFromAssemblies(typeof(CreateImageCommand).Assembly);
-            });
-            context.AddApplicationPart(GetType().Assembly);
-            context.Services.AddValidatorsFromAssembly(typeof(CreateImageCommand).Assembly);
-
             // todo: вынести в отдельный класс механизм регистрации конфигурации 
             Func<IConfiguration, IConfigurationSection> identityConfigSpec =
                 context.Environment.IsDevelopment()
@@ -53,10 +46,20 @@ namespace Vinva.Gastronomy.Media.WebApi
 
             context.Services.AddSingleton<IImagesStorage, ImagesFileStorage>();
             context.Services.AddSingleton<IImageFormatService, ImageFormatService>();
+            context.Services.AddValidatorsFromAssembly(typeof(CreateImageCommand).Assembly);
             context.Services.AddDbContext<MediaDbContext>(options =>
             {
                 options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnectionString"));
             });
+        }
+
+        public void RegisterWeb(ModuleWebContext context)
+        {
+            context.ConfigureMediatR(opt =>
+            {
+                opt.RegisterServicesFromAssemblies(typeof(CreateImageCommand).Assembly);
+            });
+            context.AddApplicationPart(GetType().Assembly);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Common
 {
     internal static class CharacteristicDtoMapper
     {
-        public static Characteristic ToDomain(CharacteristicDto dto, Guid? recipeId = null)
+        public static RecipeCharacteristic ToDomain(CharacteristicDto dto, Guid? recipeId = null)
         {
             var value = dto.Type switch
             {
@@ -31,7 +31,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Common
                 _ => throw new ArgumentOutOfRangeException(nameof(dto.Type), dto.Type, "Unsupported characteristic type.")
             };
 
-            return new Characteristic(recipeId ?? Guid.Empty, dto.Name, dto.Type, value)
+            return new RecipeCharacteristic(recipeId ?? Guid.Empty, dto.Name, dto.Type, value)
             {
                 Measure = dto.Measure
             };
@@ -40,7 +40,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Common
         private static T GetRequiredValue<T>(JsonObject value, string propertyName)
         {
             if (value[propertyName] is not JsonValue jsonValue || !jsonValue.TryGetValue<T>(out var result))
-                throw new ArgumentException($"Characteristic value must contain a valid '{propertyName}' property.");
+                throw new ArgumentException($"RecipeCharacteristic value must contain a valid '{propertyName}' property.");
 
             return result;
         }
@@ -48,7 +48,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Common
         private static IReadOnlyList<string> GetRequiredArray(JsonObject value, string propertyName)
         {
             if (value[propertyName] is not JsonArray array)
-                throw new ArgumentException($"Characteristic value must contain a '{propertyName}' array.");
+                throw new ArgumentException($"RecipeCharacteristic value must contain a '{propertyName}' array.");
 
             return array.Select(item => item?.GetValue<string>()
                 ?? throw new ArgumentException($"All '{propertyName}' values must be strings.")).ToArray();

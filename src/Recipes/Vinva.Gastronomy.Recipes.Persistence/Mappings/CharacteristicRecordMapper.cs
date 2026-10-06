@@ -8,7 +8,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Mappings
 {
     public static class CharacteristicRecordMapper
     {
-        public static CharacteristicRecord ToRecord(Characteristic characteristic)
+        public static CharacteristicRecord ToRecord(RecipeCharacteristic characteristic)
         {
             var record = new CharacteristicRecord
             {
@@ -40,7 +40,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Mappings
             return record;
         }
 
-        public static Characteristic ToDomain(CharacteristicRecord record)
+        public static RecipeCharacteristic ToDomain(CharacteristicRecord record)
         {
             ICharacteristicValue value = record.Type switch
             {
@@ -56,10 +56,10 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Mappings
                     },
                 CharacteristicType.Array when record.ArrayItems is not null =>
                     new CharecteristicArrayValue { Items = record.ArrayItems },
-                _ => throw new InvalidOperationException($"Characteristic record '{record.Name}' has invalid value for type '{record.Type}'.")
+                _ => throw new InvalidOperationException($"RecipeCharacteristic record '{record.Name}' has invalid value for type '{record.Type}'.")
             };
 
-            return new Characteristic(record.RecipeId, record.Name, record.Type, value)
+            return new RecipeCharacteristic(record.RecipeId, record.Name, record.Type, value)
             {
                 Measure = record.Measure
             };

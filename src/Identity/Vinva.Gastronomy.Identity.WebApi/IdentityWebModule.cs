@@ -29,35 +29,25 @@ namespace Vinva.Gastronomy.Identity.WebApi
     {
         public string ModuleName => "Identity";
 
-        public int Order => 0;        
+        public IReadOnlyCollection<Type> DependsOn => Array.Empty<Type>();
 
-        public async Task InitializeAsync(WebApplication webApp, CancellationToken ct = default)
+        public async Task InitializeAsync(ModuleInitializationContext context, CancellationToken ct = default)
         {
-            using (var scope = webApp.Services.CreateScope())
+            using (var scope = context.CreateScope())
             {
-                var context = scope.ServiceProvider.GetService<IdentityDbContext>()
+                var dbContext = scope.ServiceProvider.GetService<IdentityDbContext>()
                     ?? throw new ArgumentNullException($"Not found {nameof(IdentityDbContext)}");
-                await context!.Database.MigrateAsync(ct);
+                await dbContext.Database.MigrateAsync(ct);
 
                 var sessionService = scope.ServiceProvider.GetRequiredService<ISessionService>();
-                var sessions = await context.Sessions.AsNoTracking().ToListAsync(ct);
+                var sessions = await dbContext.Sessions.AsNoTracking().ToListAsync(ct);
                 foreach (var session in sessions)
                     sessionService.AddOrUpdateSession(session);
             }
         }
 
-        public void RegisterServices(WebModuleContext context)
+        public void RegisterServices(ModuleServiceContext context)
         {
-            context.ConfigureMediatR(opt =>
-            {
-                opt.RegisterServicesFromAssemblies(typeof(JwtTokenConfig).Assembly);
-            });
-
-            context.ConfigureMvc(opt =>
-            {
-                opt.Filters.Add<UserStateFilter>();
-            });
-            context.AddApplicationPart(GetType().Assembly);
             var services = context.Services;
 
             services.AddValidatorsFromAssembly(typeof(JwtTokenConfig).Assembly);
@@ -96,7 +86,17 @@ namespace Vinva.Gastronomy.Identity.WebApi
                         jwtConfig,
                         context.Environment.IsDevelopment());
                 });
+            services.AddAuthorization();
+        }
 
+        public void RegisterWeb(ModuleWebContext context)
+        {
+            context.ConfigureMediatR(opt =>
+            {
+                opt.RegisterServicesFromAssemblies(typeof(JwtTokenConfig).Assembly);
+            });
+            context.ConfigureMvc(opt => opt.Filters.Add<UserStateFilter>());
+            context.AddApplicationPart(GetType().Assembly);
             context.ConfigureSwagger(opt =>
             {
                 var sequrityScheme = new OpenApiSecurityScheme
@@ -125,7 +125,6 @@ namespace Vinva.Gastronomy.Identity.WebApi
             });
 
             
-            services.AddAuthorization();
         }
     }
 }

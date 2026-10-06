@@ -24,11 +24,12 @@ builder.Services.AddRateLimiter(options =>
                 QueueLimit = 0
             }));
 });
-var moduleContext = new WebModuleContext(
+var serviceContext = new ModuleServiceContext(
     builder.Services,
     builder.Configuration,
     builder.Environment);
-moduleContext.ConfigureSwagger(options =>
+var webContext = new ModuleWebContext();
+webContext.ConfigureSwagger(options =>
 {
     options.UseInlineDefinitionsForEnums();
 });
@@ -38,12 +39,12 @@ var moduleLoader = new WebModulesLoader(new List<IWebModule>
     new RecipeWebModule(),
     new MediaWebModule()
 });
-moduleContext.ConfigureMediatR(cfg =>
+webContext.ConfigureMediatR(cfg =>
 {
     cfg.AddOpenBehavior(typeof(LoggingMediatRBehavior<,>));
     cfg.AddOpenBehavior(typeof(ValidationMediatRBehavior<,>));
 });
-moduleContext.ConfigureSwagger(opt =>
+webContext.ConfigureSwagger(opt =>
 {
     opt.SwaggerDoc("v1", new OpenApiInfo
     {
@@ -60,7 +61,7 @@ moduleContext.ConfigureSwagger(opt =>
     opt.SchemaFilter<EnumSchemaFilter>();
 });
 
-moduleLoader.RegisterServices(moduleContext);
+moduleLoader.RegisterServices(serviceContext, webContext);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton(GuidProvider.Instance);
 
@@ -94,6 +95,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-await moduleLoader.InitializeAsync(app);
+await moduleLoader.InitializeAsync(new ModuleInitializationContext(
+    app.Services,
+    app.Configuration,
+    app.Environment));
 
 app.Run();

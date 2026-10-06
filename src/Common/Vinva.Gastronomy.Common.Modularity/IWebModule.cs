@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System.Reflection;
-
-namespace Vinva.Gastronomy.Common.Modularity
+﻿namespace Vinva.Gastronomy.Common.Modularity
 {
-    public interface IWebModule
+    public interface IModule
     {
         string ModuleName { get; }
-        int Order { get; }        
-        void RegisterServices(WebModuleContext context);
-        Task InitializeAsync(WebApplication webApp, CancellationToken ct = default);
+        IReadOnlyCollection<Type> DependsOn { get; }
+        void RegisterServices(ModuleServiceContext context);
+        Task InitializeAsync(ModuleInitializationContext context, CancellationToken ct = default);
+    }
+
+    public interface IWebModule : IModule
+    {
+        void RegisterWeb(ModuleWebContext context);
     }
 }

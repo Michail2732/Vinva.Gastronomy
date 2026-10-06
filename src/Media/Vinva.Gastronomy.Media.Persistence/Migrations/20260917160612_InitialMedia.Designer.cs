@@ -12,8 +12,8 @@ using Vinva.Gastronomy.Media.Persistence;
 namespace Vinva.Gastronomy.Media.Persistence.Migrations
 {
     [DbContext(typeof(MediaDbContext))]
-    [Migration("20260316143448_Init")]
-    partial class Init
+    [Migration("20260917160612_InitialMedia")]
+    partial class InitialMedia
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

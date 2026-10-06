@@ -9,12 +9,14 @@
 
 * {
   font-family: var(--font-family);
-  font-weight: 400;
   box-sizing: border-box;
 }
 html, body
 {
-  overflow-x: hidden;
+  overflow-x: clip;
   margin: 0;
   padding: 0;
+}
+body {
+  font-weight: 400;
 }

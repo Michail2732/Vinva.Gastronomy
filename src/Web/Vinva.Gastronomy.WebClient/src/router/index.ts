@@ -3,7 +3,7 @@ import LoginPage from '@/modules/auth/pages/loginPage.vue'
 import RegisterPage from '@/modules/auth/pages/registerPage.vue'
 import RecipesPage from '@/modules/recipes/pages/recipesPage.vue'
 import RecipeDetailsPage from '@/modules/recipes/pages/recipeDetailsPage.vue'
-import RecipeDetailsEditPage from '@/modules/recipes/pages/recipeDetailsEditPage.vue'
+import RecipeDocumentEditorPage from '@/modules/recipes/pages/recipeDocumentEditorPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/modules/auth/stores/authStore'
 
@@ -48,10 +48,16 @@ const routes = [
         beforeEnter: checkAuth        
       },
       {
-        path: '/edit/',
+        path: '/recipe/:id/edit',
         name: 'editRecipe',
-        component: RecipeDetailsEditPage,     
-      }
+        component: RecipeDocumentEditorPage,
+        beforeEnter: checkAuth,
+      },
+      {
+        path: '/recipe/dev/demo/edit',
+        name: 'editRecipe',
+        component: RecipeDocumentEditorPage        
+      },
     ]
   },  
   {
