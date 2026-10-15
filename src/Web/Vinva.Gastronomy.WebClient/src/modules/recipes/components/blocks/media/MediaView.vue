@@ -1,11 +1,12 @@
-<template>
+﻿<template>
     <NodeViewWrapper class="recipe-block recipe-media" :class="`recipe-media--${node.attrs.kind}`">
-        <RecipeNodeToolbar :editable="editor.isEditable" :delete-node="deleteNode" delete-label="Удалить медиа" />
+        <BlockDragHandle v-if="isEditable" :editor="editor" />
+        <RecipeNodeToolbar :editable="isEditable" :delete-node="deleteNode" delete-label="Удалить медиа" />
         <div class="recipe-media__heading">
             <i :class="kindIcon" />
             <span>{{ kindLabel }}</span>
         </div>
-        <input v-if="editor.isEditable" class="p-inputtext p-component recipe-media__url" type="url" :value="node.attrs.url" :placeholder="urlPlaceholder" aria-label="Ссылка на медиа" @input="update('url', $event)" />
+        <input v-if="isEditable" class="p-inputtext p-component recipe-media__url" type="url" :value="node.attrs.url" :placeholder="urlPlaceholder" aria-label="Ссылка на медиа" @input="update('url', $event)" />
         <iframe v-if="node.attrs.kind === 'embed' && embedUrl" class="recipe-media__embed" :src="embedUrl" title="Встроенный плеер" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen />
         <video v-if="node.attrs.kind === 'video' && safeUrl" class="recipe-media__video" :src="safeUrl" controls preload="metadata" />
         <audio v-else-if="node.attrs.kind === 'audio' && safeUrl" class="recipe-media__audio" :src="safeUrl" controls preload="metadata" />
@@ -15,18 +16,22 @@
         </a>
         <p v-if="node.attrs.url && !safeUrl" class="recipe-media__hint">Укажите ссылку, начинающуюся с http:// или https://</p>
         <p v-else-if="node.attrs.kind === 'embed' && safeUrl && !embedUrl" class="recipe-media__hint">Поддерживаются ссылки YouTube и Vimeo</p>
-        <input v-if="editor.isEditable" class="p-inputtext p-component recipe-media__caption" :value="node.attrs.caption" placeholder="Подпись (необязательно)" aria-label="Подпись к медиа" @input="update('caption', $event)" />
+        <input v-if="isEditable" class="p-inputtext p-component recipe-media__caption" :value="node.attrs.caption" placeholder="Подпись (необязательно)" aria-label="Подпись к медиа" @input="update('caption', $event)" />
         <p v-else-if="node.attrs.caption" class="recipe-media__caption-view">{{ node.attrs.caption }}</p>
     </NodeViewWrapper>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject, ref } from 'vue'
+import type { Ref } from 'vue'
+import type { Editor } from '@tiptap/core'
+const isEditable = inject<Ref<boolean>>('editorEditable', ref(true))
 import { NodeViewWrapper } from '@tiptap/vue-3'
-import RecipeNodeToolbar from './recipeNodeToolbar.vue'
+import RecipeNodeToolbar from '../../editor/recipeNodeToolbar.vue'
+import BlockDragHandle from '../drag/BlockDragHandle.vue'
 
 const props = defineProps<{
-    editor: { isEditable: boolean }
+    editor: Editor
     node: { attrs: { kind: 'video' | 'audio' | 'bookmark' | 'embed' | 'file'; url: string; caption: string } }
     updateAttributes: (attrs: Record<string, string>) => void
     deleteNode: () => void
@@ -68,12 +73,12 @@ function update(field: 'url' | 'caption', event: Event) {
 </script>
 
 <style scoped lang="scss">
-.recipe-media { background: var(--p-surface-50); border: 1px solid var(--p-content-border-color); border-radius: var(--editor-radius); display: grid; gap: .65rem; margin: 1rem 0; padding: 1rem; }
+.recipe-media { background: var(--p-surface-50); border: 1px solid var(--p-content-border-color); border-radius: var(--p-border-radius-md, .5rem); display: grid; gap: .65rem; margin: 1rem 0; padding: 1rem; }
 .recipe-media__heading { align-items: center; color: var(--p-text-color); display: flex; font-size: .8rem; font-weight: 700; gap: .5rem; }
 .recipe-media__heading i { color: var(--p-primary-color); }
 .recipe-media__url, .recipe-media__caption { width: 100%; }
-.recipe-media__video { background: var(--p-surface-900); border-radius: var(--editor-radius); max-height: 420px; width: 100%; }
-.recipe-media__embed { aspect-ratio: 16 / 9; border: 0; border-radius: var(--editor-radius); width: 100%; }
+.recipe-media__video { background: var(--p-surface-900); border-radius: var(--p-border-radius-md, .5rem); max-height: 420px; width: 100%; }
+.recipe-media__embed { aspect-ratio: 16 / 9; border: 0; border-radius: var(--p-border-radius-md, .5rem); width: 100%; }
 .recipe-media__audio { width: 100%; }
 .recipe-media__bookmark { align-items: center; background: var(--p-surface-0); border: 1px solid var(--p-content-border-color); border-radius: 4px; color: var(--p-primary-700); display: flex; gap: .6rem; min-width: 0; overflow-wrap: anywhere; padding: .8rem; text-decoration: none; }
 .recipe-media__hint { color: var(--p-orange-700); font-size: .75rem; margin: 0; }

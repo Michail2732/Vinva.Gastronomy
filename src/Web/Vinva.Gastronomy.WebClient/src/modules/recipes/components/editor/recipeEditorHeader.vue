@@ -30,7 +30,7 @@ const emit = defineEmits<{
 </script>
 
 <style scoped lang="scss">
-.recipe-workspace__header { align-items: center; background: var(--p-surface-0); border: 1px solid var(--p-content-border-color); border-radius: var(--p-border-radius-md, .5rem); display: flex; justify-content: space-between; gap: 1rem; max-width: 1500px; margin: 0 auto 1rem; min-width: 0; padding: 1rem 1.25rem; }
+.recipe-workspace__header { align-items: center; background: var(--p-surface-0); border: 1px solid var(--p-content-border-color); border-radius: var(--p-border-radius-md, .5rem); display: flex; justify-content: space-between; gap: 1rem; margin: 0; min-width: 0; padding: 1rem 1.25rem; }
 .recipe-workspace__header > div:first-child { flex: 1 1 auto; min-width: 0; }
 .eyebrow { color: var(--p-primary-color); font-size: .68rem; font-weight: 700; margin: 0 0 .4rem; text-transform: uppercase; }
 .recipe-title { background: transparent; border: 0; box-shadow: none; color: var(--p-text-color); font-size: 1.7rem; font-weight: 700; line-height: 1.2; max-width: 750px; outline: none; padding: 0; width: min(72vw, 750px); }

@@ -21,6 +21,7 @@ export interface IngredientTextStyle {
     fontSize?: number
     fontFamily?: string
     color?: string
+    backgroundColor?: string
     textAlign?: 'left' | 'center' | 'right'
 }
 

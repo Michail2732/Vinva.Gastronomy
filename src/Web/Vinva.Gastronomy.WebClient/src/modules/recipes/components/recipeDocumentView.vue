@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, provide, ref } from 'vue'
 import type { JSONContent } from '@tiptap/core'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
@@ -21,7 +21,7 @@ import Underline from '@tiptap/extension-underline'
 import Color from '@tiptap/extension-color'
 import TextAlign from '@tiptap/extension-text-align'
 import {
-    RecipeMedia, RecipeToggle, IngredientList, RecipeParagraph,
+    RecipeMedia, RecipeToggle, IngredientList, GroupBox, TextBlock,
     RecipeDivider, ImageGallery, RecipeImage, RecipeTaskList, RecipeTaskItem,
     RecipeTable, RecipeTableRow, RecipeTableHeader, RecipeTableCell, RecipeTextStyle,
 } from '../recipeBlockExtensions'
@@ -34,6 +34,8 @@ const props = defineProps<{
     document?: JSONContent
 }>()
 
+provide('editorEditable', ref(false))
+
 const editor = new Editor({
     editable: false,
     extensions: [
@@ -42,7 +44,7 @@ const editor = new Editor({
         Underline,
         RecipeTextStyle,
         Color,
-        TextAlign.configure({ types: ['paragraph', 'heading', 'recipeParagraph'] }),
+        TextAlign.configure({ types: ['paragraph', 'heading', 'groupBox', 'textBlock'] }),
         RecipeTaskList,
         RecipeTaskItem,
         RecipeTable,
@@ -52,7 +54,8 @@ const editor = new Editor({
         RecipeToggle,
         RecipeMedia,
         IngredientList,
-        RecipeParagraph,
+        GroupBox,
+        TextBlock,
         RecipeDivider,
         RecipeImage,
         ImageGallery,

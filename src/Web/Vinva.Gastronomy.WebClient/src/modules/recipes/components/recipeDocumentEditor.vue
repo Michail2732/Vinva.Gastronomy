@@ -1,15 +1,15 @@
 <template>
     <section class="recipe-workspace">
-        <RecipeEditorHeader
-            v-model:title="title"
-            v-model:preview="preview"
-            :save-status="saveStatus"
-            :save-status-icon="saveStatusIcon"
-            :is-saving="isSaving"
-            @save="saveDraft"
-        />
-
         <div class="editor-layout" :class="{ 'is-sidebar-collapsed': sidebarCollapsed }">
+            <RecipeEditorHeader
+                v-model:title="title"
+                v-model:preview="preview"
+                :save-status="saveStatus"
+                :save-status-icon="saveStatusIcon"
+                :is-saving="isSaving"
+                @save="saveDraft"
+            />
+
             <RecipeBlockPalette
                 :collapsed="sidebarCollapsed"
                 :block-count="blockCount"
@@ -29,6 +29,7 @@
                     :editor="editor"
                     :font-size="fontSize"
                     :font-color="fontColor"
+                    :font-background-color="fontBackgroundColor"
                     :font-family="fontFamily"
                     :font-families="fontFamilies"
                     :can-move-block="canMoveBlock"
@@ -36,6 +37,7 @@
                     :is-text-mark-active="isTextMarkActive"
                     @update:font-size="onFontSizeUpdate"
                     @update:font-color="onFontColorUpdate"
+                    @update:font-background-color="onFontBackgroundColorUpdate"
                     @update:font-family="onFontFamilyUpdate"
                     @toggle-mark="toggleMark"
                     @align="setTextAlignment"
@@ -43,10 +45,10 @@
                     @move-block="moveBlock"
                     @heading-level="applyHeadingLevel"
                 />
-                <RecipeTableToolbar :editor="editor" />
                 <RecipeEditorCanvas
                     :editor="editor"
                     :preview="preview"
+                    :editable="isEditable"
                     :is-drop-target="Boolean(dragType && !preview)"
                     @pointerdown="rememberBlockTitleTarget"
                     @dragover="onCanvasDragOver"
@@ -74,16 +76,16 @@ import type { RecipeDraftViewModel, RecipeIngredientViewModel } from '../types/r
 import type { IngredientRowViewModel, IngredientTextStyle } from '../ingredientListModel'
 import { useRecipesStore } from '../stores/recipesStore'
 import {
-    RecipeMedia, RecipeToggle, IngredientList, RecipeParagraph,
+    RecipeMedia, RecipeToggle, IngredientList, GroupBox, TextBlock,
     RecipeDivider, ImageGallery, RecipeImage, RecipeTaskList, RecipeTaskItem,
-    RecipeTable, RecipeTableRow, RecipeTableHeader, RecipeTableCell, RecipeTextStyle, TableSelectionHighlight,
+    RecipeTable, RecipeTableRow, RecipeTableHeader, RecipeTableCell, RecipeTextStyle, TableSelectionHighlight, RecipeTableColumnResize,
+    RecipeBlockDrag,
 } from '../recipeBlockExtensions'
 import { createRecipeBlockContent, recipeBlockGroups, type RecipeBlockType } from '../recipeBlockCatalog'
 import { normalizeRecipeDocument, sampleRecipeDocument } from '../recipeDocumentModel'
 import RecipeBlockPalette from './editor/recipeBlockPalette.vue'
 import RecipeTextToolbar from './editor/recipeTextToolbar.vue'
 import RecipeEditorCanvas from './editor/recipeEditorCanvas.vue'
-import RecipeTableToolbar from './editor/recipeTableToolbar.vue'
 import RecipeEditorHeader from './editor/recipeEditorHeader.vue'
 
 const props = withDefaults(defineProps<{
@@ -106,6 +108,7 @@ const pointerDragActive = ref(false)
 const suppressPaletteClick = ref(false)
 const fontSize = ref(16)
 const fontColor = ref('#202522')
+const fontBackgroundColor = ref('')
 const fontFamily = ref('')
 const fontFamilies = [
     { label: 'По умолчанию', value: '' },
@@ -158,20 +161,23 @@ const editor = new Editor({
         RecipeTextStyle,
         Color,
         TextAlign.configure({
-            types: ['paragraph', 'heading', 'recipeParagraph'],
+            types: ['paragraph', 'heading', 'groupBox', 'textBlock'],
             alignments: ['left', 'center', 'right'],
         }),
         RecipeTaskList,
         RecipeTaskItem,
         RecipeTable,
         TableSelectionHighlight,
+        RecipeTableColumnResize,
+        RecipeBlockDrag,
         RecipeTableRow,
         RecipeTableHeader,
         RecipeTableCell,
         RecipeToggle,
         RecipeMedia,
         IngredientList,
-        RecipeParagraph,
+        GroupBox,
+        TextBlock,
         RecipeDivider,
         RecipeImage,
         ImageGallery,
@@ -200,7 +206,11 @@ watch(title, (name) => {
     saveStatus.value = 'Есть несохранённые изменения'
 })
 
-watch(preview, (isPreview) => editor.setEditable(!isPreview))
+const isEditable = ref(true)
+watch(preview, (isPreview) => {
+    isEditable.value = !isPreview
+    editor.setEditable(!isPreview)
+})
 
 function synchronizeAggregate(document: JSONContent) {
     const ingredients = (document.content ?? [])
@@ -314,7 +324,7 @@ function isActive(name: string) {
 function isTextAligned(alignment: 'left' | 'center' | 'right') {
     const activeIngredient = findActiveIngredient()
     if (activeIngredient) return activeIngredient.ingredient.textStyle?.textAlign === alignment
-    return ['paragraph', 'heading', 'recipeParagraph']
+    return ['paragraph', 'heading', 'groupBox', 'textBlock']
         .some((type) => editor.isActive(type, { textAlign: alignment }))
 }
 
@@ -377,16 +387,32 @@ function updateActiveIngredientStyle(field: keyof IngredientTextStyle, value?: s
     return true
 }
 
-function applyHeadingLevel(level: 1 | 2 | 3) {
+function applyHeadingLevel(level: 0 | 1 | 2 | 3) {
+    if (level === 0) {
+        fontSize.value = 16
+        editor.chain().focus().setParagraph().setMark('textStyle', { fontSize: '16px' }).run()
+        return
+    }
     const fontSizeByLevel = { 1: 28, 2: 22, 3: 18 }
     fontSize.value = fontSizeByLevel[level]
     editor.chain().focus().setHeading({ level }).setMark('textStyle', { fontSize: `${fontSize.value}px` }).run()
 }
 
+function onFontBackgroundColorUpdate(value: string) {
+    fontBackgroundColor.value = value
+    if (findActiveIngredient()) {
+        updateActiveIngredientStyle('backgroundColor', value || undefined)
+        return
+    }
+    const chain = editor.chain().focus()
+    if (value) chain.setMark('textStyle', { backgroundColor: value }).run()
+    else chain.unsetMark('textStyle').run()
+}
+
 function rememberBlockTitleTarget(event: PointerEvent) {
     const target = event.target
-    const label = target instanceof Element ? target.closest('.recipe-paragraph__heading, .recipe-block__label') : null
-    const block = label?.closest('.recipe-paragraph-block, .recipe-block')
+    const label = target instanceof Element ? target.closest('.group-box__heading, .recipe-block__label') : null
+    const block = label?.closest('.group-box-block, .recipe-block')
     if (!block) {
         activeTitleBlockPosition.value = null
         return
@@ -394,7 +420,7 @@ function rememberBlockTitleTarget(event: PointerEvent) {
 
     let blockPosition: number | null = null
     editor.state.doc.descendants((node, position) => {
-        if (['recipeParagraph', 'ingredientList'].includes(node.type.name)
+        if (['groupBox', 'ingredientList'].includes(node.type.name)
             && editor.view.nodeDOM(position) === block) {
             blockPosition = position
             return false
@@ -430,7 +456,7 @@ function applyFontColor() {
     if (updateActiveIngredientStyle('color', fontColor.value)) return
     const position = activeTitleBlockPosition.value
     const node = position === null ? null : editor.state.doc.nodeAt(position)
-    if (position !== null && node && ['recipeParagraph', 'ingredientList'].includes(node.type.name)) {
+    if (position !== null && node && ['groupBox', 'ingredientList'].includes(node.type.name)) {
         editor.view.dispatch(editor.state.tr.setNodeMarkup(position, undefined, {
             ...node.attrs,
             titleColor: fontColor.value,
@@ -568,6 +594,7 @@ onBeforeUnmount(() => {
     color: var(--ink);
 }
 .editor-layout { align-items: start; display: grid; gap: 1rem; grid-template-columns: 280px minmax(0, 920px); justify-content: center; max-width: 1500px; margin: auto; }
+.editor-layout > .recipe-workspace__header { grid-column: 1 / -1; }
 .editor-layout.is-sidebar-collapsed { grid-template-columns: 4.25rem minmax(0, 920px); }
 @media (max-width: 850px) {
     .recipe-workspace { overflow-x: clip; padding: .75rem .65rem 2rem; }

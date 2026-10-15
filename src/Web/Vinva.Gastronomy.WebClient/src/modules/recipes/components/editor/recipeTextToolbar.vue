@@ -19,9 +19,12 @@
             <Button icon="pi pi-minus" text severity="secondary" class="font-step-button" aria-label="Уменьшить размер шрифта" @mousedown.prevent @click="emit('font-step', -1)" />
             <InputNumber :model-value="fontSize" :min="8" :max="72" suffix=" px" :use-grouping="false" aria-label="Размер шрифта" @update:model-value="emit('update:fontSize', $event)" />
             <Button icon="pi pi-plus" text severity="secondary" class="font-step-button" aria-label="Увеличить размер шрифта" @mousedown.prevent @click="emit('font-step', 1)" />
-            <Button icon="pi pi-heading" text severity="secondary" class="font-step-button heading-picker-button" aria-label="Выбрать стиль заголовка" title="Стиль заголовка" @mousedown.prevent @click="toggleHeadingPopover" />
+            <Button text severity="secondary" class="font-step-button heading-picker-button" aria-label="Выбрать стиль заголовка" title="Стиль заголовка" @mousedown.prevent @click="toggleHeadingPopover">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg>
+            </Button>
             <Popover ref="headingPopover">
                 <div class="heading-picker-options" aria-label="Уровень заголовка">
+                    <Button label="Без стиля" text severity="secondary" @click="selectHeading(0)" />
                     <Button v-for="heading in headingOptions" :key="heading.level" :label="heading.label" text severity="secondary" @click="selectHeading(heading.level)" />
                 </div>
             </Popover>
@@ -44,8 +47,16 @@
             </template>
         </Select>
         <label class="text-color-control" title="Цвет текста">
-            <i class="pi pi-palette" />
-            <input type="color" aria-label="Цвет текста" :value="fontColor" @mousedown.prevent @input="emit('update:fontColor', ($event.target as HTMLInputElement).value)" />
+            <span class="word-color-icon word-color-icon--text" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M11 3L5.5 17h2.1l1.1-3h6.6l1.1 3h2.1L13 3h-2zm1 4.5L14 12h-4l2-4.5z" fill="currentColor"/><rect x="4" y="19" width="16" height="2.5" rx="1" class="word-color-bar"/></svg>
+            </span>
+            <input type="color" aria-label="Цвет текста" :value="fontColor || '#202522'" @mousedown.prevent @input="emit('update:fontColor', ($event.target as HTMLInputElement).value)" />
+        </label>
+        <label class="text-color-control" title="Цвет фона текста">
+            <span class="word-color-icon word-color-icon--highlight" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M11 3L5.5 17h2.1l1.1-3h6.6l1.1 3h2.1L13 3h-2zm1 4.5L14 12h-4l2-4.5z" fill="currentColor"/><rect x="4" y="18.5" width="16" height="3" rx="1" class="word-color-bar"/></svg>
+            </span>
+            <input type="color" aria-label="Цвет фона текста" :value="fontBackgroundColor || '#ffffff'" @mousedown.prevent @input="emit('update:fontBackgroundColor', ($event.target as HTMLInputElement).value)" />
         </label>
         <div class="toolbar-divider" />
         <Button icon="pi pi-undo" text severity="secondary" class="tool-button" v-tooltip.top="'Отменить'" aria-label="Отменить" @click="editor.chain().focus().undo().run()" />
@@ -66,9 +77,9 @@ import Select from 'primevue/select'
 type FontOption = { label: string; value: string }
 type TextAlignment = 'left' | 'center' | 'right'
 type TextMark = 'bold' | 'italic' | 'underline' | 'strike'
-type HeadingLevel = 1 | 2 | 3
+type HeadingLevel = 0 | 1 | 2 | 3
 
-const headingOptions: { level: HeadingLevel; label: string }[] = [
+const headingOptions: { level: Exclude<HeadingLevel, 0>; label: string }[] = [
     { level: 1, label: 'Заголовок 1' },
     { level: 2, label: 'Заголовок 2' },
     { level: 3, label: 'Заголовок 3' },
@@ -78,6 +89,7 @@ const props = defineProps<{
     editor: Editor
     fontSize: number
     fontColor: string
+    fontBackgroundColor: string
     fontFamily: string
     fontFamilies: FontOption[]
     canMoveBlock: (direction: -1 | 1) => boolean
@@ -88,6 +100,7 @@ const props = defineProps<{
 const emit = defineEmits<{
     'update:fontSize': [value: number | null]
     'update:fontColor': [value: string]
+    'update:fontBackgroundColor': [value: string]
     'update:fontFamily': [value: string]
     'toggle-mark': [mark: TextMark]
     align: [alignment: TextAlignment]
@@ -140,6 +153,10 @@ function fontFamilyLabel(value: string | null | undefined) {
 .font-preview { align-items: center; display: inline-flex; gap: .4rem; min-width: 0; }
 .font-preview__sample { font-size: 1rem; }
 .text-color-control input { background: transparent; border: 1px solid var(--p-content-border-color); border-radius: 4px; cursor: pointer; height: 1.8rem; padding: .15rem; width: 2rem; }
+.word-color-icon { align-items: center; display: inline-flex; justify-content: center; }
+.word-color-icon .word-color-bar { fill: currentColor; }
+.word-color-icon--text .word-color-bar { fill: var(--p-primary-color); }
+.word-color-icon--highlight .word-color-bar { fill: #ffe58f; }
 .toolbar-spacer { flex: 1; }
 @media (max-width: 850px) {
     .editor-toolbar { flex-wrap: wrap; gap: .12rem; padding: .4rem; }
