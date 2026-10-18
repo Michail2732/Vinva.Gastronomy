@@ -161,13 +161,44 @@ function computeDropPos(view: EditorView, clientY: number, state: BlockDragState
         }
         const dom = view.nodeDOM(pos)
         if (dom instanceof HTMLElement) {
+            const rect = dom.getBoundingClientRect()
             const top = layoutTop(dom)
-            const bottom = top + dom.getBoundingClientRect().height
-            if (draggingDown ? top > clientY : bottom > clientY) return pos
+            const bottom = top + rect.height
+            if (draggingDown ? top > clientY : bottom > clientY) {
+                return computeInnerDropPos(view, clientY, pos, node, direction) ?? pos
+            }
         }
         pos += node.nodeSize
     }
     return doc.content.size
+}
+
+function computeInnerDropPos(view: EditorView, clientY: number, blockPos: number, blockNode: import('@tiptap/pm/model').Node, direction: number): number | null {
+    if (blockNode.type.name !== 'groupBox') return null
+    const dom = view.nodeDOM(blockPos)
+    if (!(dom instanceof HTMLElement)) return null
+
+    const headingEl = dom.querySelector<HTMLElement>('.group-box__heading')
+    const headingBottom = headingEl ? layoutTop(dom) + headingEl.getBoundingClientRect().bottom - dom.getBoundingClientRect().top : dom.getBoundingClientRect().top + 8
+
+    if (direction <= 0 && clientY <= headingBottom) return null
+
+    const inner = blockPos + 1
+    const end = blockPos + blockNode.nodeSize - 1
+    if (inner >= end) return null
+    const frag = view.state.doc.slice(inner, end).content
+    let innerPos = inner
+    for (let i = 0; i < frag.childCount; i++) {
+        const child = frag.child(i)
+        const childDom = view.nodeDOM(innerPos)
+        if (childDom instanceof HTMLElement) {
+            const top = layoutTop(childDom)
+            const bottom = top + childDom.getBoundingClientRect().height
+            if (direction > 0 ? top > clientY : bottom > clientY) return innerPos
+        }
+        innerPos += child.nodeSize
+    }
+    return innerPos
 }
 
 function applyMove(view: EditorView, state: BlockDragState, dropPos: number) {

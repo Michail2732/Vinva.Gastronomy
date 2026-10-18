@@ -239,7 +239,23 @@ function synchronizeAggregate(document: JSONContent) {
 
 function insertBlock(type: RecipeBlockType) {
     const { selection } = editor.state
-    const position = selection.$to.depth > 0 ? selection.$to.after(1) : selection.to
+    const $to = selection.$to
+    let position = selection.to
+    if ($to.depth > 0) {
+        let found = false
+        for (let depth = $to.depth; depth > 0; depth--) {
+            if ($to.node(depth).type.name === 'groupBox') {
+                position = $to.end(depth)
+                found = true
+                break
+            }
+        }
+        if (!found) {
+            position = $to.after(1)
+        }
+    } else {
+        position = selection.to
+    }
     const node = editor.schema.nodeFromJSON(createRecipeBlockContent(type))
     const transaction = editor.state.tr.insert(position, node)
     if (node.isAtom && NodeSelection.isSelectable(node)) {

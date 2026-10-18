@@ -8,8 +8,7 @@ import GroupBoxView from './GroupBoxView.vue'
 export const GroupBox = Node.create({
     name: 'groupBox',
     group: 'block',
-    content: 'block*',
-    defining: true,
+    content: 'block+',
     addAttributes() {
         return {
             title: {
