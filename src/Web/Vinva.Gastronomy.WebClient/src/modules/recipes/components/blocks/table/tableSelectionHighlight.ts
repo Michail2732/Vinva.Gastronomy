@@ -7,11 +7,13 @@ import { getCellPosition } from '../../shared/nodeViewUtils'
 export const TableSelectionHighlight = Extension.create({
     name: 'tableSelectionHighlight',
     addProseMirrorPlugins() {
+        const editor = this.editor
         let stopCellDrag = () => {}
         return [new Plugin({
             props: {
                 handleDOMEvents: {
                     mousedown: (view, event) => {
+                        if (!editor.isEditable) return false
                         if (event.button !== 0) return false
                         const anchorPosition = getCellPosition(view, event.target)
                         const anchorCell = event.target instanceof Element ? event.target.closest('td, th') : null
@@ -51,6 +53,7 @@ export const TableSelectionHighlight = Extension.create({
                     },
                 },
                 decorations: (state) => {
+                    if (!editor.isEditable) return DecorationSet.empty
                     const decorations: Decoration[] = []
                     const { selection } = state
                     const rootPosition = selection.$from.depth > 0 ? selection.$from.before(1) : null

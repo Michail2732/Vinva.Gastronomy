@@ -13,9 +13,25 @@ export const RecipeImage = Node.create({
         alt: { default: '' },
         caption: { default: '' },
         width: {
-            default: 100,
-            parseHTML: (element: HTMLElement) => Number(element.getAttribute('data-width') ?? 100),
-            renderHTML: (attributes: { width?: number }) => ({ 'data-width': String(Math.min(100, Math.max(25, Number(attributes.width) || 100))) }),
+            default: null as number | null,
+            parseHTML: (element: HTMLElement) => {
+                const value = Number(element.getAttribute('data-width'))
+                return Number.isFinite(value) && value > 0 ? value : null
+            },
+            renderHTML: (attributes: { width?: number | null }) => attributes.width ? { 'data-width': String(Math.round(attributes.width)) } : {},
+        },
+        height: {
+            default: null as number | null,
+            parseHTML: (element: HTMLElement) => {
+                const value = Number(element.getAttribute('data-height'))
+                return Number.isFinite(value) && value > 0 ? value : null
+            },
+            renderHTML: (attributes: { height?: number | null }) => attributes.height ? { 'data-height': String(Math.round(attributes.height)) } : {},
+        },
+        stretch: {
+            default: 'uniform',
+            parseHTML: (element: HTMLElement) => element.getAttribute('data-stretch') || 'uniform',
+            renderHTML: (attributes: { stretch?: string }) => ({ 'data-stretch': attributes.stretch || 'uniform' }),
         },
         optimize: {
             default: true,
@@ -24,17 +40,24 @@ export const RecipeImage = Node.create({
         },
     }),
     parseHTML: () => [{ tag: 'figure[data-recipe-block="recipeImage"]' }],
-    renderHTML: ({ HTMLAttributes }) => [
-        'figure',
-        mergeAttributes(HTMLAttributes, { 'data-recipe-block': 'recipeImage' }),
-        ['img', {
-            src: HTMLAttributes.src,
-            alt: HTMLAttributes.alt,
-            loading: HTMLAttributes.optimize === false ? 'eager' : 'lazy',
-            decoding: HTMLAttributes.optimize === false ? 'sync' : 'async',
-            style: `width: ${Math.min(100, Math.max(25, Number(HTMLAttributes.width) || 100))}%;`,
-        }],
-        ['figcaption', {}, HTMLAttributes.caption],
-    ],
+    renderHTML: ({ HTMLAttributes }) => {
+        const width = Number(HTMLAttributes['data-width']) || null
+        const height = Number(HTMLAttributes['data-height']) || null
+        const stretch = String(HTMLAttributes['data-stretch'] || 'uniform')
+        const objectFit = stretch === 'fill' ? 'fill' : stretch === 'uniformToFill' ? 'cover' : 'contain'
+        const style = `width: ${width ? `${width}px` : '100%'};${height ? ` height: ${height}px;` : ''} object-fit: ${objectFit};`
+        return [
+            'figure',
+            mergeAttributes(HTMLAttributes, { 'data-recipe-block': 'recipeImage' }),
+            ['img', {
+                src: HTMLAttributes.src,
+                alt: HTMLAttributes.alt,
+                loading: HTMLAttributes['data-optimize'] === 'false' ? 'eager' : 'lazy',
+                decoding: HTMLAttributes['data-optimize'] === 'false' ? 'sync' : 'async',
+                style,
+            }],
+            ['figcaption', {}, HTMLAttributes.caption],
+        ]
+    },
     addNodeView: () => VueNodeViewRenderer(ImageView as unknown as Component),
 })

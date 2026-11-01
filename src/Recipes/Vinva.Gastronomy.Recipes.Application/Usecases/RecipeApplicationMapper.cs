@@ -27,8 +27,8 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases
                     Type = characteristic.Type,
                     Value = characteristic.Value.GetJson(),
                     Measure = characteristic.Measure
-                }).ToArray()
-                ,Ingredients = recipe.Ingredients.Select(RecipeIngredientDtoMapper.ToDto).ToArray()
+                }).ToArray(),
+                IngredientsSets = recipe.IngredientsSets.Select(RecipeIngredientDtoMapper.ToDto).ToArray()
             };
         }
     }

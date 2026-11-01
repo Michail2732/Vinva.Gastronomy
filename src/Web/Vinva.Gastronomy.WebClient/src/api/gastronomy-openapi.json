@@ -431,42 +431,6 @@
         ],
         "type": "string"
       },
-      "RecipeIngredientQuantityDto": {
-        "required": [
-          "amount",
-          "unit"
-        ],
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "unit": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "RecipeIngredientDto": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "quantities": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RecipeIngredientQuantityDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "CreateImageCommandResponse": {
         "required": [
           "imageId"
@@ -511,10 +475,10 @@
             },
             "nullable": true
           },
-          "ingredients": {
+          "ingredientsSets": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeIngredientDto"
+              "$ref": "#/components/schemas/RecipeIngredientsSetDto"
             },
             "nullable": true
           }
@@ -697,6 +661,31 @@
         ],
         "type": "string"
       },
+      "PortionsCalculationType": {
+        "enum": [
+          "Multiplication",
+          "MultiSets"
+        ],
+        "type": "string"
+      },
+      "QuantityDto": {
+        "required": [
+          "amount",
+          "unit"
+        ],
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "RecipeDto": {
         "required": [
           "id",
@@ -728,9 +717,69 @@
             },
             "nullable": true
           },
+          "ingredientsSets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeIngredientsSetDto"
+            },
+            "nullable": true
+          },
           "document": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipeIngredientDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuantityDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecipeIngredientsSetDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "portionsQuantities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuantityDto"
+            },
+            "nullable": true
+          },
+          "portionsCalculateType": {
+            "$ref": "#/components/schemas/PortionsCalculationType"
           },
           "ingredients": {
             "type": "array",
@@ -838,10 +887,10 @@
             },
             "nullable": true
           },
-          "ingredients": {
+          "ingredientsSets": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeIngredientDto"
+              "$ref": "#/components/schemas/RecipeIngredientsSetDto"
             },
             "nullable": true
           }

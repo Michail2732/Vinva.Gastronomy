@@ -1,9 +1,10 @@
 <template>
-    <NodeViewWrapper class="recipe-block group-box-block" :style="blockStyle">
+    <NodeViewWrapper class="recipe-block group-box-block" :style="[blockStyle, spacingStyle]">
         <BlockDragHandle v-if="isEditable" :editor="editor" />
         <RecipeNodeToolbar :editable="isEditable" :delete-node="deleteNode" delete-label="Удалить блок">
             <Button :icon="node.attrs.icon || defaultIcon" text severity="secondary" aria-label="Значок блока" title="Значок блока" @mousedown.prevent @click="toggleIconPopover" />
             <Button icon="pi pi-sliders-h" text severity="secondary" aria-label="Настройки рамки" title="Настройки рамки" @mousedown.prevent @click="toggleBorderPopover" />
+            <RecipeBlockSpacing :attrs="node.attrs" :update-attributes="updateAttributes" />
         </RecipeNodeToolbar>
         <Popover ref="iconPopover">
             <div class="group-box-icon-grid" aria-label="Доступные значки">
@@ -22,7 +23,20 @@
         </Popover>
         <Popover ref="borderPopover">
             <div class="group-box-border-settings" aria-label="Настройки границ">
-                <label class="group-box-border-settings__color"><span>Цвет</span><input type="color" aria-label="Цвет границы" :value="node.attrs.borderColor || defaultBorderColor" @input="updateFromInput('borderColor', $event)" /></label>
+                <label class="group-box-border-settings__color"><span>Цвет границы</span><input type="color" aria-label="Цвет границы" :value="node.attrs.borderColor || defaultBorderColor" @input="updateFromInput('borderColor', $event)" /></label>
+                <label class="group-box-border-settings__color"><span>Цвет фона</span><input type="color" aria-label="Цвет фона блока" :value="node.attrs.backgroundColor || defaultBackgroundColor" @input="updateFromInput('backgroundColor', $event)" /></label>
+                <Button
+                    v-if="node.attrs.backgroundColor"
+                    class="group-box-border-settings__reset"
+                    icon="pi pi-undo"
+                    text
+                    severity="secondary"
+                    label="Сбросить фон"
+                    size="small"
+                    :aria-label="'Сбросить цвет фона'"
+                    @mousedown.prevent
+                    @click="resetBackground"
+                />
                 <label v-for="edge in borderEdges" :key="edge.field" class="group-box-border-settings__number">
                     <span>{{ edge.label }}</span>
                     <InputNumber
@@ -76,10 +90,13 @@ import Popover from 'primevue/popover'
 import { Fragment } from '@tiptap/pm/model'
 import { NodeSelection, TextSelection } from '@tiptap/pm/state'
 import RecipeNodeToolbar from '../../editor/recipeNodeToolbar.vue'
+import RecipeBlockSpacing from '../../editor/recipeBlockSpacing.vue'
+import { blockMarginStyle } from '../../shared/margins'
 import BlockDragHandle from '../drag/BlockDragHandle.vue'
 
 const defaultIcon = 'pi pi-info-circle'
 const defaultBorderColor = '#b7c8bb'
+const defaultBackgroundColor = '#ffffff'
 const boxIcons = [
     { label: 'Информация', value: 'pi pi-info-circle' },
     { label: 'Комментарий', value: 'pi pi-comment' },
@@ -126,6 +143,8 @@ const blockStyle = computed(() => ({
     borderRadius: `${Math.max(0, Number(props.node.attrs.borderRadius ?? 6))}px`,
 }))
 
+const spacingStyle = computed(() => blockMarginStyle(props.node.attrs as unknown as Record<string, unknown>))
+
 const iconPopover = ref<{ toggle: (event: Event) => void; hide: () => void } | null>(null)
 const borderPopover = ref<{ toggle: (event: Event) => void } | null>(null)
 
@@ -142,12 +161,16 @@ function selectIcon(value: string) {
     iconPopover.value?.hide()
 }
 
-function updateAttribute(field: string, value: string | number) {
+function updateAttribute(field: string, value: string | number | null) {
     props.updateAttributes({ [field]: value })
 }
 
 function updateFromInput(field: string, event: Event) {
     updateAttribute(field, (event.target as HTMLInputElement).value)
+}
+
+function resetBackground() {
+    updateAttribute('backgroundColor', null)
 }
 
 function focusBlock() {
@@ -180,6 +203,7 @@ function addStep() {
 .group-box-icon-grid :deep(.p-button.active) { background: var(--p-primary-50); color: var(--p-primary-700); }
 .group-box-border-settings { display: grid; gap: .55rem; min-width: 13rem; }
 .group-box-border-settings__color, .group-box-border-settings__number { align-items: center; color: var(--p-text-muted-color); display: flex; font-size: .75rem; gap: .75rem; justify-content: space-between; }
+.group-box-border-settings__reset { justify-content: flex-start; width: 100%; }
 .group-box-border-settings__color input { border: 1px solid var(--p-content-border-color); border-radius: 3px; height: 1.7rem; padding: .1rem; width: 2.4rem; }
 .group-box-border-settings__number :deep(.p-inputnumber) { width: 5rem; }
 .group-box-border-settings__number :deep(.p-inputnumber-input) { font-size: .72rem; min-width: 0; padding: .3rem .15rem; text-align: center; }

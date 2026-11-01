@@ -21,11 +21,6 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Recipes.Remove
                 .SingleOrDefaultAsync(item => item.Id == request.RecipeId, cancellationToken)
                 ?? throw new KeyNotFoundException($"Recipe '{request.RecipeId}' was not found.");
 
-            var characteristics = await dbContext.CharacteristicRecords
-                .Where(record => record.RecipeId == request.RecipeId)
-                .ToListAsync(cancellationToken);
-
-            dbContext.CharacteristicRecords.RemoveRange(characteristics);
             dbContext.Recipes.Remove(recipe);
             await dbContext.SaveChangesAsync(cancellationToken);
         }

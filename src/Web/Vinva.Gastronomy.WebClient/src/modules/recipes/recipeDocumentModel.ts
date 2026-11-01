@@ -74,7 +74,17 @@ function normalizeRecipeNode(node: JSONContent, isTopLevel = false): JSONContent
         normalized = { ...normalized, content: ensureBlockContent(normalized.content) }
     }
 
-    if (normalized.type === 'ingredientList') normalized = normalizeIngredientBlock(normalized as unknown as Record<string, unknown>) as unknown as JSONContent
+    if (normalized.type === 'ingredientsSet') normalized = normalizeIngredientBlock(normalized as unknown as Record<string, unknown>) as unknown as JSONContent
+    if (normalized.type === 'recipeImage') {
+        const attrs = { ...(normalized.attrs ?? {}) }
+        if (attrs.height === undefined && attrs.stretch === undefined) {
+            const legacyWidth = Number(attrs.width)
+            attrs.width = Number.isFinite(legacyWidth) && legacyWidth > 0 && legacyWidth < 100 ? Math.round((legacyWidth / 100) * 640) : null
+            attrs.height = null
+            attrs.stretch = 'uniform'
+        }
+        normalized = { ...normalized, attrs }
+    }
     if (normalized.content) normalized = { ...normalized, content: normalized.content.map((child) => normalizeRecipeNode(child)) }
     return normalized
 }
@@ -84,7 +94,7 @@ export function normalizeRecipeDocument(document: JSONContent): JSONContent {
 }
 
 export function createRecipeDocument(recipe?: Partial<RecipeViewModel> | null): JSONContent {
-    if (recipe?.document?.type === 'doc') return recipe.document
+    if (recipe?.document?.type === 'doc') return normalizeRecipeDocument(recipe.document)
 
     const content: JSONContent[] = []
 
@@ -92,17 +102,36 @@ export function createRecipeDocument(recipe?: Partial<RecipeViewModel> | null): 
         content.push({ type: 'textBlock', content: [{ type: 'text', text: recipe.description }] })
     }
 
-    if (recipe?.ingredients?.length) {
-        const ingredients = recipe.ingredients.map((ingredient) => {
-            const quantities = ingredient.quantities
-                .map((quantity) => `${quantity.amount} ${quantity.unit}`.trim())
-                .join(', ')
-            return `${ingredient.name}${quantities ? ` — ${quantities}` : ''}`
-        }).join('\n')
-        content.push({
-            type: 'ingredientList',
-            content: [{ type: 'text', text: ingredients }],
-        })
+    if (recipe?.ingredientsSets?.length) {
+        for (const set of recipe.ingredientsSets) {
+            const rows = set.ingredients.map((ingredient) => ({
+                id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                name: ingredient.name,
+                note: '',
+                quantities: ingredient.quantities.length
+                    ? ingredient.quantities.map((quantity) => ({
+                        id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                        amount: String(quantity.amount),
+                        unit: quantity.unit,
+                    }))
+                    : [{
+                        id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                        amount: '',
+                        unit: '',
+                    }],
+            }))
+            const portions = set.portionsQuantities[0]
+            content.push({
+                type: 'ingredientsSet',
+                attrs: {
+                    title: set.name || 'Ингредиенты',
+                    portionsAmount: portions ? String(portions.amount) : '',
+                    portionsUnit: portions?.unit ?? 'порций',
+                    portionsCalculateType: set.portionsCalculateType,
+                    ingredients: rows,
+                },
+            })
+        }
     }
 
     return { type: 'doc', content: content.length ? content : [{ type: 'textBlock' }] }
@@ -113,7 +142,7 @@ export const sampleRecipeDocument: JSONContent = {
     content: [
         { type: 'textBlock', content: [{ type: 'text', text: 'Тёплая, шелковистая паста для вечера, когда хочется чего-то уютного.' }] },
         { type: 'recipeComment', content: [{ type: 'text', text: 'Тыкву можно запечь заранее: так вкус получится глубже, а ужин соберётся за двадцать минут.' }] },
-        { type: 'ingredientList', content: [{ type: 'text', text: '300 г тыквы\n250 г ригатони\n40 г пармезана\n8 листьев шалфея' }] },
+        { type: 'ingredientsSet', content: [{ type: 'text', text: '300 г тыквы\n250 г ригатони\n40 г пармезана\n8 листьев шалфея' }] },
         { type: 'preparationSteps', content: [{ type: 'text', text: 'Запеките тыкву до мягкости при 200°C. Сварите пасту al dente. Пробейте тыкву с небольшим количеством воды от пасты, смешайте и завершите пармезаном.' }] },
         { type: 'horizontalRule' },
         { type: 'recipeImage', attrs: { src: '', caption: 'Финальный штрих: шалфей и немного пармезана.' } },

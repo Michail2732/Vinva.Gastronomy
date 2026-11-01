@@ -25,9 +25,19 @@ export interface RecipeIngredientQuantityViewModel {
 }
 
 export interface RecipeIngredientViewModel {
+	id?: string | null
 	name: string
-	part: string | null
 	quantities: RecipeIngredientQuantityViewModel[]
+}
+
+export type RecipePortionsCalculateType = 'Multiplication' | 'MultiSets'
+
+export interface RecipeIngredientsSetViewModel {
+	id?: string | null
+	name: string
+	portionsQuantities: RecipeIngredientQuantityViewModel[]
+	portionsCalculateType: RecipePortionsCalculateType
+	ingredients: RecipeIngredientViewModel[]
 }
 
 export type RecipeCharacteristicValueViewModel =
@@ -55,7 +65,7 @@ export interface RecipeViewModel {
 	baseRecipeId: string | null
 	document: JSONContent | null
 	characteristics: RecipeCharacteristicViewModel[]
-	ingredients: RecipeIngredientViewModel[]
+	ingredientsSets: RecipeIngredientsSetViewModel[]
 }
 
 export interface RecipeDraftViewModel {
@@ -64,7 +74,7 @@ export interface RecipeDraftViewModel {
 	baseRecipeId?: string | null
 	document: JSONContent
 	characteristics: RecipeCharacteristicViewModel[]
-	ingredients: RecipeIngredientViewModel[]
+	ingredientsSets: RecipeIngredientsSetViewModel[]
 }
 
 export interface RecipeCharacteristicFilterViewModel {

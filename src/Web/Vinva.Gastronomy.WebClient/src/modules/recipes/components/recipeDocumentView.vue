@@ -21,9 +21,9 @@ import Underline from '@tiptap/extension-underline'
 import Color from '@tiptap/extension-color'
 import TextAlign from '@tiptap/extension-text-align'
 import {
-    RecipeMedia, RecipeToggle, IngredientList, GroupBox, TextBlock,
+    RecipeMedia, RecipeToggle, IngredientsSet, GroupBox, TextBlock,
     RecipeDivider, ImageGallery, RecipeImage, RecipeTaskList, RecipeTaskItem,
-    RecipeTable, RecipeTableRow, RecipeTableHeader, RecipeTableCell, RecipeTextStyle,
+    RecipeTable, RecipeTableRow, RecipeTableHeader, RecipeTableCell, RecipeTextStyle, RecipeBlockMargins, RecipeCharacteristic,
 } from '../recipeBlockExtensions'
 import { normalizeRecipeDocument, sampleRecipeDocument } from '../recipeDocumentModel'
 
@@ -53,12 +53,14 @@ const editor = new Editor({
         RecipeTableCell,
         RecipeToggle,
         RecipeMedia,
-        IngredientList,
+        IngredientsSet,
+        RecipeCharacteristic,
         GroupBox,
         TextBlock,
         RecipeDivider,
         RecipeImage,
         ImageGallery,
+        RecipeBlockMargins,
     ],
     content: normalizeRecipeDocument(props.document ?? sampleRecipeDocument),
 })
@@ -89,7 +91,7 @@ h1 { font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.1; margin: 0; }
 .recipe-document-view__body { padding: clamp(1.25rem, 6vw, 4rem); }
 .recipe-document-view__content :deep(.ProseMirror) { outline: none; }
 .recipe-document-view__content :deep(.ProseMirror > p) { color: var(--p-text-color); font-size: 1rem; line-height: 1.7; margin: 0 0 1.5rem; }
-.recipe-document-view__content :deep(.ProseMirror table) { background: var(--recipe-table-background, transparent); border-collapse: collapse; margin: 1rem 0; table-layout: fixed; width: 100%; }
+.recipe-document-view__content :deep(.ProseMirror table) { background: var(--recipe-table-background, transparent); border-collapse: collapse; margin: 0; table-layout: fixed; width: 100%; }
 .recipe-document-view__content :deep(.ProseMirror td), .recipe-document-view__content :deep(.ProseMirror th) { border: var(--recipe-grid-width, 1px) solid var(--recipe-grid-color, var(--p-content-border-color)); min-width: 5rem; padding: .5rem; vertical-align: top; }
 .recipe-document-view__content :deep(.ProseMirror td) { background-color: var(--recipe-table-background, transparent); }
 .recipe-document-view__content :deep(.ProseMirror th) { background-color: var(--recipe-table-background, var(--p-surface-100)); }

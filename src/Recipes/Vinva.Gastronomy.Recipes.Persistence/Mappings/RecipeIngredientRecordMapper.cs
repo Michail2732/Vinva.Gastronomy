@@ -10,18 +10,19 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Mappings
         {
             return new RecipeIngredientRecord
             {
+                Id = ingredient.Id,
                 RecipeId = ingredient.RecipeId,
+                IngredientsSetId = ingredient.IngredientsSetId,
                 Name = ingredient.Name,
-                Part = ingredient.Part,
                 QuantitiesJson = JsonSerializer.Serialize(ingredient.Quantities),
             };
         }
 
         public static RecipeIngredient ToDomain(RecipeIngredientRecord record)
         {
-            var quantities = JsonSerializer.Deserialize<List<RecipeIngredientQuantity>>(record.QuantitiesJson)
-                ?? new List<RecipeIngredientQuantity>();
-            return new RecipeIngredient(record.RecipeId, record.Name, quantities, record.Part);
+            var quantities = JsonSerializer.Deserialize<List<Quantity>>(record.QuantitiesJson)
+                ?? new List<Quantity>();
+            return new RecipeIngredient(record.Id, record.RecipeId, record.Name, record.IngredientsSetId, quantities);
         }
     }
 }

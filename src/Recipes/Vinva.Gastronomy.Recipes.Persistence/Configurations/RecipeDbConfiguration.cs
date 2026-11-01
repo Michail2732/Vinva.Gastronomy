@@ -11,16 +11,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vinva.Gastronomy.Common.Constants;
 using Vinva.Gastronomy.Recipes.Domain.Entities;
 using Vinva.Gastronomy.Recipes.Domain.Models;
+using Vinva.Gastronomy.Recipes.Persistence.Models;
 
 namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 {
-    public class RecipeDbConfiguration : IEntityTypeConfiguration<Recipe>
+    public class RecipeDbConfiguration : IEntityTypeConfiguration<RecipeRecord>
     {
-        public void Configure(EntityTypeBuilder<Recipe> builder)
+        public void Configure(EntityTypeBuilder<RecipeRecord> builder)
         {            
             builder.ToTable("Recipes");
 
             builder.HasKey(x => x.Id);
+            builder.Property(a => a.Id).ValueGeneratedNever();
 
             builder.Property(a => a.Name)
                    .HasMaxLength(CommonConstants.MaxLengthName)
@@ -30,6 +32,9 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .HasMaxLength(CommonConstants.MaxLengthMeasure)
                    .IsRequired();
 
+            builder.Property(a => a.Document)
+                   .IsRequired();
+
             builder.HasIndex(a => a.Name)
                    .IsUnique();                        
 
@@ -37,16 +42,10 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
                    .HasColumnType("uuid[]")
                    .HasDefaultValueSql("'{}'::uuid[]");
 
-            builder.HasOne<Recipe>()
+            builder.HasOne<RecipeRecord>()
                    .WithMany()                   
                    .HasForeignKey(a => a.BaseRecipe)
                    .OnDelete(DeleteBehavior.SetNull);            
-
-            builder.Ignore(a => a.Characteristics);
-            builder.Ignore(a => a.Ingredients);
-              
-
-            
         }
     }
 }

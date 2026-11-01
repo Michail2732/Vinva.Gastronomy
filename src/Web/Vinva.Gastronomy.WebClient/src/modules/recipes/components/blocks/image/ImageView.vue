@@ -1,16 +1,30 @@
 ﻿<template>
-    <NodeViewWrapper class="recipe-block recipe-image-block">
+    <NodeViewWrapper class="recipe-block recipe-image-block" :style="spacingStyle">
         <BlockDragHandle v-if="isEditable" :editor="editor" />
         <RecipeNodeToolbar :editable="isEditable" :delete-node="deleteNode" delete-label="Удалить изображение">
-            <label class="recipe-image-toolbar__width" title="Ширина изображения">
-                <i class="pi pi-arrows-h" />
-                <InputNumber :model-value="node.attrs.width" :min="25" :max="100" :step="5" suffix=" %" :use-grouping="false" aria-label="Ширина изображения в процентах" @update:model-value="updateWidth" />
-            </label>
-            <label class="recipe-image-toolbar__optimize" title="Оптимизировать загрузку изображения">
-                <input type="checkbox" :checked="node.attrs.optimize" aria-label="Оптимизировать загрузку изображения" @change="updateOptimization" />
-                <i class="pi pi-bolt" />
-            </label>
+            <Button icon="pi pi-expand" text severity="secondary" aria-label="Размер изображения" title="Размер" @mousedown.prevent @click="toggleSizePopover" />
+            <Button icon="pi pi-window-maximize" text severity="secondary" aria-label="Масштабирование изображения" title="Масштабирование" @mousedown.prevent @click="toggleStretchPopover" />
+            <RecipeBlockSpacing :attrs="node.attrs" :update-attributes="updateAttributes" />
         </RecipeNodeToolbar>
+        <Popover ref="sizePopover">
+            <div class="recipe-image-settings" aria-label="Размер изображения">
+                <label class="recipe-image-settings__row">
+                    <span>Ширина</span>
+                    <InputNumber :model-value="node.attrs.width" :min="24" :max="2400" :step="10" :use-grouping="false" suffix=" px" placeholder="Авто" aria-label="Ширина изображения в пикселях" @update:model-value="updateWidth" />
+                </label>
+                <label class="recipe-image-settings__row">
+                    <span>Высота</span>
+                    <InputNumber :model-value="node.attrs.height" :min="24" :max="2400" :step="10" :use-grouping="false" suffix=" px" placeholder="Авто" aria-label="Высота изображения в пикселях" @update:model-value="updateHeight" />
+                </label>
+                <Button class="recipe-image-settings__reset" icon="pi pi-undo" text severity="secondary" label="Сбросить размер" size="small" @mousedown.prevent @click="resetSize" />
+            </div>
+        </Popover>
+        <Popover ref="stretchPopover">
+            <div class="recipe-image-settings" aria-label="Масштабирование изображения">
+                <span class="recipe-image-settings__label">Масштабирование</span>
+                <SelectButton :model-value="node.attrs.stretch" :options="stretchOptions" option-label="label" option-value="value" :allow-empty="false" aria-label="Режим масштабирования" @update:model-value="updateStretch" />
+            </div>
+        </Popover>
         <img
             v-if="node.attrs.src"
             :src="node.attrs.src"
@@ -37,29 +51,72 @@ import type { Ref } from 'vue'
 import type { Editor } from '@tiptap/core'
 const isEditable = inject<Ref<boolean>>('editorEditable', ref(true))
 import { NodeViewWrapper } from '@tiptap/vue-3'
-import InputNumber from 'primevue/inputnumber'
+import Popover from 'primevue/popover'
 import RecipeNodeToolbar from '../../editor/recipeNodeToolbar.vue'
+import RecipeBlockSpacing from '../../editor/recipeBlockSpacing.vue'
+import { blockMarginStyle } from '../../shared/margins'
 import BlockDragHandle from '../drag/BlockDragHandle.vue'
+
+const stretchOptions = [
+    { label: 'Uniform', value: 'uniform' },
+    { label: 'Fill', value: 'fill' },
+    { label: 'UniformToFill', value: 'uniformToFill' },
+]
+
+const stretchObjectFit: Record<string, string> = {
+    uniform: 'contain',
+    fill: 'fill',
+    uniformToFill: 'cover',
+}
 
 const props = defineProps<{
     editor: Editor
-    node: { attrs: { src: string; alt: string; caption: string; width: number; optimize: boolean } }
-    updateAttributes: (attrs: Record<string, string | number | boolean>) => void
+    node: { attrs: { src: string; alt: string; caption: string; width: number | null; height: number | null; stretch: string; optimize: boolean } }
+    updateAttributes: (attrs: Record<string, string | number | boolean | null>) => void
     deleteNode: () => void
 }>()
 
-const imageStyle = computed(() => ({ width: `${Math.min(100, Math.max(25, props.node.attrs.width ?? 100))}%` }))
+const imageStyle = computed(() => {
+    const { width, height, stretch } = props.node.attrs
+    const style: Record<string, string> = {
+        width: width ? `${Math.max(1, Math.round(width))}px` : '100%',
+        objectFit: stretchObjectFit[stretch] ?? 'contain',
+    }
+    if (height) style.height = `${Math.max(1, Math.round(height))}px`
+    return style
+})
+
+const spacingStyle = computed(() => blockMarginStyle(props.node.attrs as unknown as Record<string, unknown>))
+
+const sizePopover = ref<{ toggle: (event: Event) => void; hide: () => void } | null>(null)
+const stretchPopover = ref<{ toggle: (event: Event) => void; hide: () => void } | null>(null)
+
+function toggleSizePopover(event: MouseEvent) {
+    sizePopover.value?.toggle(event)
+}
+
+function toggleStretchPopover(event: MouseEvent) {
+    stretchPopover.value?.toggle(event)
+}
 
 function updateSource(event: Event) {
     props.updateAttributes({ src: (event.target as HTMLInputElement).value })
 }
 
 function updateWidth(value: number | null) {
-    if (value !== null) props.updateAttributes({ width: Math.min(100, Math.max(25, value)) })
+    props.updateAttributes({ width: value })
 }
 
-function updateOptimization(event: Event) {
-    props.updateAttributes({ optimize: (event.target as HTMLInputElement).checked })
+function updateHeight(value: number | null) {
+    props.updateAttributes({ height: value })
+}
+
+function updateStretch(value: string) {
+    props.updateAttributes({ stretch: value })
+}
+
+function resetSize() {
+    props.updateAttributes({ width: null, height: null })
 }
 
 function updateCaption(event: Event) {
@@ -69,12 +126,15 @@ function updateCaption(event: Event) {
 
 <style scoped lang="scss">
 .recipe-image-block { display: grid; gap: .6rem; margin: 2.5rem 0; position: relative; }
-.recipe-image-toolbar__width, .recipe-image-toolbar__optimize { align-items: center; color: var(--p-text-muted-color); display: inline-flex; gap: .25rem; position: relative; }
-.recipe-image-toolbar__width :deep(.p-inputnumber) { width: 4.5rem; }
-.recipe-image-toolbar__width :deep(.p-inputnumber-input) { font-size: .7rem; min-width: 0; padding: .25rem .1rem; text-align: center; }
-.recipe-image-toolbar__optimize { cursor: pointer; height: 1.65rem; justify-content: center; width: 1.65rem; }
-.recipe-image-toolbar__optimize input { height: 1rem; margin: 0; width: 1rem; }
-.recipe-image-block img { background: var(--p-surface-100); border-radius: var(--p-border-radius-md, .5rem); display: block; height: 245px; justify-self: center; max-width: 100%; object-fit: cover; }
+.recipe-image-block img { background: var(--p-surface-100); border-radius: var(--p-border-radius-md, .5rem); display: block; justify-self: center; max-width: 100%; }
+.recipe-image-settings { display: grid; gap: .55rem; min-width: 12rem; }
+.recipe-image-settings__row { align-items: center; color: var(--p-text-muted-color); display: flex; font-size: .75rem; gap: .75rem; justify-content: space-between; }
+.recipe-image-settings__row :deep(.p-inputnumber) { width: 6rem; }
+.recipe-image-settings__row :deep(.p-inputnumber-input) { font-size: .72rem; min-width: 0; padding: .3rem .15rem; text-align: center; }
+.recipe-image-settings__label { color: var(--p-text-muted-color); font-size: .75rem; font-weight: 600; }
+.recipe-image-settings__reset { justify-content: flex-start; width: 100%; }
+.recipe-image-settings :deep(.p-selectbutton) { width: 100%; }
+.recipe-image-settings :deep(.p-selectbutton .p-togglebutton) { font-size: .72rem; padding: .3rem .4rem; }
 .recipe-image-empty { align-items: center; background: var(--p-surface-50); border: 1px dashed var(--p-content-border-color); border-radius: var(--p-border-radius-md, .5rem); color: var(--p-text-muted-color); display: flex; flex-direction: column; gap: .5rem; height: 180px; justify-content: center; }
 .recipe-image-empty i { color: var(--p-primary-color); font-size: 1.5rem; }
 .recipe-image-url { width: 100%; }
@@ -82,6 +142,5 @@ function updateCaption(event: Event) {
 .recipe-image-caption-view { color: var(--p-text-muted-color); font-size: .78rem; text-align: center; }
 @media (max-width: 850px) {
     .recipe-image-block { margin: 1.5rem 0; }
-    .recipe-image-block img { height: 180px; }
 }
 </style>

@@ -8,16 +8,16 @@ export const recipeBlockGroups = [
             { type: 'taskList', label: 'Чек-лист', description: 'Отмечайте выполненное', icon: 'pi pi-check-square' },
             { type: 'toggle', label: 'Сворачиваемый блок', description: 'Скрыть подробности', icon: 'pi pi-chevron-down' },
             { type: 'groupBox', label: 'Блок с заголовком', description: 'Заголовок, текст и оформление границы', icon: 'pi pi-info-circle' },
-            { type: 'codeBlock', label: 'Код', description: 'Моноширинный блок', icon: 'pi pi-code' },
             { type: 'table', label: 'Таблица', description: 'Строки и столбцы', icon: 'pi pi-table' },
             { type: 'horizontalRule', label: 'Разделитель', description: 'Раздел между темами', icon: 'pi pi-minus' },
         ],
     },
     {
-        label: 'Рецепт',
+        label: 'Данные',
         items: [
-            { type: 'ingredientList', label: 'Ингредиенты', description: 'Продукты, количества и части', icon: 'pi pi-shopping-bag' },
+            { type: 'ingredientsSet', label: 'Ингредиенты', description: 'Набор продуктов с количеством порций', icon: 'pi pi-shopping-bag' },
             { type: 'preparationSteps', label: 'Шаги приготовления', description: 'Последовательность действий', icon: 'pi pi-list-check' },
+            { type: 'recipeCharacteristic', label: 'Характеристика', description: 'Свойство рецепта с типом значения', icon: 'pi pi-tag' },
         ],
     },
     {
@@ -48,8 +48,6 @@ export function createRecipeBlockContent(type: RecipeBlockType, tableColumns = 3
             return { type: 'recipeToggle', content: [{ type: 'text', text: 'Добавьте подробности...' }] }
         case 'groupBox':
             return { type: 'groupBox', attrs: { title: 'Параграф', icon: 'pi pi-info-circle' }, content: [{ type: 'paragraph' }] }
-        case 'codeBlock':
-            return { type: 'codeBlock', content: [{ type: 'text', text: '' }] }
         case 'table': {
             const columnCount = Math.max(1, Math.min(8, Math.floor(tableColumns)))
             return {
@@ -63,8 +61,10 @@ export function createRecipeBlockContent(type: RecipeBlockType, tableColumns = 3
                 })),
             }
         }
-        case 'ingredientList':
-            return { type, attrs: { ingredients: [createIngredientRow()] } }
+        case 'ingredientsSet':
+            return { type, attrs: { title: 'Ингредиенты', portionsAmount: '', portionsUnit: 'порций', portionsCalculateType: 'Multiplication', ingredients: [createIngredientRow()] } }
+        case 'recipeCharacteristic':
+            return { type, attrs: { characteristicName: '', characteristicType: 'String', measure: '', stringValue: '', numberValue: null, rangeMin: null, rangeMax: null, arrayItems: [] } }
         case 'preparationSteps':
             return { type: 'groupBox', attrs: { title: 'Шаги приготовления', icon: 'pi pi-list-check', kind: 'steps' }, content: [{ type: 'text', text: 'Опишите шаг приготовления...' }] }
         case 'recipeImage':

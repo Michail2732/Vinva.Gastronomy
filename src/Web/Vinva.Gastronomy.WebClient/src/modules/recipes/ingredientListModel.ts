@@ -7,7 +7,6 @@ export interface IngredientQuantityRowViewModel {
 export interface IngredientRowViewModel {
     id: string
     name: string
-    part: string
     quantities: IngredientQuantityRowViewModel[]
     note: string
     textStyle?: IngredientTextStyle
@@ -37,7 +36,6 @@ export function createIngredientRow(): IngredientRowViewModel {
     return {
         id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
         name: '',
-        part: '',
         note: '',
         quantities: [createIngredientQuantityRow()],
     }
@@ -82,14 +80,12 @@ export function normalizeIngredientBlock(node: Record<string, unknown>): Record<
                     ...value,
                     id: value.id ?? createIngredientRow().id,
                     name: value.name ?? '',
-                    part: value.part ?? '',
                     note: value.note ?? '',
                 }
             }
             return {
                 id: value.id ?? createIngredientRow().id,
                 name: value.name ?? '',
-                part: value.part ?? '',
                 note: value.note ?? '',
                 quantities: [parseLegacyQuantity(value.quantity ?? '')],
             }
@@ -102,7 +98,7 @@ export function normalizeIngredientBlock(node: Record<string, unknown>): Record<
         .split(/\r?\n/)
         .map((line) => line.trim())
         .filter(Boolean)
-        .map((line) => ({ id: createIngredientRow().id, ...parseLegacyLine(line) }))
+        .map((line) => ({ id: createIngredientRow().id, note: '', ...parseLegacyLine(line) }))
 
     return {
         ...node,

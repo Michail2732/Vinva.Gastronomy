@@ -1,24 +1,32 @@
 <template>
-    <NodeViewWrapper class="recipe-block task-list-block">
+    <NodeViewWrapper class="recipe-block task-list-block" :style="spacingStyle">
         <BlockDragHandle v-if="isEditable" :editor="editor" />
-        <RecipeNodeToolbar :editable="isEditable" :delete-node="deleteNode" delete-label="Удалить блок" />
+        <RecipeNodeToolbar :editable="isEditable" :delete-node="deleteNode" delete-label="Удалить блок">
+            <RecipeBlockSpacing :attrs="node.attrs" :update-attributes="updateAttributes" />
+        </RecipeNodeToolbar>
         <NodeViewContent as="ul" class="task-list-content" />
     </NodeViewWrapper>
 </template>
 
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 import type { Ref } from 'vue'
 const isEditable = inject<Ref<boolean>>('editorEditable', ref(true))
 import type { Editor } from '@tiptap/core'
 import { NodeViewContent, NodeViewWrapper } from '@tiptap/vue-3'
 import RecipeNodeToolbar from '../../editor/recipeNodeToolbar.vue'
+import RecipeBlockSpacing from '../../editor/recipeBlockSpacing.vue'
+import { blockMarginStyle } from '../../shared/margins'
 import BlockDragHandle from '../drag/BlockDragHandle.vue'
 
-defineProps<{
+const props = defineProps<{
     editor: Editor
+    node: { attrs: Record<string, unknown> }
+    updateAttributes: (attributes: Record<string, unknown>) => void
     deleteNode: () => void
 }>()
+
+const spacingStyle = computed(() => blockMarginStyle(props.node.attrs))
 </script>
 
 <style scoped lang="scss">

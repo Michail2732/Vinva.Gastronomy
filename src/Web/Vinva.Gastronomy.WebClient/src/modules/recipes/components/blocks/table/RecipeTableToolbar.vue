@@ -1,10 +1,35 @@
 ﻿<template>
     <div v-if="editable" class="table-local-toolbar" :class="{ 'is-popover-open': cellPopoverVisible }" role="toolbar" aria-label="Форматирование таблицы">
-        <Button icon="pi pi-plus" text severity="secondary" v-tooltip.top="'Добавить столбец'" aria-label="Добавить столбец" :disabled="!canAddColumn" @mousedown.prevent @click="editor.chain().focus().addColumnAfter().run()" class="table-toolbar__rotate-90" />
-        <Button icon="pi pi-plus" text severity="secondary" v-tooltip.top="'Добавить строку'" aria-label="Добавить строку" :disabled="!canAddRow" @mousedown.prevent @click="editor.chain().focus().addRowAfter().run()" />
+        <Button text severity="secondary" v-tooltip.top="'Добавить столбец'" aria-label="Добавить столбец" :disabled="!canAddColumn" @mousedown.prevent @click="editor.chain().focus().addColumnAfter().run()" class="table-toolbar__icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="table-toolbar__svg">
+                <rect x="3" y="4" width="7" height="16" rx="1.2" />
+                <rect x="12" y="4" width="7" height="16" rx="1.2" />
+                <line x1="21" y1="9" x2="21" y2="15" />
+                <line x1="18" y1="12" x2="24" y2="12" />
+            </svg>
+        </Button>
+        <Button text severity="secondary" v-tooltip.top="'Добавить строку'" aria-label="Добавить строку" :disabled="!canAddRow" @mousedown.prevent @click="editor.chain().focus().addRowAfter().run()" class="table-toolbar__icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="table-toolbar__svg">
+                <rect x="4" y="3" width="16" height="7" rx="1.2" />
+                <rect x="4" y="12" width="16" height="7" rx="1.2" />
+                <line x1="9" y1="21" x2="15" y2="21" />
+                <line x1="12" y1="18" x2="12" y2="24" />
+            </svg>
+        </Button>
         <Button icon="pi pi-sliders-h" text severity="secondary" v-tooltip.top="'Настроить ячейки'" aria-label="Настройка ячеек" :disabled="!hasCellSelection" @mousedown.prevent @click="toggleCellPopover" />
-        <Button icon="pi pi-minus" text severity="secondary" v-tooltip.top="'Удалить столбец'" aria-label="Удалить столбец" :disabled="!canDeleteColumn" @mousedown.prevent @click="editor.chain().focus().deleteColumn().run()" class="table-toolbar__rotate-90" />
-        <Button icon="pi pi-minus" text severity="secondary" v-tooltip.top="'Удалить строку'" aria-label="Удалить строку" :disabled="!canDeleteRow" @mousedown.prevent @click="editor.chain().focus().deleteRow().run()" />
+        <Button text severity="secondary" v-tooltip.top="'Удалить столбец'" aria-label="Удалить столбец" :disabled="!canDeleteColumn" @mousedown.prevent @click="editor.chain().focus().deleteColumn().run()" class="table-toolbar__icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="table-toolbar__svg">
+                <rect x="3" y="4" width="7" height="16" rx="1.2" />
+                <line x1="15" y1="12" x2="21" y2="12" />
+            </svg>
+        </Button>
+        <Button text severity="secondary" v-tooltip.top="'Удалить строку'" aria-label="Удалить строку" :disabled="!canDeleteRow" @mousedown.prevent @click="editor.chain().focus().deleteRow().run()" class="table-toolbar__icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="table-toolbar__svg">
+                <rect x="4" y="3" width="16" height="7" rx="1.2" />
+                <line x1="12" y1="15" x2="12" y2="21" />
+            </svg>
+        </Button>
+        <RecipeBlockSpacing :attrs="tableMarginAttrs" :update-attributes="updateTableMargins" />
         <Button icon="pi pi-trash" text severity="danger" class="table-toolbar__delete" v-tooltip.top="'Удалить таблицу'" aria-label="Удалить таблицу" :disabled="!canDeleteTable" @mousedown.prevent @click="editor.chain().focus().deleteTable().run()" />
         <Popover ref="cellPopover" @show="cellPopoverVisible = true" @hide="cellPopoverVisible = false">
             <div class="table-cell-settings" aria-label="Настройки выделенных ячеек">
@@ -47,6 +72,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Editor } from '@tiptap/core'
 import { CellSelection, selectedRect } from '@tiptap/pm/tables'
 import Popover from 'primevue/popover'
+import RecipeBlockSpacing from '../../editor/recipeBlockSpacing.vue'
 
 type BorderSide = 'top' | 'right' | 'bottom' | 'left'
 
@@ -113,6 +139,13 @@ const tableToolbarState = computed(() => {
     }
 })
 
+const tableMarginAttrs = computed(() => {
+    revision.value
+    const { tablePosition } = getActiveTablePositions()
+    const node = tablePosition === null ? null : props.editor.state.doc.nodeAt(tablePosition)
+    return (node?.attrs ?? {}) as Record<string, unknown>
+})
+
 const borderWidthState = computed(() => {
     revision.value
     const rect = getRegionRect()
@@ -143,6 +176,15 @@ function getActiveTablePositions() {
 
 function toggleCellPopover(event: Event) {
     cellPopover.value?.toggle(event)
+}
+
+function updateTableMargins(attributes: Record<string, number>) {
+    const { state, view } = props.editor
+    const { tablePosition } = getActiveTablePositions()
+    if (tablePosition === null) return
+    const node = state.doc.nodeAt(tablePosition)
+    if (!node) return
+    view.dispatch(state.tr.setNodeMarkup(tablePosition, undefined, { ...node.attrs, ...attributes }))
 }
 
 function refreshState() {
@@ -240,8 +282,9 @@ onBeforeUnmount(() => {
 :global(.tableWrapper.recipe-table:hover > .table-local-toolbar), :global(.tableWrapper.recipe-table:focus-within > .table-local-toolbar), .table-local-toolbar.is-popover-open { opacity: 1; pointer-events: auto; }
 :global(.paper-shell.is-preview .table-local-toolbar) { display: none; }
 .table-local-toolbar :deep(.p-button) { flex: 0 0 auto; height: 1.65rem; padding: 0; width: 1.65rem; }
+.table-toolbar__icon-btn :deep(.p-button-label) { display: none; }
+.table-toolbar__svg { display: block; height: 16px; pointer-events: none; width: 16px; }
 .table-toolbar__delete:hover { background: var(--p-red-50); }
-.table-toolbar__rotate-90 :deep(.pi) { transform: rotate(90deg); }
 .table-cell-settings { display: grid; gap: .55rem; min-width: 13rem; }
 .table-cell-settings__row { align-items: center; color: var(--p-text-muted-color); display: flex; font-size: .75rem; gap: .75rem; justify-content: space-between; }
 .table-cell-settings__row input[type='color'] { border: 1px solid var(--p-content-border-color); border-radius: 3px; cursor: pointer; height: 1.7rem; padding: .1rem; width: 2.4rem; }

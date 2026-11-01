@@ -22,7 +22,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Domain.Entities.CharacteristicDefinition", b =>
+            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.CharacteristicDefinitionRecord", b =>
                 {
                     b.Property<string>("Name")
                         .HasMaxLength(64)
@@ -38,47 +38,6 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
                     b.HasKey("Name", "Type");
 
                     b.ToTable("CharacteristicDefinitions", (string)null);
-                });
-
-            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Domain.Entities.Recipe", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("BaseRecipe")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
-
-                    b.Property<string>("Document")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.PrimitiveCollection<Guid[]>("GalleryImageIds")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid[]")
-                        .HasDefaultValueSql("'{}'::uuid[]");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<Guid?>("TitleImageId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BaseRecipe");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Recipes", (string)null);
                 });
 
             modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.CharacteristicRecord", b =>
@@ -123,14 +82,14 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
 
             modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeIngredientRecord", b =>
                 {
-                    b.Property<Guid>("RecipeId")
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("IngredientsSetId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<string>("Part")
+                        .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
@@ -138,23 +97,91 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
-                    b.HasKey("RecipeId", "Name");
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("IngredientsSetId", "Name")
+                        .IsUnique();
 
                     b.ToTable("RecipeIngredients", (string)null);
                 });
 
-            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Domain.Entities.Recipe", b =>
+            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeIngredientsSetRecord", b =>
                 {
-                    b.HasOne("Vinva.Gastronomy.Recipes.Domain.Entities.Recipe", null)
-                        .WithMany()
-                        .HasForeignKey("BaseRecipe")
-                        .OnDelete(DeleteBehavior.SetNull);
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<int>("PortionsCalculateType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PortionsQuantitiesJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId", "Name")
+                        .IsUnique();
+
+                    b.ToTable("RecipeIngredientsSets", (string)null);
+                });
+
+            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeRecord", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("BaseRecipe")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("Document")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<Guid[]>("GalleryImageIds")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid[]")
+                        .HasDefaultValueSql("'{}'::uuid[]");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid?>("TitleImageId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaseRecipe");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Recipes", (string)null);
                 });
 
             modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.CharacteristicRecord", b =>
                 {
-                    b.HasOne("Vinva.Gastronomy.Recipes.Domain.Entities.Recipe", null)
-                        .WithMany()
+                    b.HasOne("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeRecord", null)
+                        .WithMany("Characteristics")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -162,11 +189,46 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
 
             modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeIngredientRecord", b =>
                 {
-                    b.HasOne("Vinva.Gastronomy.Recipes.Domain.Entities.Recipe", null)
+                    b.HasOne("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeIngredientsSetRecord", null)
+                        .WithMany("Ingredients")
+                        .HasForeignKey("IngredientsSetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeRecord", null)
                         .WithMany()
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeIngredientsSetRecord", b =>
+                {
+                    b.HasOne("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeRecord", null)
+                        .WithMany("IngredientsSets")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeRecord", b =>
+                {
+                    b.HasOne("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeRecord", null)
+                        .WithMany()
+                        .HasForeignKey("BaseRecipe")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeIngredientsSetRecord", b =>
+                {
+                    b.Navigation("Ingredients");
+                });
+
+            modelBuilder.Entity("Vinva.Gastronomy.Recipes.Persistence.Models.RecipeRecord", b =>
+                {
+                    b.Navigation("Characteristics");
+
+                    b.Navigation("IngredientsSets");
                 });
 #pragma warning restore 612, 618
         }

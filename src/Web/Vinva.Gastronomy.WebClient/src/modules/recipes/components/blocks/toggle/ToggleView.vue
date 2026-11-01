@@ -1,7 +1,9 @@
 ﻿<template>
-    <NodeViewWrapper class="recipe-block recipe-toggle-block" :style="blockStyle">
+    <NodeViewWrapper class="recipe-block recipe-toggle-block" :style="[blockStyle, spacingStyle]">
         <BlockDragHandle v-if="isEditable" :editor="editor" />
-        <RecipeNodeToolbar :editable="isEditable" :delete-node="deleteNode" delete-label="Удалить блок" />
+        <RecipeNodeToolbar :editable="isEditable" :delete-node="deleteNode" delete-label="Удалить блок">
+            <RecipeBlockSpacing :attrs="node.attrs" :update-attributes="updateAttributes" />
+        </RecipeNodeToolbar>
         <div class="recipe-toggle__header" @click="toggle">
             <i :class="open ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
             <input
@@ -26,6 +28,8 @@ import type { Editor } from '@tiptap/core'
 import { NodeViewContent, NodeViewWrapper } from '@tiptap/vue-3'
 import { NodeSelection } from '@tiptap/pm/state'
 import RecipeNodeToolbar from '../../editor/recipeNodeToolbar.vue'
+import RecipeBlockSpacing from '../../editor/recipeBlockSpacing.vue'
+import { blockMarginStyle } from '../../shared/margins'
 import BlockDragHandle from '../drag/BlockDragHandle.vue'
 
 const props = defineProps<{
@@ -37,6 +41,8 @@ const props = defineProps<{
 }>()
 
 const open = ref(true)
+
+const spacingStyle = computed(() => blockMarginStyle(props.node.attrs as unknown as Record<string, unknown>))
 
 const blockStyle = computed(() => ({
     backgroundColor: String(props.node.attrs.backgroundColor || 'var(--p-surface-0)'),

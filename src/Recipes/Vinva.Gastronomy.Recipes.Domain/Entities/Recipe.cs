@@ -11,22 +11,21 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
     [DisplayName("Рецепт")]
     public class Recipe : EntityOfT<Guid>, IAggregateRoot
-    {                
-        private readonly Dictionary<string, RecipeCharacteristic> _characteristics = new();
-        private readonly Dictionary<string, RecipeIngredient> _ingredients = new();
-
+    {                                
         public string Name { get; private set; }
         public string Description { get; private set; }
         public Guid? BaseRecipe { get; set; }                        
         public string Document { get; private set; }
         public Guid? TitleImageId {get; set;}
         public Guid[]? GalleryImageIds {get; set;}
-        public IReadOnlyCollection<RecipeCharacteristic> Characteristics
+        private readonly List<RecipeCharacteristic> _characteristics = new();
+        public IReadOnlyList<RecipeCharacteristic> Characteristics
         {
-            get => _characteristics.Values;
+            get => _characteristics;
         }
 
-        public IReadOnlyCollection<RecipeIngredient> Ingredients => _ingredients.Values;
+        private readonly List<RecipeIngredientsSet> _ingredientsSets = new();
+        public IReadOnlyCollection<RecipeIngredientsSet> IngredientsSets => _ingredientsSets;
 
 
 #pragma warning disable CS8618
@@ -51,41 +50,45 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
         
                 
         public void AddCharacteristic(RecipeCharacteristic characteristic)
-        {
-            if (_characteristics.ContainsKey(characteristic.Name))
+        {            
+            if (_characteristics.Contains(characteristic))
                 throw RecipeDomainException.RecipeCharacteristicAlreadyExists(Id, characteristic.Name);
 
             characteristic.RecipeId = Id;
-            _characteristics[characteristic.Name] = characteristic;
+            _characteristics.Add(characteristic);
         }
 
         public void RemoveCharacteristic(string characteristicName)
         {            
-            if (!_characteristics.Remove(characteristicName))
+            var characteristic = _characteristics.FirstOrDefault(a => a.Name == characteristicName);
+            if (characteristic == null)
                 throw RecipeDomainException.RecipeCharacteristicNotExists(Id, characteristicName);
+            _characteristics.Remove(characteristic);
         }
 
-        public void AddIngredient(RecipeIngredient ingredient)
-        {
-            ArgumentNullException.ThrowIfNull(ingredient);
-            if (_ingredients.ContainsKey(ingredient.Name))
-                throw RecipeDomainException.RecipeIngredientAlreadyExists(Id, ingredient.Name);
+        public void AddIngredientsSet(RecipeIngredientsSet ingredientSet)
+        {            
+            ArgumentNullException.ThrowIfNull(ingredientSet);                        
+            if (_ingredientsSets.Any(a => a.Name == ingredientSet.Name))
+                throw RecipeDomainException.RecipeIngredientAlreadyExists(Id, ingredientSet.Name);
 
-            ingredient.RecipeId = Id;
-            _ingredients[ingredient.Name] = ingredient;
+            ingredientSet.RecipeId = Id;
+            _ingredientsSets.Add(ingredientSet);
         }
 
-        public void RemoveIngredient(string ingredientName)
+        public void RemoveIngredientsSet(string ingredientName)
         {
-            if (!_ingredients.Remove(ingredientName))
+            var ingredientSet = _ingredientsSets.FirstOrDefault(a => a.Name == ingredientName);
+            if (ingredientSet == null)
                 throw RecipeDomainException.RecipeIngredientNotExists(Id, ingredientName);
+            _ingredientsSets.Remove(ingredientSet);
         }
 
-        public void ReplaceIngredients(IEnumerable<RecipeIngredient> ingredients)
+        public void ReplaceIngredientsSets(IEnumerable<RecipeIngredientsSet> ingredients)
         {
-            _ingredients.Clear();
+            _ingredientsSets.Clear();
             foreach (var ingredient in ingredients)
-                AddIngredient(ingredient);
+                AddIngredientsSet(ingredient);
         }
 
         public void UpdateDetails(string name, string description, string document, Guid? baseRecipe)

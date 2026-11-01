@@ -14,8 +14,8 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 
             builder.HasKey(a => new {a.RecipeId, a.Name });
 
-            builder.HasOne<Recipe>()
-                   .WithMany()
+            builder.HasOne<RecipeRecord>()
+                   .WithMany(a => a.Characteristics)
                    .HasForeignKey(a => a.RecipeId)
                    .IsRequired(true)
                    .OnDelete(DeleteBehavior.Cascade);

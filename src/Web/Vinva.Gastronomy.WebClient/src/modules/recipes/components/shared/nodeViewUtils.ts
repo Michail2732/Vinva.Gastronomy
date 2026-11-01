@@ -32,7 +32,8 @@ export function findBlockPosByElement(view: EditorView, element: HTMLElement): n
 export function getActiveBlockPos(doc: import('@tiptap/pm/model').Node, selection: import('@tiptap/pm/state').Selection): number | null {
     const isBlockNode = (node: { type: { name: string } }) => {
         const name = node.type.name
-        return name === 'paragraph' || name === 'heading' || name === 'textBlock' || name === 'groupBox' || name === 'ingredientList'
+        return name === 'paragraph' || name === 'heading' || name === 'textBlock' || name === 'groupBox' || name === 'ingredientsSet'
+            || name === 'recipeCharacteristic'
             || name === 'table' || name === 'recipeDivider' || name === 'horizontalRule' || name === 'blockquote'
             || name === 'codeBlock' || name === 'taskList' || name === 'imageGallery' || name === 'recipeImage'
             || name === 'recipeMedia' || name === 'recipeToggle'

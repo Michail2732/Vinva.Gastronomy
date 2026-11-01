@@ -23,6 +23,7 @@ const blockDragKey = new PluginKey<BlockDragPluginState>('recipeBlockDrag')
 export const RecipeBlockDrag = Extension.create({
     name: 'recipeBlockDrag',
     addProseMirrorPlugins() {
+        const editor = this.editor
         return [new Plugin<BlockDragPluginState>({
             key: blockDragKey,
             state: {
@@ -36,16 +37,19 @@ export const RecipeBlockDrag = Extension.create({
             props: {
                 handleDOMEvents: {
                     pointerdown: (view, event) => {
+                        if (!editor.isEditable) return false
                         if (event.button !== 0) return false
                         selectBlockFromEvent(view, event)
                         return false
                     },
                     focusin: (view, event) => {
+                        if (!editor.isEditable) return false
                         selectBlockFromEvent(view, event)
                         return false
                     },
                 },
                 decorations: (state) => {
+                    if (!editor.isEditable) return DecorationSet.empty
                     const decorations: Decoration[] = []
                     const dragging = blockDragKey.getState(state)?.dragging ?? null
 

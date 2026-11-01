@@ -8,10 +8,11 @@ namespace Vinva.Gastronomy.Recipes.Persistence
 {
     public class RecipeDbContext: DbContext
     {
-        public DbSet<Recipe> Recipes { get; private init; }
+        public DbSet<RecipeRecord> Recipes { get; private init; }
         public DbSet<CharacteristicRecord> CharacteristicRecords { get; private init; }
+        public DbSet<RecipeIngredientsSetRecord> RecipeIngredientsSetRecords { get; private init; }
         public DbSet<RecipeIngredientRecord> RecipeIngredientRecords { get; private init; }
-        public DbSet<CharacteristicDefinition> CharacteristicDefinitions { get; private init; }
+        public DbSet<CharacteristicDefinitionRecord> CharacteristicDefinitions { get; private init; }
 
         public RecipeDbContext(DbContextOptions<RecipeDbContext> options) : base(options)
         {
@@ -22,6 +23,7 @@ namespace Vinva.Gastronomy.Recipes.Persistence
         {            
             modelBuilder.ApplyConfiguration(new RecipeDbConfiguration());
             modelBuilder.ApplyConfiguration(new CharacteristicDbConfiguration());            
+            modelBuilder.ApplyConfiguration(new RecipeIngredientsSetDbConfiguration());
             modelBuilder.ApplyConfiguration(new RecipeIngredientDbConfiguration());
             modelBuilder.ApplyConfiguration(new CharacteristicDefinitionDbConfiguration());
             base.OnModelCreating(modelBuilder);

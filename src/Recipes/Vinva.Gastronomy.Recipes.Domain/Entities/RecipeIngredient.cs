@@ -6,36 +6,32 @@ using Vinva.Gastronomy.Common.Entities;
 
 namespace Vinva.Gastronomy.Recipes.Domain.Entities
 {
-    public sealed class RecipeIngredient : Entity, IEquatable<RecipeIngredient?>
+    public sealed class RecipeIngredient : EntityOfT<Guid>
     {
-        private readonly List<RecipeIngredientQuantity> quantities = new();
+        private readonly List<Quantity> quantities = new();
 
         public Guid RecipeId { get; internal set; }
         public string Name { get; private set; }
-        public string? Part { get; private set; }
-        public IReadOnlyCollection<RecipeIngredientQuantity> Quantities => quantities;
+        public Guid IngredientsSetId  { get; private set; }
+        public IReadOnlyCollection<Quantity> Quantities => quantities;
 
 #pragma warning disable CS8618
-        private RecipeIngredient() { }
+        private RecipeIngredient() :base(GenerateGuid()) { }
 #pragma warning restore CS8618
 
-        public RecipeIngredient(string name, IEnumerable<RecipeIngredientQuantity>? quantities = null, string? part = null)
+        public RecipeIngredient(Guid id, string name, Guid ingredientsSetId, IEnumerable<Quantity>? quantities = null)
+            :base(id)
         {
-            Name = NormalizeName(name);
-            SetPart(part);
+            IngredientsSetId = ingredientsSetId;
+            Name = NormalizeName(name);            
             if (quantities is not null)
                 this.quantities.AddRange(quantities);
         }
 
-        public RecipeIngredient(Guid recipeId, string name, IEnumerable<RecipeIngredientQuantity>? quantities = null, string? part = null)
-            : this(name, quantities, part)
+        public RecipeIngredient(Guid id, Guid recipeId, string name, Guid ingredientsSetId, IEnumerable<Quantity>? quantities = null)
+            : this(id, name, ingredientsSetId, quantities)
         {
             RecipeId = recipeId;
-        }
-
-        public void SetPart(string? part)
-        {
-            Part = string.IsNullOrWhiteSpace(part) ? null : part.Trim();
         }
 
         public void Rename(string name)
@@ -43,7 +39,7 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
             Name = NormalizeName(name);
         }
 
-        public void ReplaceQuantities(IEnumerable<RecipeIngredientQuantity> values)
+        public void ReplaceQuantities(IEnumerable<Quantity> values)
         {
             quantities.Clear();
             quantities.AddRange(values ?? throw new ArgumentNullException(nameof(values)));
@@ -51,17 +47,8 @@ namespace Vinva.Gastronomy.Recipes.Domain.Entities
 
         public void AddQuantity(decimal amount, string unit)
         {
-            quantities.Add(new RecipeIngredientQuantity(amount, unit));
-        }
-
-        public bool Equals(RecipeIngredient? other)
-        {
-            return other is not null && RecipeId == other.RecipeId && Name == other.Name;
-        }
-
-        public override bool Equals(object? obj) => Equals(obj as RecipeIngredient);
-        public override bool Equals(IEntity? obj) => Equals(obj as RecipeIngredient);
-        public override int GetHashCode() => HashCode.Combine(RecipeId, Name);
+            quantities.Add(new Quantity(amount, unit));
+        }        
 
         private static string NormalizeName(string name)
         {

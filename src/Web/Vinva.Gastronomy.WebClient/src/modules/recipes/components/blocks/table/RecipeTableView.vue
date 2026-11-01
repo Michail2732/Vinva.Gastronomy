@@ -1,11 +1,13 @@
 ﻿<template>
-    <NodeViewWrapper as="div" class="tableWrapper recipe-table recipe-block">
+    <NodeViewWrapper as="div" class="tableWrapper recipe-table recipe-block" :style="tableMarginStyle">
         <BlockDragHandle v-if="isEditable" :editor="editor" />
         <RecipeTableToolbar :editor="editor" />
-        <table class="recipe-table__element" :style="tableStyle">
-            <colgroup v-html="colgroupHtml" />
-            <NodeViewContent as="tbody" />
-        </table>
+        <div class="recipe-table__scroll">
+            <table class="recipe-table__element" :style="tableStyle">
+                <colgroup v-html="colgroupHtml" />
+                <NodeViewContent as="tbody" />
+            </table>
+        </div>
     </NodeViewWrapper>
 </template>
 
@@ -18,6 +20,7 @@ import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import { NodeViewContent, NodeViewWrapper } from '@tiptap/vue-3'
 import RecipeTableToolbar from './RecipeTableToolbar.vue'
 import BlockDragHandle from '../drag/BlockDragHandle.vue'
+import { blockMarginStyle } from '../../shared/margins'
 
 type TableColumn = { width?: number; minWidth: number }
 
@@ -27,6 +30,8 @@ const props = defineProps<{
 }>()
 
 const defaultCellMinWidth = 80
+
+const tableMarginStyle = computed(() => blockMarginStyle(props.node.attrs as Record<string, unknown>))
 
 const layout = computed(() => {
     const columns: TableColumn[] = []

@@ -9,15 +9,15 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.SearchByCharacteristics
 {
     internal static class RecipeCharacteristicQueryBuilder
     {
-        public static IQueryable<Recipe> Apply(
-            IQueryable<Recipe> recipes,
+        public static IQueryable<RecipeRecord> Apply(
+            IQueryable<RecipeRecord> recipes,
             IQueryable<CharacteristicRecord> records,
             IReadOnlyList<CharacteristicFilterDto> filters)
         {
             if (filters.Count == 0)
                 return recipes;
 
-            var recipe = Expression.Parameter(typeof(Recipe), "recipe");
+            var recipe = Expression.Parameter(typeof(RecipeRecord), "recipe");
             Expression? combined = null;
 
             foreach (var filter in filters)
@@ -30,7 +30,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.SearchByCharacteristics
                         : Expression.OrElse(combined, current);
             }
 
-            return recipes.Where(Expression.Lambda<Func<Recipe, bool>>(combined!, recipe));
+            return recipes.Where(Expression.Lambda<Func<RecipeRecord, bool>>(combined!, recipe));
         }
 
         private static Expression BuildExistsExpression(
@@ -42,7 +42,7 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.SearchByCharacteristics
             var match = Expression.AndAlso(
                 Expression.Equal(
                     Expression.Property(record, nameof(CharacteristicRecord.RecipeId)),
-                    Expression.Property(recipe, nameof(Recipe.Id))),
+                    Expression.Property(recipe, nameof(RecipeRecord.Id))),
                 Expression.AndAlso(
                     Expression.Equal(
                         Expression.Property(record, nameof(CharacteristicRecord.Name)),

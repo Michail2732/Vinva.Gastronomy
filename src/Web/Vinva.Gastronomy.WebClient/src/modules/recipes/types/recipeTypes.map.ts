@@ -3,11 +3,13 @@ import {
 	DtoState,
 	Logic,
 	Operator,
+	PortionsCalculationType,
 	type CharacteristicDto,
 	type CreateRecipeCommand,
+	type QuantityDto,
 	type RecipeDto,
 	type RecipeIngredientDto,
-	type RecipeIngredientQuantityDto,
+	type RecipeIngredientsSetDto,
 	type SearchRecipesByCharacteristicsQuery,
 	type UpdateCommand,
 } from '@/api/gastronomy_generated'
@@ -17,9 +19,12 @@ import type {
 	RecipeCharacteristicViewModel,
 	RecipeCreatedViewModel,
 	RecipeDraftViewModel,
+	RecipeIngredientQuantityViewModel,
 	RecipeIngredientViewModel,
+	RecipeIngredientsSetViewModel,
 	RecipeFilterLogic,
 	RecipeFilterOperator,
+	RecipePortionsCalculateType,
 	RecipeSearchViewModel,
 	RecipeViewModel,
 } from './recipeTypes'
@@ -85,18 +90,36 @@ export function mapRecipeDto(dto: RecipeDto): RecipeViewModel {
 		baseRecipeId: dto.baseRecipe ?? null,
 		document: parseDocument(dto.document),
 		characteristics: (dto.characteristics ?? []).map(mapCharacteristic),
-		ingredients: (dto.ingredients ?? []).map(mapIngredient),
+		ingredientsSets: (dto.ingredientsSets ?? []).map(mapIngredientsSet),
+	}
+}
+
+function mapQuantity(dto: QuantityDto): RecipeIngredientQuantityViewModel {
+	return {
+		amount: dto.amount,
+		unit: dto.unit ?? '',
 	}
 }
 
 function mapIngredient(dto: RecipeIngredientDto): RecipeIngredientViewModel {
 	return {
-		name: dto.name,
-		part: dto.part ?? null,
-		quantities: (dto.quantities ?? []).map((quantity) => ({
-			amount: quantity.amount,
-			unit: quantity.unit,
-		})),
+		id: dto.id ?? null,
+		name: dto.name ?? '',
+		quantities: (dto.quantities ?? []).map(mapQuantity),
+	}
+}
+
+function mapPortionsCalculateType(type?: PortionsCalculationType): RecipePortionsCalculateType {
+	return type === PortionsCalculationType.MULTI_SETS ? 'MultiSets' : 'Multiplication'
+}
+
+function mapIngredientsSet(dto: RecipeIngredientsSetDto): RecipeIngredientsSetViewModel {
+	return {
+		id: dto.id ?? null,
+		name: dto.name ?? '',
+		portionsQuantities: (dto.portionsQuantities ?? []).map(mapQuantity),
+		portionsCalculateType: mapPortionsCalculateType(dto.portionsCalculateType),
+		ingredients: (dto.ingredients ?? []).map(mapIngredient),
 	}
 }
 
@@ -148,6 +171,33 @@ function mapState(state: RecipeCharacteristicState): DtoState {
 	}
 }
 
+function mapQuantityToDto(quantity: RecipeIngredientQuantityViewModel): QuantityDto {
+	return {
+		amount: quantity.amount,
+		unit: quantity.unit,
+	}
+}
+
+function mapIngredientToDto(ingredient: RecipeIngredientViewModel): RecipeIngredientDto {
+	return {
+		id: ingredient.id ?? null,
+		name: ingredient.name,
+		quantities: ingredient.quantities.map(mapQuantityToDto),
+	}
+}
+
+function mapIngredientsSetToDto(set: RecipeIngredientsSetViewModel): RecipeIngredientsSetDto {
+	return {
+		id: set.id ?? null,
+		name: set.name,
+		portionsQuantities: set.portionsQuantities.map(mapQuantityToDto),
+		portionsCalculateType: set.portionsCalculateType === 'MultiSets'
+			? PortionsCalculationType.MULTI_SETS
+			: PortionsCalculationType.MULTIPLICATION,
+		ingredients: set.ingredients.map(mapIngredientToDto),
+	}
+}
+
 export function mapRecipeDraftToCreateCommand(draft: RecipeDraftViewModel): CreateRecipeCommand {
 	return {
 		name: draft.name,
@@ -155,11 +205,7 @@ export function mapRecipeDraftToCreateCommand(draft: RecipeDraftViewModel): Crea
 		baseRecipe: draft.baseRecipeId,
 		document: JSON.stringify(draft.document),
 		characteristics: draft.characteristics.map((characteristic) => mapCharacteristicToDto(characteristic, 'New')),
-		ingredients: draft.ingredients.map((ingredient) => ({
-			name: ingredient.name,
-			part: ingredient.part,
-			quantities: ingredient.quantities,
-		})),
+		ingredientsSets: draft.ingredientsSets.map(mapIngredientsSetToDto),
 	}
 }
 
@@ -171,11 +217,7 @@ export function mapRecipeDraftToUpdateCommand(id: string, draft: RecipeDraftView
 		baseRecipe: draft.baseRecipeId,
 		document: JSON.stringify(draft.document),
 		characteristics: draft.characteristics.map((characteristic) => mapCharacteristicToDto(characteristic, 'Change')),
-		ingredients: draft.ingredients.map((ingredient) => ({
-			name: ingredient.name,
-			part: ingredient.part,
-			quantities: ingredient.quantities,
-		})),
+		ingredientsSets: draft.ingredientsSets.map(mapIngredientsSetToDto),
 	}
 }
 

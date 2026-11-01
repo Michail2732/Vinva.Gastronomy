@@ -10,16 +10,21 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
         public void Configure(EntityTypeBuilder<RecipeIngredientRecord> builder)
         {
             builder.ToTable("RecipeIngredients");
-            builder.HasKey(item => new { item.RecipeId, item.Name });
-            builder.HasOne<Vinva.Gastronomy.Recipes.Domain.Entities.Recipe>()
+            builder.HasKey(item => item.Id);
+            builder.Property(item => item.Id).ValueGeneratedNever();
+            builder.HasIndex(item => new { item.IngredientsSetId, item.Name })
+                .IsUnique();
+            builder.HasOne<RecipeRecord>()
                 .WithMany()
                 .HasForeignKey(item => item.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne<RecipeIngredientsSetRecord>()
+                .WithMany(set => set.Ingredients)
+                .HasForeignKey(item => item.IngredientsSetId)
                 .OnDelete(DeleteBehavior.Cascade);
             builder.Property(item => item.Name)
                 .HasMaxLength(CommonConstants.MaxLengthName)
                 .IsRequired();
-            builder.Property(item => item.Part)
-                .HasMaxLength(CommonConstants.MaxLengthName);
             builder.Property(item => item.QuantitiesJson)
                 .HasColumnType("jsonb")
                 .IsRequired();

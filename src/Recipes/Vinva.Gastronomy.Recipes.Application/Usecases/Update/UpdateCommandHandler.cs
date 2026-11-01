@@ -21,39 +21,46 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Update
         {
             await new UpdateCommandValidator().ValidateAndThrowAsync(request, cancellationToken);
 
-            var recipe = await dbContext.Recipes
+            var record = await dbContext.Recipes
+                .Include(item => item.Characteristics)
+                .Include(item => item.IngredientsSets)
+                    .ThenInclude(item => item.Ingredients)
+                .AsSplitQuery()
                 .SingleOrDefaultAsync(item => item.Id == request.Id, cancellationToken)
                 ?? throw new KeyNotFoundException($"Recipe '{request.Id}' was not found.");
 
-            var records = await dbContext.CharacteristicRecords
-                .Where(record => record.RecipeId == recipe.Id)
-                .ToListAsync(cancellationToken);
-            foreach (var record in records)
-                recipe.AddCharacteristic(CharacteristicRecordMapper.ToDomain(record));
-
-            var ingredientRecords = await dbContext.RecipeIngredientRecords
-                .Where(record => record.RecipeId == recipe.Id)
-                .ToListAsync(cancellationToken);
-            recipe.ReplaceIngredients(ingredientRecords.Select(RecipeIngredientRecordMapper.ToDomain));
+            var recipe = RecipeRecordMapper.ToDomain(record);
 
             recipe.UpdateDetails(
                 request.Name ?? recipe.Name,
                 request.Description ?? recipe.Description,
                 request.Document ?? recipe.Document,
                 request.BaseRecipe ?? recipe.BaseRecipe);
+            RecipeRecordMapper.ApplyScalars(recipe, record);
 
             if (request.Characteristics is not null)
-                ApplyCharacteristics(recipe, records, request.Characteristics);
+                ApplyCharacteristics(recipe, record.Characteristics, request.Characteristics);
 
-            if (request.Ingredients is not null)
+            if (request.IngredientsSets is null)
             {
-                dbContext.RecipeIngredientRecords.RemoveRange(ingredientRecords);
-                var ingredients = request.Ingredients.Select(dto => RecipeIngredientDtoMapper.ToDomain(dto, recipe.Id)).ToArray();
-                recipe.ReplaceIngredients(ingredients);
-                dbContext.RecipeIngredientRecords.AddRange(ingredients.Select(RecipeIngredientRecordMapper.ToRecord));
+                await dbContext.SaveChangesAsync(cancellationToken);
+                return;
             }
 
+            // Старые наборы удаляются отдельным сохранением, чтобы переданные Id и уникальные имена не конфликтовали с новыми записями.
+            var newSets = request.IngredientsSets
+                .Select(dto => RecipeIngredientDtoMapper.ToDomain(dto, recipe.Id))
+                .ToArray();
+            recipe.ReplaceIngredientsSets(newSets);
+
+            await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+            dbContext.RecipeIngredientsSetRecords.RemoveRange(record.IngredientsSets);
             await dbContext.SaveChangesAsync(cancellationToken);
+
+            dbContext.RecipeIngredientsSetRecords.AddRange(
+                recipe.IngredientsSets.Select(RecipeIngredientsSetRecordMapper.ToRecord));
+            await dbContext.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
         }
 
         private void ApplyCharacteristics(
@@ -76,8 +83,9 @@ namespace Vinva.Gastronomy.Recipes.Application.Usecases.Update
 
                     var characteristic = CharacteristicDtoMapper.ToDomain(dto, recipe.Id);
                     recipe.AddCharacteristic(characteristic);
-                    dbContext.CharacteristicRecords.Add(CharacteristicRecordMapper.ToRecord(characteristic));
-                    records.Add(CharacteristicRecordMapper.ToRecord(characteristic));
+                    var newRecord = CharacteristicRecordMapper.ToRecord(characteristic);
+                    dbContext.CharacteristicRecords.Add(newRecord);
+                    records.Add(newRecord);
                     continue;
                 }
 

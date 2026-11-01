@@ -30,17 +30,6 @@ export enum CharacteristicType {
     ARRAY = 'Array'
 }
 
-export type RecipeIngredientQuantityDto = {
-    amount: number;
-    unit: string;
-};
-
-export type RecipeIngredientDto = {
-    name: string;
-    part?: string | null;
-    quantities?: Array<RecipeIngredientQuantityDto> | null;
-};
-
 export type CreateImageCommandResponse = {
     imageId: string;
 };
@@ -51,7 +40,7 @@ export type CreateRecipeCommand = {
     document?: string | null;
     baseRecipe?: string | null;
     characteristics?: Array<CharacteristicDto> | null;
-    ingredients?: Array<RecipeIngredientDto> | null;
+    ingredientsSets?: Array<RecipeIngredientsSetDto> | null;
 };
 
 export type CreateRecipeResponce = {
@@ -120,13 +109,37 @@ export enum Operator {
     CONTAINS = 'Contains'
 }
 
+export enum PortionsCalculationType {
+    MULTIPLICATION = 'Multiplication',
+    MULTI_SETS = 'MultiSets'
+}
+
+export type QuantityDto = {
+    amount: number;
+    unit: string | null;
+};
+
 export type RecipeDto = {
     id: string;
     name: string | null;
     description?: string | null;
     baseRecipe?: string | null;
     characteristics?: Array<CharacteristicDto> | null;
+    ingredientsSets?: Array<RecipeIngredientsSetDto> | null;
     document?: string | null;
+};
+
+export type RecipeIngredientDto = {
+    id?: string | null;
+    name: string | null;
+    quantities?: Array<QuantityDto> | null;
+};
+
+export type RecipeIngredientsSetDto = {
+    id?: string | null;
+    name: string | null;
+    portionsQuantities?: Array<QuantityDto> | null;
+    portionsCalculateType?: PortionsCalculationType;
     ingredients?: Array<RecipeIngredientDto> | null;
 };
 
@@ -157,7 +170,7 @@ export type UpdateCommand = {
     document?: string | null;
     baseRecipe?: string | null;
     characteristics?: Array<CharacteristicDto> | null;
-    ingredients?: Array<RecipeIngredientDto> | null;
+    ingredientsSets?: Array<RecipeIngredientsSetDto> | null;
 };
 
 export type UserInfoDto = {

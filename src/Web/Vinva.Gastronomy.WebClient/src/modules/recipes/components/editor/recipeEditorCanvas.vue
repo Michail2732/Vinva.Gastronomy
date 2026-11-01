@@ -45,8 +45,8 @@ const emit = defineEmits<{
 .recipe-editor :deep(.ProseMirror h3) { font-size: 1.05rem; }
 .recipe-editor :deep(.ProseMirror blockquote) { border-left: 3px solid var(--p-primary-300); color: var(--p-text-muted-color); margin: 1rem 0; padding: .25rem 0 .25rem 1rem; }
 .recipe-editor :deep(.ProseMirror pre) { background: var(--p-surface-900); border-radius: var(--p-border-radius-md, .5rem); color: var(--p-surface-0); overflow-x: auto; padding: 1rem; }
-.recipe-editor :deep(.ProseMirror table) { background: var(--recipe-table-background, transparent); border-collapse: collapse; margin: 1rem 0; table-layout: fixed; width: 100%; max-width: 100%; }
-.recipe-editor :deep(.tableWrapper.recipe-table) { overflow-x: auto; max-width: 100%; }
+.recipe-editor :deep(.ProseMirror table) { background: var(--recipe-table-background, transparent); border-collapse: collapse; margin: 0; table-layout: fixed; width: 100%; max-width: 100%; }
+.recipe-editor :deep(.recipe-table__scroll) { max-width: 100%; overflow-x: auto; }
 .recipe-editor :deep(.ProseMirror th), .recipe-editor :deep(.ProseMirror td) { border: var(--recipe-grid-width, 1px) solid var(--recipe-grid-color, var(--p-content-border-color)); min-width: 5rem; padding: .5rem; position: relative; vertical-align: top; }
 .recipe-editor :deep(.ProseMirror td.is-active-cell), .recipe-editor :deep(.ProseMirror th.is-active-cell) { box-shadow: inset 0 0 0 2px var(--p-primary-color); }
 .recipe-editor :deep(.ProseMirror .selectedCell) { background-color: color-mix(in srgb, var(--p-primary-300) 38%, var(--p-surface-0)); }

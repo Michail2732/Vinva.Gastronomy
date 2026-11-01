@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vinva.Gastronomy.Common.Constants;
-using Vinva.Gastronomy.Recipes.Domain.Entities;
+using Vinva.Gastronomy.Recipes.Persistence.Models;
 
 namespace Vinva.Gastronomy.Recipes.Persistence.Configurations
 {
-    public class CharacteristicDefinitionDbConfiguration : IEntityTypeConfiguration<CharacteristicDefinition>
+    public class CharacteristicDefinitionDbConfiguration : IEntityTypeConfiguration<CharacteristicDefinitionRecord>
     {
-        public void Configure(EntityTypeBuilder<CharacteristicDefinition> builder)
+        public void Configure(EntityTypeBuilder<CharacteristicDefinitionRecord> builder)
         {            
             builder.ToTable("CharacteristicDefinitions");
 
