@@ -12,7 +12,7 @@ using Vinva.Gastronomy.Media.Persistence;
 namespace Vinva.Gastronomy.Media.Persistence.Migrations
 {
     [DbContext(typeof(MediaDbContext))]
-    [Migration("20260917160612_InitialMedia")]
+    [Migration("20261107123548_InitialMedia")]
     partial class InitialMedia
     {
         /// <inheritdoc />

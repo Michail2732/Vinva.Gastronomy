@@ -12,8 +12,8 @@ using Vinva.Gastronomy.Recipes.Persistence;
 namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    [Migration("20261027092112_AddRecipeIngredientsSets")]
-    partial class AddRecipeIngredientsSets
+    [Migration("20261107123721_InitialRecipes")]
+    partial class InitialRecipes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

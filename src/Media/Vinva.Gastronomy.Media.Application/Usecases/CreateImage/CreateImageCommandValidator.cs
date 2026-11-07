@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Vinva.Gastronomy.Common.Constants;
-using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Media.Application.Common.Errors;
 
 namespace Vinva.Gastronomy.Media.Application.Usecases.CreateImage
@@ -18,8 +17,9 @@ namespace Vinva.Gastronomy.Media.Application.Usecases.CreateImage
 
             RuleFor(a => a.FileName)
                 .NotEmpty()
-                .Must(ValidationService.ValidateName)
-                .WithMessage(CommonErrorMessages.IncorrectName);            
+                .MaximumLength(CommonConstants.MaxLengthName)
+                .Must(name => !name.Any(char.IsControl))
+                .WithMessage(CommonErrorMessages.IncorrectName);
         }
     }
 }

@@ -32,8 +32,9 @@ namespace Vinva.Gastronomy.Media.Application.Usecases.CreateImage
                 Size = request.Size
             };
 
-            await _imagesStorage.UploadTempAsync(request.Content, imageMeta.Id, ct);
+            await _imagesStorage.UploadAsync(request.Content, imageMeta.Id, ct);
             await _dbContext.Images.AddAsync(imageMeta, ct);
+            await _dbContext.SaveChangesAsync(ct);
 
             return new CreateImageCommandResponse
             {

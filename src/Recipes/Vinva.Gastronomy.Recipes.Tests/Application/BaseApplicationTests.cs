@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Vinva.Gastronomy.Common.Modularity.MediatR;
 using Vinva.Gastronomy.Common.Services;
 using Vinva.Gastronomy.Recipes.Application.Usecases;
+using Vinva.Gastronomy.Recipes.Application.Usecases.Create;
 using Vinva.Gastronomy.Recipes.Persistence;
 
 namespace Vinva.Gastronomy.Recipes.Tests.Application
@@ -46,12 +47,12 @@ namespace Vinva.Gastronomy.Recipes.Tests.Application
 
             services.AddMediatR(cfg =>
             {                
-                cfg.RegisterServicesFromAssembly(typeof(BaseRecipeHandler).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(CreateRecipeCommand).Assembly);
                 cfg.AddOpenBehavior(typeof(LoggingMediatRBehavior<,>));
                 cfg.AddOpenBehavior(typeof(ValidationMediatRBehavior<,>));
             });
 
-            services.AddValidatorsFromAssembly(typeof(BaseRecipeHandler).Assembly);
+            services.AddValidatorsFromAssembly(typeof(CreateRecipeCommand).Assembly);
 
             ServiceProvider = services.BuildServiceProvider();
             DbContext = ServiceProvider.GetRequiredService<RecipeDbContext>();

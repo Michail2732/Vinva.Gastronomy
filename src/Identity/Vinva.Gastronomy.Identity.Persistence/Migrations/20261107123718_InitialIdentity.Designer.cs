@@ -12,7 +12,7 @@ using Vinva.Gastronomy.Identity.Persistence;
 namespace Vinva.Gastronomy.Identity.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20260917160543_InitialIdentity")]
+    [Migration("20261107123718_InitialIdentity")]
     partial class InitialIdentity
     {
         /// <inheritdoc />

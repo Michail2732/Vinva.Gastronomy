@@ -31,7 +31,7 @@ services:
       context: ..
       dockerfile: src/Web/Vinva.Gastronomy.WebClient/Dockerfile
       args:
-        VITE_API_URL: /api   
+        VITE_API_URL: /
     volumes:
       - images_data:/usr/share/nginx/images:ro
     depends_on:

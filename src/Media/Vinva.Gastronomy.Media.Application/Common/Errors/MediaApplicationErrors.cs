@@ -9,7 +9,7 @@ namespace Vinva.Gastronomy.Media.Application.Common.Errors
 {
     public class MediaApplicationErrors
     {
-        public static Error ImageNotFound(Guid imageId) => new("Media.ImageNotFound", $"Не удалось найти изображение '{imageId}'");
+        public static string ImageNotFound(Guid imageId) => $"Не удалось найти изображение '{imageId}'";
 
         public const string IncorrectImageFormat = "Некорректный формат изображения";
         public const string ImageWidthMustBeLargeThen0 = "Ширина изображения должна быть больше нуля";

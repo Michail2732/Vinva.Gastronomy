@@ -2,6 +2,7 @@
     <NodeViewWrapper class="recipe-block recipe-image-block" :style="spacingStyle">
         <BlockDragHandle v-if="isEditable" :editor="editor" />
         <RecipeNodeToolbar :editable="isEditable" :delete-node="deleteNode" delete-label="Удалить изображение">
+            <Button icon="pi pi-upload" text severity="secondary" aria-label="Загрузить изображение" title="Загрузить изображение" :loading="uploading" @mousedown.prevent @click="openFilePicker" />
             <Button icon="pi pi-expand" text severity="secondary" aria-label="Размер изображения" title="Размер" @mousedown.prevent @click="toggleSizePopover" />
             <Button icon="pi pi-window-maximize" text severity="secondary" aria-label="Масштабирование изображения" title="Масштабирование" @mousedown.prevent @click="toggleStretchPopover" />
             <RecipeBlockSpacing :attrs="node.attrs" :update-attributes="updateAttributes" />
@@ -33,8 +34,10 @@
             :loading="node.attrs.optimize ? 'lazy' : 'eager'"
             :decoding="node.attrs.optimize ? 'async' : 'sync'"
         />
-        <div v-else-if="isEditable" class="recipe-image-empty"><i class="pi pi-image" /><span>Добавьте ссылку на изображение</span></div>
-        <input v-if="isEditable" class="p-inputtext p-component recipe-image-url" type="url" :value="node.attrs.src" placeholder="https://..." aria-label="Ссылка на изображение" @input="updateSource" />
+        <div v-else-if="isEditable" class="recipe-image-empty" role="button" tabindex="0" aria-label="Выбрать изображение" @click="openFilePicker" @keydown.enter.prevent="openFilePicker">
+            <i :class="uploading ? 'pi pi-spin pi-spinner' : 'pi pi-image'" /><span>{{ uploading ? 'Загрузка изображения...' : 'Выберите изображение' }}</span>
+        </div>
+        <input v-if="isEditable" ref="fileInput" class="recipe-image-file-input" type="file" accept="image/*" aria-hidden="true" @change="onFileSelected" />
         <input v-if="isEditable"
             class="recipe-image-caption"
             :value="node.attrs.caption"
@@ -52,10 +55,12 @@ import type { Editor } from '@tiptap/core'
 const isEditable = inject<Ref<boolean>>('editorEditable', ref(true))
 import { NodeViewWrapper } from '@tiptap/vue-3'
 import Popover from 'primevue/popover'
+import { useToast } from 'primevue'
 import RecipeNodeToolbar from '../../editor/recipeNodeToolbar.vue'
 import RecipeBlockSpacing from '../../editor/recipeBlockSpacing.vue'
 import { blockMarginStyle } from '../../shared/margins'
 import BlockDragHandle from '../drag/BlockDragHandle.vue'
+import { useImageUpload } from '../../../composables/useImageUpload'
 
 const stretchOptions = [
     { label: 'Uniform', value: 'uniform' },
@@ -91,16 +96,35 @@ const spacingStyle = computed(() => blockMarginStyle(props.node.attrs as unknown
 const sizePopover = ref<{ toggle: (event: Event) => void; hide: () => void } | null>(null)
 const stretchPopover = ref<{ toggle: (event: Event) => void; hide: () => void } | null>(null)
 
+const toast = useToast()
+const { uploading, uploadImage } = useImageUpload()
+const fileInput = ref<HTMLInputElement | null>(null)
+
+function openFilePicker() {
+    if (uploading.value) return
+    fileInput.value?.click()
+}
+
+async function onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement
+    const file = input.files?.[0]
+    input.value = ''
+    if (!file) return
+
+    const result = await uploadImage(file)
+    if (!result.isSuccess) {
+        toast.add({ severity: 'error', summary: 'Ошибка загрузки', detail: result.error, life: 3500 })
+        return
+    }
+    props.updateAttributes({ src: result.data.url })
+}
+
 function toggleSizePopover(event: MouseEvent) {
     sizePopover.value?.toggle(event)
 }
 
 function toggleStretchPopover(event: MouseEvent) {
     stretchPopover.value?.toggle(event)
-}
-
-function updateSource(event: Event) {
-    props.updateAttributes({ src: (event.target as HTMLInputElement).value })
 }
 
 function updateWidth(value: number | null) {
@@ -135,9 +159,10 @@ function updateCaption(event: Event) {
 .recipe-image-settings__reset { justify-content: flex-start; width: 100%; }
 .recipe-image-settings :deep(.p-selectbutton) { width: 100%; }
 .recipe-image-settings :deep(.p-selectbutton .p-togglebutton) { font-size: .72rem; padding: .3rem .4rem; }
-.recipe-image-empty { align-items: center; background: var(--p-surface-50); border: 1px dashed var(--p-content-border-color); border-radius: var(--p-border-radius-md, .5rem); color: var(--p-text-muted-color); display: flex; flex-direction: column; gap: .5rem; height: 180px; justify-content: center; }
+.recipe-image-empty { align-items: center; background: var(--p-surface-50); border: 1px dashed var(--p-content-border-color); border-radius: var(--p-border-radius-md, .5rem); color: var(--p-text-muted-color); cursor: pointer; display: flex; flex-direction: column; gap: .5rem; height: 180px; justify-content: center; transition: border-color var(--p-transition-duration, .2s); }
+.recipe-image-empty:hover, .recipe-image-empty:focus-visible { border-color: var(--p-primary-color); }
 .recipe-image-empty i { color: var(--p-primary-color); font-size: 1.5rem; }
-.recipe-image-url { width: 100%; }
+.recipe-image-file-input { display: none; }
 .recipe-image-caption { background: transparent; border: 0; border-bottom: 1px solid var(--p-content-border-color); color: var(--p-text-muted-color); display: block; font-size: .72rem; margin: .65rem auto 0; outline: none; padding: .35rem; text-align: center; width: 100%; }
 .recipe-image-caption-view { color: var(--p-text-muted-color); font-size: .78rem; text-align: center; }
 @media (max-width: 850px) {

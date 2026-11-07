@@ -2,6 +2,7 @@
 </script>
 
 <template>  
+  <Toast />
   <router-view />  
 </template>
 

@@ -27,10 +27,12 @@
 				</button>
 			</div>
 		</div>
-		<div v-else-if="isEditable" class="gallery-empty"><i class="pi pi-images" /><span>Добавьте изображения процесса</span></div>
+		<div v-else-if="isEditable" class="gallery-empty" role="button" tabindex="0" aria-label="Выбрать изображения" @click="openFilePicker" @keydown.enter.prevent="openFilePicker">
+			<i :class="uploading ? 'pi pi-spin pi-spinner' : 'pi pi-images'" /><span>{{ uploading ? 'Загрузка изображений...' : 'Выберите изображения процесса' }}</span>
+		</div>
 		<div v-if="isEditable" class="gallery-add">
-			<input class="p-inputtext p-component" type="url" v-model="imageUrl" placeholder="https://..." aria-label="Ссылка на кадр галереи" @keydown.enter.prevent="addImage" />
-			<button class="gallery-add__button" type="button" title="Добавить кадр" @click="addImage"><i class="pi pi-plus" /></button>
+			<Button icon="pi pi-plus" label="Добавить кадры" size="small" :loading="uploading" @mousedown.prevent @click="openFilePicker" />
+			<input ref="fileInput" class="gallery-file-input" type="file" accept="image/*" multiple aria-hidden="true" @change="onFilesSelected" />
 		</div>
 	</NodeViewWrapper>
 </template>
@@ -42,10 +44,12 @@ import type { Editor } from '@tiptap/core'
 const isEditable = inject<Ref<boolean>>('editorEditable', ref(true))
 import { NodeViewWrapper } from '@tiptap/vue-3'
 import Popover from 'primevue/popover'
+import { useToast } from 'primevue'
 import RecipeNodeToolbar from '../../editor/recipeNodeToolbar.vue'
 import RecipeBlockSpacing from '../../editor/recipeBlockSpacing.vue'
 import { blockMarginStyle } from '../../shared/margins'
 import BlockDragHandle from '../drag/BlockDragHandle.vue'
+import { useImageUpload } from '../../../composables/useImageUpload'
 
 const props = defineProps<{
 	editor: Editor
@@ -57,9 +61,12 @@ const props = defineProps<{
 const spacingStyle = computed(() => blockMarginStyle(props.node.attrs as unknown as Record<string, unknown>))
 const images = computed(() => props.node.attrs.images ?? [])
 const layout = computed(() => (props.node.attrs.layout === 'slider' ? 'slider' : 'bottom'))
-const imageUrl = ref('')
 const currentIndex = ref(0)
 const settingsPopover = ref<InstanceType<typeof Popover> | null>(null)
+
+const toast = useToast()
+const { uploading, uploadImage } = useImageUpload()
+const fileInput = ref<HTMLInputElement | null>(null)
 
 const layoutOptions = [
 	{ label: 'Снизу', value: 'bottom' },
@@ -77,11 +84,26 @@ watch(
 	},
 )
 
-function addImage() {
-	const value = imageUrl.value.trim()
-	if (!value) return
-	props.updateAttributes({ images: [...images.value, value] })
-	imageUrl.value = ''
+function openFilePicker() {
+	if (uploading.value) return
+	fileInput.value?.click()
+}
+
+async function onFilesSelected(event: Event) {
+	const input = event.target as HTMLInputElement
+	const files = Array.from(input.files ?? [])
+	input.value = ''
+	if (!files.length) return
+
+	const uploadedUrls: string[] = []
+	const errors: string[] = []
+	for (const file of files) {
+		const result = await uploadImage(file)
+		if (result.isSuccess) uploadedUrls.push(result.data.url)
+		else errors.push(`${file.name}: ${result.error}`)
+	}
+	if (uploadedUrls.length) props.updateAttributes({ images: [...images.value, ...uploadedUrls] })
+	if (errors.length) toast.add({ severity: 'error', summary: 'Ошибка загрузки', detail: errors.join('\n'), life: 5000 })
 }
 
 function removeImage(index: number) {
@@ -133,11 +155,11 @@ function updateLayout(value: unknown) {
 .gallery-thumbs--slider { overflow-x: auto; padding-bottom: .2rem; }
 .gallery-thumbs--slider .gallery-thumb { flex: 0 0 auto; }
 .gallery-thumbs--slider .gallery-thumb img { height: 96px; width: 150px; }
-.gallery-empty { align-items: center; background: var(--p-surface-50); border: 1px dashed var(--p-content-border-color); border-radius: var(--p-border-radius-md, .5rem); color: var(--p-text-muted-color); display: flex; flex-direction: column; gap: .45rem; justify-content: center; min-height: 120px; }
+.gallery-empty { align-items: center; background: var(--p-surface-50); border: 1px dashed var(--p-content-border-color); border-radius: var(--p-border-radius-md, .5rem); color: var(--p-text-muted-color); cursor: pointer; display: flex; flex-direction: column; gap: .45rem; justify-content: center; min-height: 120px; transition: border-color var(--p-transition-duration, .2s); }
+.gallery-empty:hover, .gallery-empty:focus-visible { border-color: var(--p-primary-color); }
 .gallery-empty i { color: var(--p-primary-color); font-size: 1.25rem; }
 .gallery-add { display: flex; gap: .5rem; margin-top: .6rem; }
-.gallery-add input { flex: 1; min-width: 0; }
-.gallery-add__button { align-items: center; background: var(--p-primary-color); border: 1px solid var(--p-primary-color); border-radius: var(--p-button-border-radius); color: var(--p-primary-contrast-color); cursor: pointer; display: inline-flex; justify-content: center; min-width: 2.5rem; }
+.gallery-file-input { display: none; }
 .gallery-settings { display: flex; flex-direction: column; gap: .5rem; min-width: 13rem; }
 .gallery-settings__label { color: var(--p-text-muted-color); font-size: .75rem; font-weight: 600; }
 </style>

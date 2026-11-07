@@ -19,14 +19,7 @@ namespace Vinva.Gastronomy.Media.Domain.Services
         /// <param name="imageId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        Task UploadTempAsync(Stream itemStream, Guid imageId, CancellationToken ct = default);
-        /// <summary>
-        /// Отправляет запрос на перенос файла из временного хранилища в постоянное
-        /// </summary>
-        /// <param name="imageId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        Task CommitTempAsync(Guid imageId, CancellationToken ct = default);
+        Task UploadAsync(Stream itemStream, Guid imageId, CancellationToken ct = default);        
         /// <summary>
         /// Удаляет файл изображения из постоянного хранилища
         /// </summary>

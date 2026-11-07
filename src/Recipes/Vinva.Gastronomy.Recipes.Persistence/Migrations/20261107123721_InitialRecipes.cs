@@ -73,6 +73,71 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RecipeIngredientsSets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RecipeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    PortionsQuantitiesJson = table.Column<string>(type: "jsonb", nullable: false),
+                    PortionsCalculateType = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipeIngredientsSets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RecipeIngredientsSets_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RecipeIngredients",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RecipeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IngredientsSetId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    QuantitiesJson = table.Column<string>(type: "jsonb", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipeIngredients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RecipeIngredients_RecipeIngredientsSets_IngredientsSetId",
+                        column: x => x.IngredientsSetId,
+                        principalTable: "RecipeIngredientsSets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RecipeIngredients_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeIngredients_IngredientsSetId_Name",
+                table: "RecipeIngredients",
+                columns: new[] { "IngredientsSetId", "Name" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeIngredients_RecipeId",
+                table: "RecipeIngredients",
+                column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeIngredientsSets_RecipeId_Name",
+                table: "RecipeIngredientsSets",
+                columns: new[] { "RecipeId", "Name" },
+                unique: true);
+
             migrationBuilder.CreateIndex(
                 name: "IX_Recipes_BaseRecipe",
                 table: "Recipes",
@@ -93,6 +158,12 @@ namespace Vinva.Gastronomy.Recipes.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Characteristics");
+
+            migrationBuilder.DropTable(
+                name: "RecipeIngredients");
+
+            migrationBuilder.DropTable(
+                name: "RecipeIngredientsSets");
 
             migrationBuilder.DropTable(
                 name: "Recipes");

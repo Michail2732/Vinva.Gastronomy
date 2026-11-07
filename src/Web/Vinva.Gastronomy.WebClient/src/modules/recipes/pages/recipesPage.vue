@@ -1,7 +1,6 @@
 <template>
     <div>
-        <Toast/>
-        <Toolbar class="recipes-toolbar-container">             
+        <Toolbar class="recipes-toolbar-container">
             <template #start>
                 <Button icon="pi pi-filter-fill"
                         v-tooltip.top="'Фильтрация'"/>
